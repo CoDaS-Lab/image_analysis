@@ -2,6 +2,7 @@
 
 ## External Dependences
 * numpy >= 1.12.0
+* scipy >= 0.18.1
 * scitkit-learn >=0.17
 * ffmpeg >=3.2.2
 * skvideo >=1.17
