@@ -11,9 +11,31 @@ from skimage.io import *
 from skimage.color import rgb2gray
 
 
-def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1, \
-        out_frame_ext=".jpg", "out_frame_dir")):
+def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
+        out_frame_ext=".jpg", out_frame_dir=""):
     # incomplete, ravi is comign back here later today to fix and add comments.
+    """
+    INPUTS
+    v_path: path to MPEG video (i.e. include the video's name & extension)
+    batch_size: number of frames in each batch
+    stride: stride indicates beginning of batches (i.e. every stride'th frame)
+        (integer > 1)
+    start_idx: index of first frame for first batch (integer >= 0)
+    end_idx: index of last frame in the range of interest (integer >= 0)
+    out_frame_ext: extension you want to save the frames with (e.g. jpg)
+    out_frame_dir: directory you want to save extracted frames to
+
+    OUTPUTS
+    RETURNS a LIST of NUMPY batches of frames
+    #TODO create optional saving, incase someone wants to visualize the frames
+
+    DESCRIPTION: extracts frames from MPEG and saves them to a directory
+    """
+    if start_idx < 0 or end_idx < 0:
+        raise ValueError("Cannot use negative start or end indices")
+    elif batch_size < 1 or stride < 1:
+        raise ValueError("Cannot use batch_size or stride < 1")
+    
     batch_list = []
     batch = []
     count = 0
@@ -40,7 +62,7 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1, \
                     else print("problem!!")
             elif batch_size >= stride:
 
-            return np.array(batch_list.append(np.array(batch)))
+            return batch_list.append(np.array(batch))
             
     for frame in skvideo.io.vreader(v_path):
         if count2 >= start_idx:
