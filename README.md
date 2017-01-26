@@ -1,7 +1,15 @@
 # image-analysis
 
-# Installation
+## External Dependences
+numpy >= 1.12.0
+scitkit-learn >=0.17
+ffmpeg >=3.2.2
+skvideo >=1.17
+scikit-image >=0.12.0
 
-#Requirements (OSX)
+## Installation
 
-#Requirements (Ubuntu)
+## Requirements (OSX)
+Python 3.5
+
+## Requirements (Ubuntu)
