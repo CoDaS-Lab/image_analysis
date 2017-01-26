@@ -1,11 +1,11 @@
 # image-analysis
 
 ## External Dependences
-numpy >= 1.12.0
-scitkit-learn >=0.17
-ffmpeg >=3.2.2
-skvideo >=1.17
-scikit-image >=0.12.0
+* numpy >= 1.12.0
+* scitkit-learn >=0.17
+* ffmpeg >=3.2.2
+* skvideo >=1.17
+* scikit-image >=0.12.0
 
 ## Installation
 
