@@ -1,3 +1,7 @@
 # image-analysis
 
-# Ravi finally made it here, yay!
+# Installation
+
+#Requirements (OSX)
+
+#Requirements (Ubuntu)

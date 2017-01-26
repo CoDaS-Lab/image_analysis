@@ -20,7 +20,8 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     packages=['image-analysis'],
-    install_requires=['scikit-learn>=0.17'],
+    install_requires=['scikit-learn>=0.17', 'ffmpeg>=3.2.2',
+            'skvideo>=1.17', 'scikit-image>=0.12.0'],
     extras_require=None,
     include_package_data=True
 )
