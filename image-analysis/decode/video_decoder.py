@@ -106,12 +106,3 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
                     else: print("problem!!")
         count += 1
     return batch_list # list of numpy arrays
-
-
-curr_dir = os.getcwd()
-v_path = curr_dir + "/1.E.E.1.mp4"
-a = decode_mpeg(v_path, batch_size=2, stride=4, start_idx = 0, end_idx = 20)
-
-print(len(a))
-print(a[-1].shape)
-print(a[-1][-1,-1,-1])
