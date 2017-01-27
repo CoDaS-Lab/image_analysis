@@ -5,7 +5,6 @@
 
 import os
 import skvideo.io
-import skvideo.datasets
 import numpy as np
 from skimage.io import *
 from skimage.color import rgb2gray
@@ -20,16 +19,16 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
     batch_size: Number of frames in each batch
     stride:     Stride indicates beginning of batches, i.e. every stride'th 
                 frame (integer > 1)
-    start_idx   index of first frame for first batch (integer >= 0)
-    end_idx     index of last frame in the range of interest (integer >= 0)
-    out_frame_ext: extension you want to save the frames with (e.g. jpg)
-    out_frame_dir: directory you want to save extracted frames to
+    start_idx:  Index of first frame for first batch (integer >= 0)
+    end_idx:    Index of last frame in the range of interest (integer >= 0)
+    out_frame_ext: Extension you want to save the frames with (e.g. jpg)
+    out_frame_dir: Directory you want to save extracted frames to
 
     OUTPUTS
-    RETURNS a LIST of NUMPY batches of frames
+    RETURNS: a LIST of NUMPY batches of frames (length x width x channels)
     #TODO create optional saving, incase someone wants to visualize the frames
-
-    DESCRIPTION: extracts frames from MPEG and saves them to a directory
+    
+    Description: creates a list of batches of frames from an MPEG file
     """
     if start_idx < 0 or end_idx < 0:
         raise ValueError("Cannot use negative start or end indices")
@@ -37,10 +36,20 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
         raise ValueError("Cannot use batch_size or stride < 1")
     
     batch_list = []
-    batch = []
     count = 0
     temp = start_idx
     
+    # initialize batch
+    if stride >= batch_size:
+        batch = []
+    elif batch_size > stride:
+        for frame in skvideo.io.reader(v_path):
+            if count - start_idx  == batch_size:
+                break
+            elif count >= start_idx:
+                batch.append(frame)
+            count += 1
+    # build batch_list
     for frame in skvideo.io.vreader(v_path):
         if count >= start_idx:
             if stride > batch_size:
