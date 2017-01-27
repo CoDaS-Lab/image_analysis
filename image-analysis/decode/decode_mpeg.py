@@ -16,12 +16,12 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
     # incomplete, ravi is comign back here later today to fix and add comments.
     """
     INPUTS
-    v_path: path to MPEG video (i.e. include the video's name & extension)
-    batch_size: number of frames in each batch
-    stride: stride indicates beginning of batches (i.e. every stride'th frame)
-        (integer > 1)
-    start_idx: index of first frame for first batch (integer >= 0)
-    end_idx: index of last frame in the range of interest (integer >= 0)
+    v_path:     Path to MPEG video (i.e. include the video's name & extension)
+    batch_size: Number of frames in each batch
+    stride:     Stride indicates beginning of batches, i.e. every stride'th 
+                frame (integer > 1)
+    start_idx   index of first frame for first batch (integer >= 0)
+    end_idx     index of last frame in the range of interest (integer >= 0)
     out_frame_ext: extension you want to save the frames with (e.g. jpg)
     out_frame_dir: directory you want to save extracted frames to
 
@@ -39,11 +39,10 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
     batch_list = []
     batch = []
     count = 0
-    temp2 = 0
+    temp = start_idx
     
     for frame in skvideo.io.vreader(v_path):
         if count >= start_idx:
-            temp = start_idx
             if stride > batch_size:
                 if count % stride  == 0:
                     temp = count
@@ -64,8 +63,6 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
 
             return batch_list.append(np.array(batch))
             
-    for frame in skvideo.io.vreader(v_path):
-        if count2 >= start_idx:
             if len(batch) % batch_size == 0:
                 batch_list.append(np.array(batch))
                 batch = []
