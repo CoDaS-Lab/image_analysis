@@ -32,7 +32,6 @@ def pad_batch(batch, batch_size, frame):
 
 def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
         out_frame_ext=".jpg", out_frame_dir=""):
-    # incomplete, ravi is comign back here later today to fix and add comments.
     """
     INPUTS
     v_path:     Path to MPEG video (i.e. include the video's name & extension)
@@ -98,11 +97,3 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
             elif len(batch) < batch_size:
                 batch.append(frame)
         count += 1
-
-curr_dir = os.getcwd()
-v_path = curr_dir + "/1.E.E.1.mp4"
-a = decode_mpeg(v_path, batch_size=6, stride=3, start_idx = 0, end_idx = 20)
-
-print(len(a))
-print(a[-1].shape)
-print(a[-1][-1,-1,-1])
