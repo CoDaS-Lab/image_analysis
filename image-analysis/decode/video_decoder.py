@@ -2,7 +2,8 @@ import os
 import skvideo.io
 import numpy as np
 from skimage.io import *
-from skimage.color import rgb2gray
+import math
+
 
 def pad_batch(batch, batch_size, frame):
     """
@@ -14,7 +15,7 @@ def pad_batch(batch, batch_size, frame):
     OUTPUT
     returns padded batch: list of batch_size frames, each an ndarray:(L x W x C)
 
-    DESCRIPTION: takes in a batch, pads it with 0s if necessary, and returns 
+    DESCRIPTION: takes in a batch, pads it with 0s if necessary, and returns
                     appended batch
     """
     if len(batch) > batch_size:
@@ -30,13 +31,13 @@ def pad_batch(batch, batch_size, frame):
     else:
         raise ValueError("Something is wrong with the pad_batch function")
 
-def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
-        out_frame_ext=".jpg", out_frame_dir=""):
+
+def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=0, out_frame_ext=".jpg", out_frame_dir=""):
     """
     INPUTS
     v_path:     Path to MPEG video (i.e. include the video's name & extension)
     batch_size: Number of frames in each batch
-    stride:     Stride indicates beginning of batches, i.e. every stride'th 
+    stride:     Stride indicates beginning of batches, i.e. every stride'th
                 frame (integer > 1)
     start_idx:  Index of first frame for first batch (integer >= 0)
     end_idx:    Index of last frame in the range of interest (integer >= 0)
@@ -48,21 +49,24 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
                 if the last batch is not full, it is padded with frames of:
                     np.zeros((frame.shape))
     #TODO create optional saving, incase someone wants to visualize the frames
-    
+
     Description: creates a list of batches of frames from an MPEG file
     """
+
     if start_idx < 0 or end_idx < 0:
         raise ValueError("Cannot use negative start or end indices")
     elif end_idx < start_idx:
         raise ValueError("Cannot use end_idx < start_idx")
-    elif batch_size < 1 or stride < 1:
+
+    if batch_size < 1 or stride < 1:
         raise ValueError("Cannot use batch_size or stride < 1")
-    
+
     batch_list = []
     count = 0
     temp = start_idx
     batch = []
-#   build batch_list
+
+    # build batch_list
     for frame in skvideo.io.vreader(v_path):
         if count == end_idx:
             if len(batch) == batch_size:
@@ -78,7 +82,7 @@ def decode_mpeg(v_path,*, batch_size=1, stride=1, start_idx=0, end_idx=-1,
             elif batch_size >= stride:
                 return batch_list
         elif count >= start_idx and stride > batch_size:
-            if (count - start_idx) % stride  == 0:
+            if (count - start_idx) % stride == 0:
                 temp = count
                 batch_list.append(np.array(batch))
                 batch = []

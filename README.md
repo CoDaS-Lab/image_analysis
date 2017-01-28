@@ -7,11 +7,15 @@
 * ffmpeg >=3.2.2
 * skvideo >=1.17
 * scikit-image >=0.12.0
+* python 3.5
 
 ## Installation
 
 ## Requirements (OSX)
-Python 3.5
+
 
 ## Requirements (Ubuntu)
-Python 3.5
+
+
+## Testing
+python  -m unittest discover
