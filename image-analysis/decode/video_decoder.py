@@ -2,7 +2,6 @@ import os
 import skvideo.io
 import numpy as np
 from skimage.io import *
-import math
 
 
 def pad_batch(batch, batch_size, frame):
