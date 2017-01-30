@@ -31,7 +31,7 @@ def pad_batch(batch, batch_size, frame):
         raise ValueError("Something is wrong with the pad_batch function")
 
 
-def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=0, out_frame_ext=".jpg", out_frame_dir=""):
+def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1, out_frame_ext=".jpg", out_frame_dir=""):
     """
     INPUTS
     v_path:     Path to MPEG video (i.e. include the video's name & extension)
@@ -52,8 +52,8 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=0, out_f
     Description: creates a list of batches of frames from an MPEG file
     """
 
-    if start_idx < 0 or end_idx < 0:
-        raise ValueError("Cannot use negative start or end indices")
+    if start_idx < 0 or end_idx < -1:
+        raise ValueError("Cannot use start_idx < 0 or end_idx < -1")
     elif end_idx < start_idx:
         raise ValueError("Cannot use end_idx < start_idx")
 
@@ -100,3 +100,16 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=0, out_f
             elif len(batch) < batch_size:
                 batch.append(frame)
         count += 1
+    if end_idx == -1:
+        if len(batch) == batch_size:
+            batch_list.append(np.array(batch))
+            batch = []
+        idx = count - ((count - start_idx) % stride)
+        if count >= idx and count < (idx + batch_size):
+            batch.append(frame)
+            batch_list.append(np.array(
+                pad_batch(batch, batch_size, frame)))
+        if stride > batch_size:
+            return batch_list[1:]
+        elif batch_size >= stride:
+            return batch_list
