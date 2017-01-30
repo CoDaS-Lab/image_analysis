@@ -20,10 +20,11 @@ class TestVideoDecoder(unittest.TestCase):
         self.frames_channels = 3
 
     def test_load_frame(self):
-        frames = vd.decode_mpeg(self.video_path, end_idx=1)
-        frame = frames[0]  # grab a frame
+        frames = vd.decode_mpeg(self.video_path, end_idx=0)
+        batch = frames[0]  # grab a batch
+        frame = batch[0]
 
-        self.assertEqual(frame.shape[0], 1)  # only one frame in batch
+        self.assertEqual(batch.shape[0], 1)  # only one frame in batch
         self.assertEqual(frame.shape[1], self.frames_height)
         self.assertEqual(frame.shape[2], self.frames_width)
         self.assertEqual(frame.shape[3], self.frames_channels)
