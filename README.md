@@ -13,6 +13,11 @@
 
 ## Requirements (OSX)
 
+Installing ffmpeg:
+```
+brew install ffmpeg
+```
+
 ## Requirements (Ubuntu)
 
 ## Testing
