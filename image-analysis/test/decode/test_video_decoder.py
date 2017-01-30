@@ -30,7 +30,7 @@ class TestVideoDecoder(unittest.TestCase):
         self.assertEqual(frame.shape[3], self.frames_channels)
 
     def test_decode_mpeg(self):
-        # Load video file in batches and strides of 29 frames
+        # Load video file in batches = strides of 29 frames
         batch_size = stride = 29
         video_batches = vd.decode_mpeg(self.video_path, batch_size=batch_size, 
             stride=stride)
@@ -49,7 +49,7 @@ class TestVideoDecoder(unittest.TestCase):
         self.assertEqual(len(video_batches), 120, 
             'length of video_batches is not 120')
         self.assertEqual(video_batches[-1][-1,-1-1,-1],0,
-            'last element in last batch was not 0'))
+            'last element in last batch was not 0')
        
         # load video with batch_size > stride without padding
         batch_size = 20
@@ -59,7 +59,7 @@ class TestVideoDecoder(unittest.TestCase):
         self.assertEqual(len(video_batches), 61, 
             'length of batch_list is wrong')
         self.assertEqual(video_batches[-1][-1,-1-1,-1], 238,
-            'last element was not 238'))
+            'last element was not 238')
 
         # load video with stride > batch_size with padding
         batch_size = 10
@@ -71,6 +71,7 @@ class TestVideoDecoder(unittest.TestCase):
                 'total number of batches was not equal to 125')
         self.assertEqual(video_batches[-1][-1,-1,-1,-1], 0,
                 'last element of last batch was not 0; not padded properly')
+
         # load video with stride > batch_size without padding
         batch_size =10 
         stride = 29
