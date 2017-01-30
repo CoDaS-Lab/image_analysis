@@ -54,7 +54,7 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1, out_
 
     if start_idx < 0 or end_idx < -1:
         raise ValueError("Cannot use start_idx < 0 or end_idx < -1")
-    elif end_idx < start_idx:
+    if end_idx > -1 and end_idx < start_idx:
         raise ValueError("Cannot use end_idx < start_idx")
 
     if batch_size < 1 or stride < 1:
