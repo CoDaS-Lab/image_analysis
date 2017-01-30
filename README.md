@@ -21,4 +21,6 @@ brew install ffmpeg
 ## Requirements (Ubuntu)
 
 ## Testing
+```
 python -m unittest discover
+```
