@@ -65,6 +65,13 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1, out_
     temp = start_idx
     batch = []
 
+    # grab frame count from video metadata
+    metadata = skvideo.io.ffprobe(v_path)
+    vid_frame_count = int(metadata["video"]["@nb_frames"])
+
+    if end_idx == -1:
+        end_idx = vid_frame_count - 1
+
     # build batch_list
     for frame in skvideo.io.vreader(v_path):
         if count == end_idx:
@@ -100,19 +107,3 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1, out_
             elif len(batch) < batch_size:
                 batch.append(frame)
         count += 1
-    if end_idx == -1:
-        if len(batch) == batch_size:
-            batch_list.append(np.array(batch))
-            batch = []
-        idx = count - ((count - start_idx) % stride)
-        #if count >= idx and count < (idx + batch_size):
-        #    batch.append(frame)
-        #    batch_list.append(np.array(
-        #        pad_batch(batch, batch_size, frame)))
-        # commented this out because first test wasn't passing: was duplicating
-        # the last frame and creating a new batch containing the duplicate 
-        # frame + padding frames
-        if stride > batch_size:
-            return batch_list[1:]
-        elif batch_size >= stride:
-            return batch_list
