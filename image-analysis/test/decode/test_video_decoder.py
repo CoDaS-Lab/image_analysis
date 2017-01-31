@@ -25,9 +25,10 @@ class TestVideoDecoder(unittest.TestCase):
         frame = batch[0]
 
         self.assertEqual(batch.shape[0], 1)  # only one frame in batch
-        self.assertEqual(frame.shape[1], self.frames_height)
-        self.assertEqual(frame.shape[2], self.frames_width)
-        self.assertEqual(frame.shape[3], self.frames_channels)
+        self.assertEqual(frame.shape[0], self.frames_height)
+        self.assertEqual(frame.shape[1], self.frames_width)
+        self.assertEqual(frame.shape[2], self.frames_channels)
+        vid = skvideo.io.vread(self.video_path)
 
     def test_decode_mpeg(self):
         # Load video file in batches = strides of 29 frames
@@ -36,9 +37,9 @@ class TestVideoDecoder(unittest.TestCase):
             stride=stride)
         self.assertEqual(len(video_batches), 43,
                 'len(video_batches) was not 43')
-        self.assertEqual(videobatches[0].shape[0], 29,
+        self.assertEqual(video_batches[0].shape[0], 29,
                 'batch did not contain 29 frames')
-        self.assertqual(video_batches[0][-1,-1,-1,-1], 231,
+        self.assertEqual(video_batches[0][-1,-1,-1,-1], 231,
             'last element of last batch is not 231')
 
         # load video with batch_size > stride with padding
@@ -48,6 +49,7 @@ class TestVideoDecoder(unittest.TestCase):
             stride=stride, end_idx=1200)
         self.assertEqual(len(video_batches), 120, 
             'length of video_batches is not 120')
+        print(video_batches[-1][-1,-1,-1,-1])
         self.assertEqual(video_batches[-1][-1,-1-1,-1],0,
             'last element in last batch was not 0')
        
