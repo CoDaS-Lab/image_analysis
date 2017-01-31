@@ -21,6 +21,11 @@ brew install ffmpeg
 ## Requirements (Ubuntu)
 
 ## Testing
+change directory to directory of test folder:
+```
+cd /path/to/directory/image-analysis/image-analysis
+```
+Run unittest discover
 ```
 python -m unittest discover
 ```
