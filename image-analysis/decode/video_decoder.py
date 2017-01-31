@@ -7,12 +7,14 @@ from skimage.io import *
 def pad_batch(batch, batch_size, frame):
     """
     INPUTS
-    frame:      a numpy array extracted from an MPEG (length x width x channels)
+    frame:      a numpy array extracted from an MPEG
+                (length x width x channel)
     batch:      list of frames
     batch_size: number of frames per batch (integer >= 1)
 
     OUTPUT
-    returns padded batch: list of batch_size frames, each an ndarray:(L x W x C)
+    returns padded batch: list of batch_size frames, each an ndarray:
+                            (L x W x C)
 
     DESCRIPTION: takes in a batch, pads it with 0s if necessary, and returns
                     appended batch
@@ -31,7 +33,8 @@ def pad_batch(batch, batch_size, frame):
         raise ValueError("Something is wrong with the pad_batch function")
 
 
-def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1, out_frame_ext=".jpg", out_frame_dir=""):
+def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1,
+                out_frame_ext=".jpg", out_frame_dir=""):
     """
     INPUTS
     v_path:     Path to MPEG video (i.e. include the video's name & extension)
@@ -66,10 +69,9 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1, out_
     batch = []
 
     # grab frame count from video metadata
-    metadata = skvideo.io.ffprobe(v_path)
-    vid_frame_count = int(metadata["video"]["@nb_frames"])
-
     if end_idx == -1:
+        metadata = skvideo.io.ffprobe(v_path)
+        vid_frame_count = int(metadata["video"]["@nb_frames"])
         end_idx = vid_frame_count - 1
 
     # build batch_list
