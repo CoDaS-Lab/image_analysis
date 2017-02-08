@@ -1,6 +1,6 @@
 # image-analysis
 
-## Python Dependencies
+### Python Dependencies
 * numpy >= 1.12.0
 * scipy >= 0.18.1
 * scikit-learn >=0.17
@@ -8,19 +8,19 @@
 * scikit-image >=0.12.0
 * python 3.5
 
-## External Dependencies
+### External Dependencies
 * ffmpeg >=3.2.2 or libav (10 or 11)
 
 ## Installation
 
-## Requirements (OSX)
+### Requirements (OSX)
 
 Installing ffmpeg:
 ```
 brew install ffmpeg
 ```
 
-## Requirements (Ubuntu)
+### Requirements (Ubuntu)
 
 ## Testing
 AS of 2/2/17, sample MPEG required for testing was removed, so tests will fail. This will be addressed by 2/8/17.
