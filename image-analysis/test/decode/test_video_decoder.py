@@ -7,7 +7,6 @@ import math
 import warnings
 
 import skvideo
-import skimage
 
 from decode import video_decoder as vd
 
