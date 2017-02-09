@@ -1,20 +1,20 @@
 
 from pathlib import Path
-from decode import video_decoder as vd
-
 import os
 import shutil
 import unittest
-import skvideo
-import skimage
 import math
 import warnings
+
+import skvideo
+import skimage
+
+from decode import video_decoder as vd
 
 
 class TestVideoDecoder(unittest.TestCase):
     def setUp(self):
-        self.video_path = os.getcwd() + \
-                "/test/decode/testing_files/IASample.mpeg"
+        self.video_path = os.getcwd() + "#"
         self.total_frames = 1247
         self.frames_width = 352
         self.frames_height = 288

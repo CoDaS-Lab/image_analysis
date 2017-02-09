@@ -19,6 +19,7 @@ def pad_batch(batch, batch_size, frame):
     DESCRIPTION: takes in a batch, pads it with 0s if necessary, and returns
                     appended batch
     """
+
     if len(batch) > batch_size:
         raise ValueError("len(batch) should be <= batch_size!")
     elif batch_size < 1:

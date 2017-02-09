@@ -7,6 +7,7 @@ def mk_features(batch_list, feature_list):
     OUTPUT: list of dictionaries
 
     """
+
     frame_dictionary = []
     count_batch = 0
     count_frame = 0
@@ -14,14 +15,16 @@ def mk_features(batch_list, feature_list):
     for batch in batch_list:
         for frame in batch:
             frame_dictionary.append({
-                "input":{
-                    "frame": frame
+                "input": {
+                    "frame": frame,
                     "fft_output": 1
-                    },
+                },
                 "metadata": {
                     "frame_num": count_frame,
                     "batch_num": count_batch
-                    }  
-                })
-            count_frame +=1
+                }
+            })
+            count_frame += 1
         count_batch += 1
+
+    return frame_dictionary
