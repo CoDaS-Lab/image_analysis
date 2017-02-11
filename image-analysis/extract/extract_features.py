@@ -1,17 +1,3 @@
-
-
-def gen_features(batch_list, op_list, feature_dictionary):
-    batch_ops = []
-    frame_ops = []
-    for op in op_list:
-        if is_batch_op(op) == True:
-            batch_ops.append(op)
-        elif is_frame_op(op) == True:
-            frame_ops.append(op)
-        else: print("at least one op is neither a batch_op or frame_op"))
-    
-    return frame_dictionary
-
 def gen_batch_features(batch_list, batch_op_list):
     """
     INPUTS:
@@ -59,6 +45,20 @@ def batch_to_frame_dictionary(batch_dictionaries):
     """
     
     return frame_dictionaries
+
+def gen_features(batch_list, op_list, feature_dictionary):
+    batch_ops = []
+    frame_ops = []
+    for op in op_list:
+        if is_batch_op(op) == True:
+            batch_ops.append(op)
+        elif is_frame_op(op) == True:
+            frame_ops.append(op)
+        else: print("at least one op is neither a batch_op or frame_op"))
+    
+    return frame_dictionaries
+
+
 #import skimage.color as skcolor
 #
 #
