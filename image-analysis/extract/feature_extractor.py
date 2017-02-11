@@ -46,7 +46,7 @@ def batch_to_frame_dictionary(batch_dictionaries):
     
     return frame_dictionaries
 
-def gen_features(batch_list, op_list, feature_dictionary):
+def extract_features(batch_list, op_list, feature_dictionary):
     batch_ops = []
     frame_ops = []
     for op in op_list:
