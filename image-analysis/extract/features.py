@@ -1,3 +1,2 @@
-# this file will hold classes defining the feature extractor objects
-# this will will also define an abstract class so user defined features can 
-#       also be used
+# this file will hold ONE class: the "feature" class whos instances will use methods that define the feature; user can also create user-defined featuers by implementing the abstract method
+# 
