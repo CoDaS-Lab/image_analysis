@@ -1,6 +1,6 @@
 import skimage.color
-import skvideo.io
 import skimage.io
+import skvideo.io
 
 
 class Feature:
@@ -34,6 +34,15 @@ class RGBToGray(Feature):
     def extract(self, RGB_frame):
         return skimage.color.rgb2gray(RGB_frame)
 
+
+class ImageScale(Feature):
+    def __init__(self):
+        self.batch_op = False
+        self.frame_op = True
+        self.key_name = "imgscale"
+
+    def extract(self, frame):
+        returns skimage.transform.rescale(frame, 10)
 """
 class FFT(Featur):
     def __init__(self):
