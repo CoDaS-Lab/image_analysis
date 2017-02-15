@@ -51,11 +51,12 @@ def gen_frame_features(batch_list, frame_op_list):
     return frame_dictionaries
 
 
-def batch_to_frame_dictionaries(batch_dictionaries):
+def batch_to_frame_dictionaries(batch_dictionaries, batch_op_list):
     """
     INPUTS:
     batch_dictionary: list of dictionaries representing batches (numpy
-                        arrays) of frames
+                        arrays) of frames; each dictionary should have same
+                        exact keys, and each batch should be an ndarry
 
     OUTPUTS:
     frame_dictionary: list of dictionaries representing frames
@@ -63,7 +64,15 @@ def batch_to_frame_dictionaries(batch_dictionaries):
     DESCRIPTION: take in list of batch dictionaries and output list of
                     frame dictionaries
     """
-
+    frame_dictionaries = []
+    for batch_dict in batch_dictionaries:
+        count = 0
+        for frame in batch_dict['batch']:
+            frame_dictionaries.append({'frame': frame})
+            for batch_op in batch_op_list:
+                frame_dictionaries[-1].update({batch_op.key_name: \
+                        batch_dict[batch_op.key_name][count]})
+            count += 1
     return frame_dictionaries
 
 
@@ -89,7 +98,8 @@ def extract_features(batch_list, op_list):
         elif op.is_frame_op() is True:
             frame_ops.append(op)
         else:
-            print("at least one op is neither a batch_op or frame_op")
+            raise ValueError("at least one op is neither \
+                             a batch_op or frame_op")
     frame_dictionaries = []
     count = 0
     for batch in batch_list:
