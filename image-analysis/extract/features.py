@@ -1,4 +1,5 @@
 import skimage.color
+import skimage.transform
 import skimage.io
 import skvideo.io
 
@@ -29,26 +30,26 @@ class RGBToGray(Feature):
     def __init__(self):
         self.batch_op = False
         self.frame_op = True
-        self.key_name = "Grayscale"
+        self.key_name = 'Grayscale'
 
     def extract(self, RGB_frame):
         return skimage.color.rgb2gray(RGB_frame)
 
 
-class ImageScale(Feature):
+class BatchOP(Feature):
     def __init__(self):
-        self.batch_op = False
-        self.frame_op = True
-        self.key_name = "imgscale"
+        self.batch_op = True
+        self.frame_op = False
+        self.key_name = 'batch_length'
 
-    def extract(self, frame):
-        returns skimage.transform.rescale(frame, 10)
+    def extract(self, batch):
+        return len(batch)
 """
 class FFT(Featur):
     def __init__(self):
         self.bath_op = True
         self.frame_op = False
-        self.key_name = "FFT"
+        self.key_name = 'FFT'
 
         def extract(self, RGB_frame):
 """

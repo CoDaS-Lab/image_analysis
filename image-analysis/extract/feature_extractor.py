@@ -1,11 +1,3 @@
-import os
-import sys
-
-import skvideo
-
-from features import RGBToGray
-from video_decoder import video_decoder as vd
-
 
 def gen_batch_features(batch_list, batch_op_list):
     """
@@ -21,10 +13,19 @@ def gen_batch_features(batch_list, batch_op_list):
                     representing a batch and containing features
                     extracted according to batch_op_list
     """
-    batch_dictionaries = {}
+    batch_dictionaries = []
     for batch in batch_list:
+        batch_ds = {
+            'input': {
+                'batch': batch
+            },
+            'metadata': {
+
+            }
+        }
+        batch_dictionaries.append(batch_ds)
         for op in batch_op_list:
-            batch_dictionaries.update({op.key_name: op.extract(frame)})
+            batch_ds['input'].update({op.key_name: op.extract(batch)})
     return batch_dictionaries
 
 
@@ -45,13 +46,22 @@ def gen_frame_features(batch_list, frame_op_list):
     frame_dictionaries = []
     for batch in batch_list:
         for frame in batch:
-            frame_dictionaries.append({})
+            frame_ds = {
+                'input': {
+                    'frame': frame
+
+                },
+                'metadata': {
+                }
+            }
+
+            frame_dictionaries.append(frame_ds)
             for op in frame_op_list:
-                frame_dictionaries[-1].update({op.key_name: op.extract(frame)})
+                frame_ds['input'].update({op.key_name: op.extract(frame)})
     return frame_dictionaries
 
 
-def batch_to_frame_dictionaries(batch_dictionaries, batch_op_list):
+def batch_to_frame_dictionaries(batch_dictionaries):
     """
     INPUTS:
     batch_dictionary: list of dictionaries representing batches (numpy
@@ -65,14 +75,24 @@ def batch_to_frame_dictionaries(batch_dictionaries, batch_op_list):
                     frame dictionaries
     """
     frame_dictionaries = []
-    for batch_dict in batch_dictionaries:
-        count = 0
-        for frame in batch_dict['batch']:
-            frame_dictionaries.append({'frame': frame})
-            for batch_op in batch_op_list:
-                frame_dictionaries[-1].update({batch_op.key_name: \
-                        batch_dict[batch_op.key_name][count]})
-            count += 1
+    batch_index = 0
+    for batch_ds in batch_dictionaries:
+        for frame in batch_ds['input']['batch']:
+            frame_ds = {
+                'input': {
+                    'frame': frame
+
+                },
+                'metadata': {
+                    'batch_index': batch_index
+                }
+            }
+
+            frame_dictionaries.append(frame_ds)
+            for batch_op in batch_ds['input']:
+                if batch_op != 'batch':
+                    frame_ds['input'][batch_op] = batch_ds['input'][batch_op]
+
     return frame_dictionaries
 
 
@@ -80,7 +100,7 @@ def extract_features(batch_list, op_list):
     """
     INPUTS:
         batch_list:         list of batches (numpy arrays)
-        op_list:            list of objects (of type "feature")
+        op_list:            list of objects (of type 'feature')
 
     OUTPUTS:
         frame_dictioanries: list of dictionaries, each representing a frame
@@ -98,8 +118,8 @@ def extract_features(batch_list, op_list):
         elif op.is_frame_op() is True:
             frame_ops.append(op)
         else:
-            raise ValueError("at least one op is neither \
-                             a batch_op nor a frame_op")
+            raise ValueError('{0} is not a valid feature'.format(op))
+
     frame_dictionaries = []
     count = 0
     for batch in batch_list:
@@ -108,6 +128,6 @@ def extract_features(batch_list, op_list):
         if len(frame_ops) != 0:
             for frame in batch:
                 frame_dictionary = gen_frame_features([[frame]], frame_ops)
-                frame_dictioanries[count].update(frame_dictionary[0])
+                frame_dictionaries[count].update(frame_dictionary[0])
                 count += 1
     return frame_dictionaries

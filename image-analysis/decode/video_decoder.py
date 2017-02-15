@@ -21,9 +21,9 @@ def pad_batch(batch, batch_size, frame):
     """
 
     if len(batch) > batch_size:
-        raise ValueError("len(batch) should be <= batch_size!")
+        raise ValueError('len(batch) should be <= batch_size!')
     elif batch_size < 1:
-        raise ValueError("batch_size must be >= 1")
+        raise ValueError('batch_size must be >= 1')
     elif len(batch) == batch_size:
         return batch
     elif len(batch) < batch_size:
@@ -31,11 +31,11 @@ def pad_batch(batch, batch_size, frame):
         batch += pad_list
         return batch
     else:
-        raise ValueError("Something is wrong with the pad_batch function")
+        raise ValueError('Something is wrong with the pad_batch function')
 
 
-def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1,
-                out_frame_ext=".jpg", out_frame_dir=""):
+def decode_mpeg(v_path, batch_size=1, stride=1, start_idx=0, end_idx=-1,
+                out_frame_ext='.jpg', out_frame_dir=''):
     """
     INPUTS
     v_path:     Path to MPEG video (i.e. include the video's name & extension)
@@ -57,12 +57,12 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1,
     """
 
     if start_idx < 0 or end_idx < -1:
-        raise ValueError("Cannot use start_idx < 0 or end_idx < -1")
+        raise ValueError('Cannot use start_idx < 0 or end_idx < -1')
     if end_idx > -1 and end_idx < start_idx:
-        raise ValueError("Cannot use end_idx < start_idx")
+        raise ValueError('Cannot use end_idx < start_idx')
 
     if batch_size < 1 or stride < 1:
-        raise ValueError("Cannot use batch_size or stride < 1")
+        raise ValueError('Cannot use batch_size or stride < 1')
 
     batch_list = []
     count = 0
@@ -72,7 +72,7 @@ def decode_mpeg(v_path, *, batch_size=1, stride=1, start_idx=0, end_idx=-1,
     # grab frame count from video metadata
     if end_idx == -1:
         metadata = skvideo.io.ffprobe(v_path)
-        vid_frame_count = int(metadata["video"]["@nb_frames"])
+        vid_frame_count = int(metadata['video']['@nb_frames'])
         end_idx = vid_frame_count - 1
 
     # build batch_list
