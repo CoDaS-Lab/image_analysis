@@ -34,7 +34,7 @@ def pad_batch(batch, batch_size, frame):
         raise ValueError('Something is wrong with the pad_batch function')
 
 
-def decode_mpeg(v_path, batch_size=1, stride=1, start_idx=0, end_idx=-1,
+def decode_mpeg(v_path,*,  batch_size=1, stride=1, start_idx=0, end_idx=-1,
                 out_frame_ext='.jpg', out_frame_dir=''):
     """
     INPUTS
