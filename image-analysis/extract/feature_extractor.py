@@ -99,7 +99,7 @@ def extract_features(batch_list, op_list):
             frame_ops.append(op)
         else:
             raise ValueError("at least one op is neither \
-                             a batch_op or frame_op")
+                             a batch_op nor a frame_op")
     frame_dictionaries = []
     count = 0
     for batch in batch_list:
