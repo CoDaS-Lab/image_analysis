@@ -1,21 +1,19 @@
-import skvideo.io
-import skimage.io
-import sys
-import os
+import sys, os
+# to find modules
+sys.path.append(os.getcwd() + "/../")
+
 import numpy as np
+import image_analysis as codas
 
-sys.path.append(os.getcwd())
+# install matplotlib if you want to display!
+from matplotlib import pyplot as plt
 
-from image_analysis import *
 
-video = video_dec.decode_mpeg(os.getcwd() + '/demo/city.mp4', end_idx=100)
-grayFeat = features.RGBToGray()
-grayscale_frames = feature_extractor.gen_frame_features(video, [grayFeat])
+video = codas.video_dec.decode_mpeg(os.getcwd() + '/city.mp4', end_idx=2)
+gray_feat = codas.features.RGBToGray()
+grayscale_frames = codas.feature_extractor.gen_frame_features(video, [gray_feat])
 
-out = []
-for i in range(len(grayscale_frames)):
-    out.append(grayscale_frames[i]['input'][grayFeat.key_name])
-
-out = np.array(out)
-print(out.shape)
-skvideo.io.vwrite('demo/out.mp4', out)
+frame = grayscale_frames[0]
+# display a gray frame to make sure it worked
+codas.skimage.io.imshow(frame["input"][gray_feat.key_name])
+plt.show()
