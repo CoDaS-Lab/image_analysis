@@ -1,9 +1,7 @@
 import unittest
 import math
 import warnings
-
 import skvideo.io
-
 from decode import video_decoder as vd
 
 

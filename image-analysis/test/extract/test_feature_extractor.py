@@ -1,6 +1,4 @@
-
 import unittest
-
 import skvideo.io
 
 from decode import video_decoder as vd

@@ -1,4 +1,5 @@
-import skvideo, skimage
+import skvideo
+import skimage
 
 from decode import video_decoder as video_dec
 from extract import feature_extractor
