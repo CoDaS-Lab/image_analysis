@@ -1,4 +1,5 @@
-import unittest, warnings,
+import unittest, warnings
+import skvideo.io
 from decode import video_decoder as vd
 
 
@@ -18,7 +19,8 @@ class TestVideoDecoder(unittest.TestCase):
         self.assertEqual(len(video), 1)  # only one frame in batch
         self.assertEqual(frame['input']['frame'].shape[0], self.frames_height)
         self.assertEqual(frame['input']['frame'].shape[1], self.frames_width)
-        self.assertEqual(frame['input']['frame'].shape[2], self.frames_channels)
+        self.assertEqual(frame['input']['frame'].shape[2],
+                         self.frames_channels)
 
     def test_decode_mpeg(self):
         # Ignore weird resource warnings for now
