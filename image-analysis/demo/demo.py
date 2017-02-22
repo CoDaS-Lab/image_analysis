@@ -1,17 +1,49 @@
 import os, sys
 # to find modules
 sys.path.append(os.getcwd() + "/../")
-
 import image_analysis as codas
-import numpy as np
 import skimage.io
 from matplotlib import pyplot as plt
-from sklearn.pipeline import Pipeline
 
-""" Steps to create a basic pipeline """
+# Meeting Notes
+# Before presenting demo, review the 2 specified data structures
+# Make everyone cd into directory containing this demo.py file
+# Make everyone open this demo.py file in his/her/their favorite editor
+# Make everyone run each of the commands below in terminal
+
+batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4')
+
+print('Batch_list contains {0} batches!'.format(len(batch_list)))
+
+Grayscale = codas.features.RGBToGray()
+Batch_length = codas.features.BatchOP()
+
+data_structure = codas.fe.extract_features(batch_list,[Grayscale, Batch_length])
+
+# Now, let's access  some of the features extracted from frames
+skimage.io.imshow(data_structure[0]['input']['frame'])
+plt.show()
+skimage.io.imshow(data_structure[0]['input']['Grayscale'])
+plt.show()
+
+
+for key, thing in data_structure[0]['input'].items():
+    print(key)
+
+
+
+
+
+
+
+
+"""
+import numpy as np
+from sklearn.pipeline import Pipeline
+ Steps to create a basic pipeline
 
 # Step 1: load 9 frames
-video = codas.video_dec.decode_mpeg(os.getcwd() + '/city.mp4', end_idx=9)
+video = codas.vd.decode_mpeg(os.getcwd() + '/city.mp4', end_idx=9)
 
 # Step 2: create a pipeline object with defined steps already
 # pipeline with a single step to extract grayscale from images
@@ -35,3 +67,5 @@ codas.skimage.io.imshow(frame['input']['grayscale'])
 plt.show()
 
 # TODO: create a demo that uses the fit method
+
+"""
