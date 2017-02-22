@@ -109,6 +109,4 @@ def decode_mpeg(v_path,*,  batch_size=1, stride=1, start_idx=0, end_idx=-1,
                 batch.append(frame)
             elif len(batch) < batch_size:
                 batch.append(frame)
-        if count < 20:
-            imsave("frame" + str(count) + ".jpg", frame)
         count += 1
