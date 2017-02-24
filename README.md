@@ -7,6 +7,7 @@
 * sk-video >=1.17
 * scikit-image >=0.12.0
 * python 3.5
+* wget
 
 ### External Dependencies
 * ffmpeg >=3.2.2 or libav (10 or 11)
