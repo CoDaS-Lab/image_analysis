@@ -28,6 +28,10 @@ change directory to directory of test folder:
 ```
 cd /path/to/directory/image-analysis/image-analysis
 ```
+Download testing files:  
+```
+python test_setup.py
+```
 Run unittest discover
 ```
 python -m unittest discover
