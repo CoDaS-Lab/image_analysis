@@ -9,11 +9,11 @@ class Feature:
     user defined subclasses should set (1) EITHER self.batch_op OR
     self.frame_op to True, (2) set a key_name and (3) implement extract()
     """
-    def __init__(self, key_name):
-        self.batch_op = False
-        self.frame_op = False
+    def __init__(self, key_name, batch_op, frame_op):
+        self.batch_op = batch_op
+        self.frame_op = frame_op
         self.key_name = key_name
-        raise NotImplementedError
+        # raise NotImplementedError
 
     def is_batch_op(self):
         return self.batch_op
@@ -21,16 +21,14 @@ class Feature:
     def is_frame_op(self):
         return self.frame_op
 
-    def extract(self, *inputs_for_feature_extraction):
+    def extract(self, **inputs_for_feature_extraction):
         raise NotImplementedError
 
 
 class RGBToGray(Feature):
     # requires skimage.color
     def __init__(self):
-        self.batch_op = False
-        self.frame_op = True
-        self.key_name = 'Grayscale'
+        Feature.__init__(self, 'Grayscale', False, True)
 
     def extract(self, RGB_frame):
         return skimage.color.rgb2gray(RGB_frame)
@@ -38,9 +36,7 @@ class RGBToGray(Feature):
 
 class BatchOP(Feature):
     def __init__(self):
-        self.batch_op = True
-        self.frame_op = False
-        self.key_name = 'batch_length'
+        Feature.__init__(self, 'batch_length', True, False)
 
     def extract(self, batch):
         return len(batch)
