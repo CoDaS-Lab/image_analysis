@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 import wget
 
 # Meeting Notes
-# Before presenting demo, re-+view the 2 specified data structures
+# Before presenting demo, review the 2 specified data structures
 # Make everyone cd into directory containing this demo.py file
 # Make everyone open this demo.py file in his/her/their favorite editor
 # Make everyone run each of the commands below in terminal
@@ -19,7 +19,7 @@ for x in os.listdir(os.getcwd() + '/../test/test_data/'):
         already_have = True
 
 # Download test_video.mp4 into directory if it doesn't already exist
-if already_have == False:
+if already_have is False:
     wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
 
 # Decode video to build dataset
