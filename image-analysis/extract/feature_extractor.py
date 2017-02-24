@@ -113,18 +113,24 @@ def extract_features(batch_list, op_list):
     batch_ops = []
     frame_ops = []
     for op in op_list:
-        if op.is_batch_op() is True:
-            batch_ops.append(op)
-        elif op.is_frame_op() is True:
-            frame_ops.append(op)
+        feature = op()
+        if feature.is_batch_op() is True:
+            batch_ops.append(feature)
+        elif feature.is_frame_op() is True:
+            frame_ops.append(feature)
         else:
-            raise ValueError('{0} is not a valid feature'.format(op))
+            raise ValueError('{0} is not a valid feature'.format(feature))
 
     frame_dictionaries = []
     count = 0
     for batch in batch_list:
         batch_dictionary = gen_batch_features([batch], batch_ops)
         frame_dictionaries += (batch_to_frame_dictionaries(batch_dictionary))
+        if count == 0:
+            a = batch_to_frame_dictionaries(batch_dictionary)
+            print(a[0])
+            for key, value in a[0].items():
+                print(key)
         if len(frame_ops) != 0:
             for frame in batch:
                 frame_dictionary = gen_frame_features([[frame]], frame_ops)
