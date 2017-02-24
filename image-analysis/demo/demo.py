@@ -4,6 +4,7 @@ sys.path.append(os.getcwd() + "/../")
 import image_analysis as codas
 import skimage.io
 from matplotlib import pyplot as plt
+import wget
 
 # Meeting Notes
 # Before presenting demo, re-+view the 2 specified data structures
@@ -12,6 +13,8 @@ from matplotlib import pyplot as plt
 # Make everyone run each of the commands below in terminal
 
 # load 10 images so it runs fast
+vid_path = os.getcwd() + '/../test/test_data'
+wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
 batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
                                   end_idx=10)
 
