@@ -14,17 +14,19 @@ import wget
 
 # load 10 images so it runs fast
 vid_path = os.getcwd() + '/../test/test_data'
-wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
-batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
-                                  end_idx=10)
+already_have = False
+for x in os.listdir(os.getcwd() + '/../test/test_data/'):
+    if x == 'test_video.mp4':
+        already_have = True
+if already_have == False:
+    wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
+
+batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4', end_idx=10)
 
 print('Batch_list contains {0} batches!'.format(len(batch_list)))
 
-Grayscale = codas.features.RGBToGray()
-Batch_length = codas.features.BatchOP()
-
 data_structure = codas.fe.extract_features(batch_list,
-                                           [Grayscale, Batch_length])
+                                           [codas.RGBToGray, codas.BatchOP])
 
 imgs = [data_structure[0]['input']['frame'],
         data_structure[0]['input']['Grayscale']]
