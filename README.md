@@ -30,7 +30,7 @@ cd /path/to/directory/image-analysis/image-analysis
 ```
 Download testing files:  
 ```
-python test_setup.py
+wget -P test/test_data/ "https://s3.amazonaws.com/testcodas/test_video.mp4
 ```
 Run unittest discover
 ```

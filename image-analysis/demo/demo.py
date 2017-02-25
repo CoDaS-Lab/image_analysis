@@ -12,14 +12,10 @@ import wget
 # Make everyone run each of the commands below in terminal
 
 # Figure out if you already have test_video.mp4 in the required directory
-vid_path = os.getcwd() + '/../test/test_data'
-already_have = False
-for x in os.listdir(os.getcwd() + '/../test/test_data/'):
-    if x == 'test_video.mp4':
-        already_have = True
+vid_path = os.getcwd() + '/../test/test_data/'
 
 # Download test_video.mp4 into directory if it doesn't already exist
-if already_have is False:
+if not os.path.exists(vid_path + 'test_video.mp4'):
     wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
 
 # Decode video to build dataset

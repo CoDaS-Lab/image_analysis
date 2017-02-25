@@ -128,9 +128,6 @@ def extract_features(batch_list, op_list):
         frame_dictionaries += (batch_to_frame_dictionaries(batch_dictionary))
         if count == 0:
             a = batch_to_frame_dictionaries(batch_dictionary)
-            print(a[0])
-            for key, value in a[0].items():
-                print(key)
         if len(frame_ops) != 0:
             for frame in batch:
                 frame_dictionary = gen_frame_features([[frame]], frame_ops)
