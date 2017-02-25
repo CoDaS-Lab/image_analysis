@@ -23,7 +23,8 @@ if already_have is False:
     wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
 
 # Decode video to build dataset
-batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4', batch_size=2,end_idx=10)
+batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
+                                  batch_size=2, end_idx=10)
 
 print('Batch_list contains {0} batches!'.format(len(batch_list)))
 
