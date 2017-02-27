@@ -82,7 +82,6 @@ class TestVideoDecoder(unittest.TestCase):
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
         test_mpeg_frame(prompt, vd_frame=batch[0],
                         frame=self.correct_data[0])
-        
         batch = batch_list[-1]
         prompt = 'Default settings test: check last frame'
         test_mpeg_dimensions(prompt, nframes=numframes,  vd_batch=batch)
@@ -105,7 +104,6 @@ class TestVideoDecoder(unittest.TestCase):
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
         test_mpeg_frame(prompt, vd_frame=batch[0],
                         frame = self.correct_data[start])
-
         batch = batch_list[-1]
         prompt = 'end > start test: check last frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
@@ -150,7 +148,6 @@ class TestVideoDecoder(unittest.TestCase):
         prompt = 'batch_size = stride test: check first batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=self.correct_data[start + numframes - 1])
-
         batch = batch_list[-1]
         prompt = 'batch_size = stride test: check last batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
@@ -160,7 +157,7 @@ class TestVideoDecoder(unittest.TestCase):
         prompt = 'batch_size = stride test: check last batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=np.zeros(self.correct_data[0].shape))
-        # Test batch_size = stride, with padding off.
+        # TODO:  Test batch_size = stride, with padding off.
 
         # Test batch_size > stride, with padding on.
         start = 0
@@ -184,7 +181,6 @@ class TestVideoDecoder(unittest.TestCase):
         prompt = 'batch_size > stride test: check first batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=self.correct_data[start + numframes - 1])
-
         batch = batch_list[1]
         prompt = 'batch_size > stride test: check second batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
@@ -194,7 +190,6 @@ class TestVideoDecoder(unittest.TestCase):
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=self.correct_data[start + b_stride +
                                                   numframes - 1])
-
         batch = batch_list[-1]
         prompt = 'batch_size>stride test: check last batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
@@ -208,75 +203,49 @@ class TestVideoDecoder(unittest.TestCase):
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=np.zeros(self.correct_data[0].shape))
 
-        # Test batch_size > stride, with padding off.
+        # TODO: Test batch_size > stride, with padding off.
 
         # Test batch_size < stride, with padding on.
+        start = 0
+        end = 100
+        numframes = 10
+        b_stride = 15
+        numbatches = ((end - start + 1) // b_stride) + 
+                        (((end - start + 1) % b_stride) > 0)
+        batch_list = vd.decode_mpeg(self.vid_path, 
+                                    start_idx=start, end_idx=end,
+                                    batch_size = numframes, stride = b_stride)
+        
+        test_mpeg_nbatches('batch_size > stride test:', nbatches=numbatches,
+                           vd_nbatches=len(batch_list))
 
-        # Test batch_size < stride, with padding off.
-####################
-        batch_size = stride = 13
-        expected_batches = (self.nframes // stride)
-        video_batches = vd.decode_mpeg(self.vid_path,
-                                       batch_size=batch_size, stride=stride)
-        self.assertEqual(len(video_batches), expected_batches,
-                         'len(video_batches) was not {0}'.format(
-                             expected_batches))
-        self.assertEqual(video_batches[0].shape[0], batch_size,
-                         'batch did not contain {0} frames'.format(batch_size))
+        batch = batch_list[0]
+        prompt = 'batch_size < stride test: check first batch, first frame'
+        test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
+        test_mpeg_frame(prompt, vd_frame=batch[0], 
+                        frame=self.correct_data[start])
+        prompt = 'batch_size < stride test: check first batch, last frame'
+        test_mpeg_frame(prompt, vd_frame=batch[-1],
+                        frame=self.correct_data[start + numframes - 1])
+        batch = batch_list[-1]
+        prompt = 'batch_size < stride test: check last batch, first frame'
+        test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
+        test_mpeg_frame(prompt, vd_frame=batch[0], 
+                        frame=self.correct_data[start +
+                            b_stride * ((end - start + 1) // b_stride)])
+        prompt = 'batch_size < stride test: check last batch, ' +
+                    'last \"real frame\"'
+        test_mpeg_frame(prompt, vd_frame=batch[
+                            (end - start + 1) % b_stride - 1], 
+                        frame=self.correct_data[-1])
+        prompt = 'batch_size < stride test: check last batch, last frame'
+        test_mpeg_frame(prompt, vd_frame=batch[-1],
+                        frame=np.zeros(self.correct_data[0].shape))
 
-        # Load video with batch_size > stride with padding
-        batch_size = 20
-        stride = 10
-        expected_batches = 10
-        video_batches = vd.decode_mpeg(self.vid_path, batch_size=batch_size,
-                                       stride=stride, end_idx=101)
-        self.assertEqual(len(video_batches), expected_batches,
-                         'length of video_batches is not {0}'.format(
-                             expected_batches))
-
-        last_frame = video_batches[-1][-1]['input']['frame']
-        self.assertEqual(last_frame[-1, -1, -1], 0,
-                         'last element in last batch was not 0. not padded \
-                           properly')
-
-        # load video with batch_size > stride without padding
-        # TODO if the batch size is always greater than the stride there will
-        # always be padding
-        # expected_batches = 99 // stride
-        # video_batches = vd.decode_mpeg(self.vid_path,
-        #                                batch_size=batch_size, stride=stride,
-        #                                end_idx=99)
-        # self.assertEqual(len(video_batches), expected_batches,
-        #                  'length of batch_list is not 111')
-
-        # load video with stride > batch_size with padding
-        batch_size = 10
-        stride = 11
-        expected_batches = 15
-        video_batches = vd.decode_mpeg(self.vid_path, batch_size=batch_size,
-                                       stride=stride)
-        self.assertEqual(len(video_batches), expected_batches,
-                         'total number of batches was not equal to' +
-                          '{0}'.format(expected_batches))
-
-        last_frame = video_batches[-1][-1]['input']['frame']
-        self.assertEqual(last_frame[-1, -1, -1], 0,
-                         'last element of last batch was not 0; \
-                          not padded properly')
-
-        # Load video with stride > batch_size without padding.
-        batch_size = 10
-        stride = 20
-        expected_batches = 5
-        video_batches = vd.decode_mpeg(self.vid_path,
-                                       batch_size=batch_size,
-                                       stride=stride, end_idx=99)
-        self.assertEqual(len(video_batches), expected_batches,
-                         'total number of batches was not equal to {0}'.format(
-                             expected_batches))
-
-        del video_batches
-
+        # TODO: Test batch_size < stride, with padding off.
+        
+        del batch_list
+        del batch
 
 if __name__ == '__main__':
     unittest.main()
