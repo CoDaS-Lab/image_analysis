@@ -28,11 +28,7 @@ class TestVideoDecoder(unittest.TestCase):
         warnings.simplefilter('ignore')
 
         # Verifies dimensions: nframes x height x width, nchannels.
-        def test_mpeg_dimensions(self, message='', *,
-                                 nframes=self.nframes,
-                                 height=self.height,
-                                 width=self.width,
-                                 nchannels=self.nchannels):
+        def test_mpeg_dimensions(self, message='', *, vd+batch=None):
             if vd_batch is None:
                 vd_nframes = self.nframes
                 vd_height = self.height
