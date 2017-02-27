@@ -4,8 +4,8 @@ import numpy as np
 from skimage.io import *
 
 
-def pad_batch(batch, batch_size, frame):
-    """
+def pad_batch(batch, batch_size, frame,*, pad=True):
+    """ Take in a batch, pad it with 0s if necessary and return appended batch
     INPUTS
     frame:      a numpy array extracted from an MPEG
                 (length x width x channel)
@@ -13,11 +13,8 @@ def pad_batch(batch, batch_size, frame):
     batch_size: number of frames per batch (integer >= 1)
 
     OUTPUT
-    returns padded batch: list of batch_size frames, each an ndarray:
-                            (L x W x C)
-
-    DESCRIPTION: takes in a batch, pads it with 0s if necessary, and returns
-                    appended batch
+    batch:      list of a batch; batch has batch_size frames, each an ndarray:
+                    (L x W x C)
     """
 
     if len(batch) > batch_size:
@@ -27,16 +24,17 @@ def pad_batch(batch, batch_size, frame):
     elif len(batch) == batch_size:
         return batch
     elif len(batch) < batch_size:
-        pad_list = [np.zeros(frame.shape)] * (batch_size - len(batch))
-        batch += pad_list
+        if pad is True:
+            pad_list = [np.zeros(frame.shape)] * (batch_size - len(batch))
+            batch += pad_list
         return batch
     else:
         raise ValueError('Something is wrong with the pad_batch function')
 
 
 def decode_mpeg(v_path,*,  batch_size=1, stride=1, start_idx=0, end_idx=-1,
-                out_frame_ext='.jpg', out_frame_dir=''):
-    """
+                pad=True):
+    """ Creates a list of batches of frames from an MPEG file.
     INPUTS
     v_path:     Path to MPEG video (i.e. include the video's name & extension)
     batch_size: Number of frames in each batch
@@ -44,16 +42,13 @@ def decode_mpeg(v_path,*,  batch_size=1, stride=1, start_idx=0, end_idx=-1,
                 frame (integer > 1)
     start_idx:  Index of first frame for first batch (integer >= 0)
     end_idx:    Index of last frame in the range of interest (integer >= 0)
-    out_frame_ext: Extension you want to save the frames with (e.g. jpg)
-    out_frame_dir: Directory you want to save extracted frames to
+    pad:        Boolean value indicating whether the last batch should be padded                    if it is not full after decoding the mpeg
 
     OUTPUTS
     RETURNS: LIST of NUMPY batches of frames (length x width x channels), and
                 if the last batch is not full, it is padded with frames of:
                     np.zeros((frame.shape))
     #TODO create optional saving, incase someone wants to visualize the frames
-
-    Description: creates a list of batches of frames from an MPEG file
     """
 
     if start_idx < 0 or end_idx < -1:
@@ -85,7 +80,7 @@ def decode_mpeg(v_path,*,  batch_size=1, stride=1, start_idx=0, end_idx=-1,
             if count >= idx and count < (idx + batch_size):
                 batch.append(frame)
                 batch_list.append(np.array(
-                    pad_batch(batch, batch_size, frame)))
+                    pad_batch(batch, batch_size, frame, pad=pad)))
             if stride > batch_size:
                 return batch_list[1:]
             elif batch_size >= stride:
