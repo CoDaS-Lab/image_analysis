@@ -1,5 +1,7 @@
 import numpy as np
-import pyfftw
+import pycuda.autoinit
+import pycuda.gpuarray as gpuarray
+import skcuda.fft as cuda_fft
 import math
 from feature import Feature
 
@@ -31,7 +33,7 @@ class FFT(Feature):
         if (target_size % 2) != 0:
             raise ValueError('Target_size should be even!')
 
-        x = y = np.linspace(0, target_size / 2, target_size / 2 + 1)
+        x = y = np.arange(0, target_size / 2 + 1).astype(float32)
         u, v = np.meshgrid(x, y)
 
         # derive polar coordinates: (theta, radius), where theta is in degrees
@@ -130,7 +132,7 @@ class FFT(Feature):
         OUTPUT:
             returns the amplitude
         """
-        x = y = np.linspace(1, sz, sz)
+        x = y = np.arange(1, sz).astype(float32)
         u, v = np.meshgrid(x, y)
         u -= sz / 2
         v -= sz / 2
@@ -175,7 +177,10 @@ class FFT(Feature):
         OUTPUT:
             Return the transformed and processed frame.
         """
-        pass
+        frame_gpu = gpuarray.to_gpu(input_frame)
+        frame_fft = gpuarray.empty((input_frame.shape[0], input_frame.shape[1]\
+                                    // (2 + 1)), np.complex64)
+        plan_forward = cuda_fft.Plan(frame_gpu, np.float32, np.complex64)
 
     def extract(serlf, input_frame, filter_mask, gpu=False):
         if gpu:
