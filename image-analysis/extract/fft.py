@@ -1,6 +1,7 @@
 import numpy as np
 import pycuda.autoinit
 import pycuda.gpuarray as gpuarray
+import pycuda.cumath as cumath
 import skcuda.fft as cuda_fft
 import math
 from feature import Feature
@@ -10,8 +11,8 @@ class FFT(Feature):
     def __init__(self):
         Feature.__init__(self, 'FastFourierTransform', frame_op=True)
 
-    def filter(center_orientation, orientation_width, high_cutoff, low_cutoff,
-               target_size, falloff=''):
+    def filter_func(center_orientation, orientation_width, high_cutoff,
+                    low_cutoff, target_size, falloff=''):
 
         """
         DESCRIPTION:
@@ -120,25 +121,25 @@ class FFT(Feature):
 
         return(sffilter * anfilter)
 
-    def noise_amp(sz):
+    def noise_amp(size):
         """
         DESCRIPTION:
-            Creates a sz * sz matrix of randomly generated noise with amplitude
+            Creates a size x size matrix of randomly generated noise with amplitude values with
             1/f slope
 
         INPUT:
-            sz: size of matrix
+            size: size of matrix
 
         OUTPUT:
-            returns the amplitude
+            returns the amplitudes with noise added
         """
-        x = y = np.arange(1, sz).astype(float32)
+        x = y = np.arange(1, size).astype(float32)
         u, v = np.meshgrid(x, y)
-        u -= sz / 2
-        v -= sz / 2
+        u -= size / 2
+        v -= size / 2
 
-        amplitude = np.flipud(np.fliplr(np.fft.fftshift(((u**2 + v**2) ** 0.5) /
-                                        sz * (2)**.5)))
+        amplitude = np.flipud(np.fliplr(np.fft.fftshift(
+                                        (((u**2 + v**2) ** 0.5) / size) * (2)**.5)))
         amplitude[0, 0] = 1
         amplitude = 1 / amplitude
         amplitude[0, 0] = 0
@@ -159,10 +160,16 @@ class FFT(Feature):
         OUTPUT:
             Return the transformed and processed frame.
         """
-        pass
+        frame_gpu = gpuarray.to_gpu(input_frame)
+        frame_fft = gpuarray.empty((input_frame.shape[0], input_frame.shape[1]\
+                                    // (2 + 1)), np.complex64)
+        plan_forward = cuda_fft.Plan(frame_gpu, np.float32, np.complex64)
+        cuda_fft.fft(frame_gpu, frame_fft, plan_forward)
+
+        return frame_fft.get()
 
     # TODO: implement using pyfftw
-    def fft_cpu(self, input_frame, filter_mask):
+    def fft_cpu(self, input_frame, mask):
         """
         DESCRIPTION:
             Transforms a matrix using fft using cpu (parallelized), multiplies
@@ -177,14 +184,52 @@ class FFT(Feature):
         OUTPUT:
             Return the transformed and processed frame.
         """
-        frame_gpu = gpuarray.to_gpu(input_frame)
-        frame_fft = gpuarray.empty((input_frame.shape[0], input_frame.shape[1]\
-                                    // (2 + 1)), np.complex64)
-        plan_forward = cuda_fft.Plan(frame_gpu, np.float32, np.complex64)
+        if input_frame is None:
+            return ValueError('Frame is invalid: {0}'.format(input_frame))
 
-    def extract(serlf, input_frame, filter_mask, gpu=False):
-        if gpu:
-            return self.fft_gpu(input_frame, filter_mask)
+        if mask not in [1, 2]:
+            return ValueError('Invalid mask: {0}'.format(mask))
+
+    def extract(serlf, input_frame, mask, gpu=False):
+        if input_frame is None:
+            return ValueError('Frame is invalid: {0}'.format(input_frame))
+
+        if mask not in [1, 2]:
+            return ValueError('Invalid mask: {0}'.format(mask))
+
+        frame_fft = fft_gpu(input_frame)
+        frame_gpu = gpuarray.to_gpu(input_frame)
+        plan_inverse = cuda_fft.Plan(frame_gpu.shape, np.complex64, np.float32)
+        phase = np.arctan2(frame_fft.imag, frame_fft.real)
+        phase_gpu = gpuarray.to_gpu(phase)
+        out = gpuarray.empty_like(phase_gpu)
+        size = frame_fft.shape
+
+        if mask == 1:
+            amp = noise_amp(size[1])
         else:
-            return self.fft_cpu(input_frame, filter_mask)
+            amp = math.abs(frame_fft) * (1 - filter_func(90, 20, size[1] / 2,
+                                         .1, size[1], 'triangle'))
+
+        cuda_fft.ifft(
+            cumath.exp(phase_gpu * 1j) * amp,
+            out, plan_inverse, True
+        )
+
+        # g_complex() ???????
+        # alt_img = amp * g_complex()
+        # iframe = gpuarray.to_gpu(alt_img)
+        # iframe_gpu = gpuarray.empty_like(iframe)
+        # cuda_fft.ifft(iframe, iframe_gpu, plan_inverse, True)
+
+        # normalize image
+        # outframe = out.get().real
+        # outframe -= outframe.min()
+        # outframe /= outframe.max()
+        # return outframe
+
+        return None
+
+
+
 

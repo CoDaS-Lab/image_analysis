@@ -32,12 +32,3 @@ class BatchOP(Feature):
 
     def extract(self, batch):
         return len(batch)
-"""
-class FFT(Featur):
-    def __init__(self):
-        self.bath_op = True
-        self.frame_op = False
-        self.key_name = 'FFT'
-
-        def extract(self, RGB_frame):
-"""

@@ -8,11 +8,6 @@ from extract import features
 class TestFeatureExtractor(unittest.TestCase):
     def setUp(self):
         self.video_path = 'test/test_data/video.mp4'
-        metadata = skvideo.io.ffprobe(self.video_path)
-        self.total_frames = int(metadata['video']['@nb_frames'])
-        self.frames_width = int(metadata['video']['@width'])
-        self.frames_height = int(metadata['video']['@height'])
-        self.frames_channels = 3
 
     def test_gen_frame_features(self):
         # load 9 frames
