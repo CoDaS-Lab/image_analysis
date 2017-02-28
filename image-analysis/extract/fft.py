@@ -11,23 +11,27 @@ class FFT(Feature):
     def filter(center_orientation, orientation_width, high_cutoff, low_cutoff,
                target_size, falloff=''):
 
-        """ Creates a filter that can be multiplied by the amplitude spectrum of an
-        image to increase/decrease specific orientations/spatial frequencies.
+        """
+        DESCRIPTION:
+            Creates a filter that can be multiplied by the amplitude spectrum of an
+            image to increase/decrease specific orientations/spatial frequencies.
+
         INPUTS:
-        center_orientation: int for the center orientation (0-180).
-        orientation_width:  int for the orientation width of the filter.
-        high_cutoff:        int high spatial frequency cutoff.
-        low_cutoff:         int low spatial frequency cutoff.
-        target_size:        int total size.
-        falloff:            string 'triangle' or 'rectangle' shape of the filter
-                                falloff from the center.
-        OUTPUTS
-        filt: return the bowtie shaped filter.
+            center_orientation: int for the center orientation (0-180).
+            orientation_width: int for the orientation width of the filter.
+            high_cutoff: int high spatial frequency cutoff.
+            low_cutoff: int low spatial frequency cutoff.
+            target_size: int total size.
+            falloff: string 'triangle' or 'rectangle' shape of the filter
+                     falloff from the center.
+
+        OUTPUTS:
+            filt: return the bowtie shaped filter.
         """
         if (target_size % 2) != 0:
             raise ValueError('Target_size should be even!')
 
-        x = y = np.arange(0, target_size / 2 + 1).astype(float)
+        x = y = np.linspace(0, target_size / 2, target_size / 2 + 1)
         u, v = np.meshgrid(x, y)
 
         # derive polar coordinates: (theta, radius), where theta is in degrees
@@ -49,14 +53,14 @@ class FFT(Feature):
         # note: +1 is done for theta, but not for radii
         # note: transpose is done for theta, but not for radii
         theta = np.concatenate((flipped_theta, theta), axis=1)
-        flipped_theta = 180 + np.flipud(np.fliplr(theta[1:,:]))
+        flipped_theta = 180 + np.flipud(np.fliplr(theta[1:, :]))
         # might be able to optimize by transposing and then flipping
         # instead of flip and then flip
         theta = np.concatenate((flipped, theta), axis=0)
         del flipped_theta
 
         center_orientation_2 = 180 + center_orientation
-        # The 2D frequency spectrum is mirror symmetric, so orientations must be
+        # The 2D frequency spectrum is mirror symmetric, orientations must be
         # represented on both sides. All orientation functions below must be
         # repeated using both center_orientation's
 
@@ -114,37 +118,62 @@ class FFT(Feature):
 
         return(sffilter * anfilter)
 
+    def noise_amp(sz):
+        """
+        DESCRIPTION:
+            Creates a sz * sz matrix of randomly generated noise with amplitude
+            1/f slope
+
+        INPUT:
+            sz: size of matrix
+
+        OUTPUT:
+            returns the amplitude
+        """
+        x = y = np.linspace(1, sz, sz)
+        u, v = np.meshgrid(x, y)
+        u -= sz / 2
+        v -= sz / 2
+
+        amplitude = np.flipud(np.fliplr(np.fft.fftshift(((u**2 + v**2) ** 0.5) /
+                                        sz * (2)**.5)))
+        amplitude[0, 0] = 1
+        amplitude = 1 / amplitude
+        amplitude[0, 0] = 0
+        return amplitude
+
     # TODO: implement using scikit-cuda
     def fft_gpu(self, input_frame, filter_mask):
         """
+        DESCRIPTION:
+            Transforms a matrix using fft using gpu, multiplies the
+            result by a mask, and then transforms the matrix back using ifft.
+
         INPUT:
-        input_frame: numpy array of pixel values
-        filter_mask: int determining the type of filter to implement 1 = iso,
-        2 = horizontal decrement
+            input_frame: numpy array of pixel values
+            filter_mask: int determining the type of filter to implement 1=iso,
+            2 = horizontal decrement
 
         OUTPUT:
-        Return the transformed and processed frame.
-
-        DESCRIPTION:
-        Transforms a matrix using fft using gpu, multiplies the
-        result by a mask, and then transforms the matrix back using ifft.
+            Return the transformed and processed frame.
         """
         pass
 
     # TODO: implement using pyfftw
     def fft_cpu(self, input_frame, filter_mask):
         """
+        DESCRIPTION:
+            Transforms a matrix using fft using cpu (parallelized), multiplies
+            the result by a mask, and then transforms the matrix back using
+            ifft
+
         INPUT:
-        input_frame: numpy array of pixel values
-        filter_mask: int determining the type of filter to implement 1 = iso,
-        2 = horizontal decrement
+            input_frame: numpy array of pixel values
+            filter_mask: int determining the type of filter to implement 1=iso,
+            2 = horizontal decrement
 
         OUTPUT:
-        Return the transformed and processed frame.
-
-        DESCRIPTION:
-        Transforms a matrix using fft using cpu (parallelized), multiplies the
-        result by a mask, and then transforms the matrix back using ifft.
+            Return the transformed and processed frame.
         """
         pass
 
