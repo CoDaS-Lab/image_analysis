@@ -8,136 +8,111 @@ class FFT(Feature):
     def __init__(self):
         Feature.__init__(self, 'FastFourierTransform', frame_op=True)
 
-    def filter(self, center_orientation, width, high, low, sz, falloff):
-        """
+    def filter(center_orientation, orientation_width, high_cutoff, low_cutoff,
+               target_size, falloff=''):
+
+        """ Creates a filter that can be multiplied by the amplitude spectrum of an
+        image to increase/decrease specific orientations/spatial frequencies.
         INPUTS:
         center_orientation: int for the center orientation (0-180).
-        width: int for the orientation width of the filter.
-        high: int high spatial frequency cutoff.
-        low: int low spatial frequency cutoff.
-        sz: int total size.
-        falloff: 'triangle' or 'rectangle' shape of the filter falloff from 
-        the center.
-
-        OUTPUT:
-        the bowtie shaped filter.
-
-        DESCRIPTION:
-        Creates a filter that can be multiplied by the amplitude
-        spectrum of an image to increase/decrease specific orientations/spatial 
-        frequencies.
+        orientation_width:  int for the orientation width of the filter.
+        high_cutoff:        int high spatial frequency cutoff.
+        low_cutoff:         int low spatial frequency cutoff.
+        target_size:        int total size.
+        falloff:            string 'triangle' or 'rectangle' shape of the filter
+                                falloff from the center.
+        OUTPUTS
+        filt: return the bowtie shaped filter.
         """
+        if (target_size % 2) != 0:
+            raise ValueError('Target_size should be even!')
 
-        nx = sz
-        ny = sz
+        x = y = np.arange(0, target_size / 2 + 1).astype(float)
+        u, v = np.meshgrid(x, y)
 
-        x_intervals = np.linspace(0, nx // 2, (nx // 2) + 1)
-        y_intervals = np.linspace(0, ny // 2, (ny // 2) + 1)
+        # derive polar coordinates: (theta, radius), where theta is in degrees
+        theta = np.arctan2(v, u) * 180 / np.pi
+        radii = (u**2 + v**2) ** 0.5
+        del u, v
 
-        xv, yv = np.meshgrid(x_intervals, y_intervals)
-        theta = np.arctan2(yv, xv) * (180 / math.pi)  # in degrees
-        radius = np.sqrt(xv**2 + yv**2)
+        # using radii for one quadrant, build the other 3 quadrants
+        flipped_radii = np.fliplr(radii[:, 1:target_size / 2])
+        radii = np.concatenate((radii, flipped_lr_radii), axis=1)
+        flipped_radii = np.flipud(radii[1:target_size / 2, :])
+        radii = np.concatenate((radii, flipped_radii), axis=0)
+        radii = np.fft.fftshift(radii)  # come back and GPU optimize FFT
+        # note: the right-most column and bottom-most row were sliced off
+        del flipped_radii
 
-        del xv
-        del yv
-
-        flipped_radius = np.fliplr(radius[0:, 1:(ny // 2)])
-        radius = np.concatenate((radius, flipped_radius), axis=1)
-        flipped_radius = np.flipud(radius[1:(nx // 2), 0:])
-        radius = np.concatenate((radius, flipped_radius), axis=0)
-        radius = pyfftw.interfaces.numpy_fft.fftshift(radius)
-        radius1 = radius
-
-        del flipped_radius
-
-        flipped_theta = np.fliplr((theta[1:(nx // 2) + 1, 0:]).T) + 90
+        # using theta for one quadrant, build the other 3 quadrants
+        flipped_theta = 90 + np.fliplr((theta[1:target_size / 2 + 1, :].T))
+        # note: +1 is done for theta, but not for radii
+        # note: transpose is done for theta, but not for radii
         theta = np.concatenate((flipped_theta, theta), axis=1)
-        flipped_theta = np.flipud(np.fliplr(theta[1:, 0:])) + 180
-        theta = np.concatenate((flipped_theta, theta), axis=0)
-        theta1 = theta
-
+        flipped_theta = 180 + np.flipud(np.fliplr(theta[1:,:]))
+        # might be able to optimize by transposing and then flipping
+        # instead of flip and then flip
+        theta = np.concatenate((flipped, theta), axis=0)
         del flipped_theta
 
-        # parameters
-        centor1 = center_orientation
-        centor2 = cantor1 + 180
-        wid = width
-        half_wid = np.divide(wid, 2.0)
-        hi_sf = high
-        lo_sf = low
-        rectangle = 0
-        triangle = 0
-        exponent = 4
+        center_orientation_2 = 180 + center_orientation
+        # The 2D frequency spectrum is mirror symmetric, so orientations must be
+        # represented on both sides. All orientation functions below must be
+        # repeated using both center_orientation's
+
+        # clockwise orientation cutoff, from center_orientation
+        cwb1 = center_orientation + width / 2
+        # counterclockwise orientation cutoff, from center_orientation
+        ccwb1 = center_orientation - width / 2
+        # clockwise orientation cutoff, from center_orientation_2
+        cwb2 = center_orientation_2 + width / 2
+        # counterclockwise orientation cutoff, from center_orientation_2
+        ccwb2 = center_orientation_2 - width / 2
+
+        if ccwb1 < 0:
+            theta = np.fliplr(theta).T
+            center_orientation += 90
+            center_orientation_2 += 90
+            cwb1 += 90
+            ccwb1 += 90
+            cwb2 += 90
+            ccwb2 += 90
+
+        # theta = theta[0:target_size,0:target_size]; only need this to check 
+        # dim's
+        # sffilter = np.zeros(radii.shape)
+        # anfilter = np.zeros(theta.shape)
+
+        sffilter = (low_cutoff <= radii) & (radii <= high_cutoff)
 
         if falloff == 'rectangle':
-            rectangle = 1
-        elif falloff == 'triangle:
-            triangle = 1
-
-        centor_width1 = centor1 + half_wid
-        c_centor_width1 = centor1 - half_wid
-        centor_width2 = centor2 + half_wid
-        c_centor_width2 = centor2 - half_wid
-
-        if c_centor_width1 < 0:
-            theta = np.fliplr(theta).T
-            centor1 += 90
-            centor2 += 90
-            centor_width1 += 90
-            c_centor_width1 += 90
-            centor_width2 += 90
-            c_centor_width2 += 90
-
-        theta1 = theta1[0:sz, 0:sz]
-        # spatial frequency filter
-        sf_filter = np.zeros(raidus1.shape)
-        # angle filter
-        an_filter = np.zeros(theta1.shape)
-
-        for index, val in np.ndenumerate(radius1):
-            if lo_sf <= val <= hi_sf:
-                sf_filter[index] = 1
-            else:
-                sf_filter[index] = 0
-
-        if rectangle == 1:
-            for index, val in np.ndenumerate(theta1):
-                if c_centor_width1 <= val <= centor_width1 or c_centor_width2 \
-                        <= val <= centor_width2:
-                        an_filter[index] = 1
+            anfilter = ((ccwb1 <= theta) & (theta <= cwb1)) | (
+                (ccwb2 <= theta) & (theta <= csb2))
+            # filt = sffiler*anfilter
+        elif falloff == 'triangle':
+            for idx, val in np.ndenumerate(theta):
+                if ccwb1 <= val <= cwb1 and val <= center_orientation:
+                    anfilter[idx] = (val - center_orientation + width / 2) \
+                        * 2 / width
+                elif ccwb1 <= val <= cwb1 and val > center_orientation:
+                    anfilter[idx] = (-val + center_orientation_2 + width / 2) \
+                        * 2 / width
+                elif ccwb2 <= val <= cwb2 and val <= center_orientation_2:
+                    anfilter[idx] = (val - center_orientation_2 + width / 2) \
+                        * 2 / width
+                elif ccwb2 <= val <= cwb2 and val > center_orientation_2:
+                    anfilter[idx] = (-val + center_orientation_2 + width / 2) \
+                        * 2 / width
                 else:
-                    an_filter[index] = 0
-            filt = sf_filter * an_filter
-        elif triangle == 1:
-            for index, val in np.ndenumerate(theta1):
-                if c_centor_width1 <= val <= centor_width1 and val <= centor1:
-                    an_filter[index] = np.divide(val - centor1 + half_wid,
-                                                 half_wid)
-                elif c_centor_width1 <= val <= centor_width1 and val > centor1:
-                    an_filter[index] = np.divide(-val + centor2 + half_wid,
-                                                 half_wid)
-                elif c_centor_width2 <= val <= centor_width2 and val <= centor2:
-                    an_filter[index] = np.divide(val - centor2 + half_wid,
-                                                 half_wid)
-                elif c_centor_width2 <= val <= centor_width2 and val > centor2:
-                    an_filter[index] = np.divide(-val + centor2 + half_wid,
-                                                 half_wid)
-                else:
-                    an_filter[index] = 0
+                    anfilter[idx] = 0
         else:
-            ang_filter1 = np.zeros(theta1.shape)
-            ang_filter2 = np.zeros(theta1.shape)
+            angfilter1 = np.exp(-((theta - center_orientation) / (.5 * width))\
+                                ** 4)
+            angfilter1 = np.exp(-((theta - center_orientation_2) / (.5 * width))\
+                                ** 4)
+            anfilter = angfilter1 + angfilter2
 
-            for index, val in np.ndenumerate(theta1):
-                ang_filter1[index] = math.e**(-(np.divide(val - centor1,
-                                              .5 * wid)) ** exponent)
-                ang_filter2[index] = math.e**(-(np.divide(val - centor2,
-                                              .5 * wid)) ** exponent)
-
-            an_filter = ang_filter1 + ang_filter2
-        filt = sf_filter * an_filter
-
-        return filt
+        return(sffilter * anfilter)
 
     # TODO: implement using scikit-cuda
     def fft_gpu(self, input_frame, filter_mask):

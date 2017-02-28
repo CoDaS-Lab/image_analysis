@@ -28,7 +28,7 @@ class TestVideoDecoder(unittest.TestCase):
         warnings.simplefilter('ignore')
 
         # Verifies dimensions: nframes x height x width, nchannels.
-        def test_mpeg_dimensions(self, message='', *, vd+batch=None):
+        def test_mpeg_dimensions(self, message='', *, vd + batch=None):
             if vd_batch is None:
                 vd_nframes = self.nframes
                 vd_height = self.height
@@ -42,16 +42,16 @@ class TestVideoDecoder(unittest.TestCase):
 
             self.assertEqual(nframes, vd_nframes, message +
                              '\nnframes = {0}, vd_nframes = {1}'.format(
-                              nframes, vd_nframes))
+                                 nframes, vd_nframes))
             self.assertEqual(height, vd_height, message +
                              '\nheight = {0}, vd_height = {1}'.format(
-                              height, vd_height))
+                                 height, vd_height))
             self.assertEqual(width, vd_width, message +
                              '\nwidth = {0}, vd_width = {1}'.format(
-                              width, vd_width))
+                                 width, vd_width))
             self.assertEqual(nchannels, vd_nchannels, message +
                              '\nnchannels = {0}, vd_channels = {1}'.format(
-                              nchannels, vd_nchannels))
+                                 nchannels, vd_nchannels))
 
         # Verifies that the frames are the same.
         def test_mpeg_frame(self, message='', *, frame=0, vd_frame=0):
@@ -63,16 +63,16 @@ class TestVideoDecoder(unittest.TestCase):
                                nbatches=0, vd_nbatches=0):
             self.assertEqual(nbatches, vd_nbatches, message +
                              '\nnbatches = {0}, vd_nbatches = {1}'.format(
-                                 nbatches, vd_nbatches)
+                                 nbatches, vd_nbatches))
 
         # Test default decode_mpeg settings.
         numframes = 1
         numbatches = self.nframes
         batch_list = vd.decode_mpeg(self.vid_path)
- 
+
         test_mpeg_nbatches('Default settings test:', nbatches=numbatches,
                            vd_nbatches=len(batch_list))
-        
+
         batch = batch_list[0]
         prompt = 'Default settings test: check first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
@@ -80,9 +80,8 @@ class TestVideoDecoder(unittest.TestCase):
                         frame=self.correct_data[0])
         batch = batch_list[-1]
         prompt = 'Default settings test: check last frame'
-        test_mpeg_dimensions(prompt, nframes=numframes,  vd_batch=batch)
-        test_mpeg_frame(prompt,  vd_frame=batch[0],
-                        frame=self.correct_data[-1])
+        test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
+        test_mpeg_frame(prompt, vd_frame=batch[0], frame=self.correct_data[-1])
 
         # Test indices, with each frame as a separate batch: end > start.
         start = 13
@@ -91,7 +90,7 @@ class TestVideoDecoder(unittest.TestCase):
         numframes = 1
         batch_list = vd.decode_mpeg(self.vid_path, start_idx=start,
                                     end_idx=end)
-        
+
         test_mpeg_nbatches('end > start test:', nbatches=numbatches,
                            vd_nbatches=len(batch_list))
 
@@ -99,21 +98,21 @@ class TestVideoDecoder(unittest.TestCase):
         prompt = 'end > start test: check first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
         test_mpeg_frame(prompt, vd_frame=batch[0],
-                        frame = self.correct_data[start])
+                        frame=self.correct_data[start])
         batch = batch_list[-1]
         prompt = 'end > start test: check last frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
         test_mpeg_frame(prompt, vd_frame=batch[0],
-                        frame = self.correct_data[end])
-        
+                        frame=self.correct_data[end])
+
         # Test each frame as a separate batch, using indices: start > end.
-            # should raise valueerror
+        # should raise valueerror
 
         # Test each frame as a separate batch, using indices start = end != 1.
         start = end = 14
         numbatches = 1
         numframes = 1
-        
+
         test_mpeg_nbatches('end == start test:', nbatches=numbatches,
                            vd_nbatches=len(batch_list))
 
@@ -127,19 +126,19 @@ class TestVideoDecoder(unittest.TestCase):
         start = 1
         end = 99
         numframes = b_stride = 10
-        numbatches = (end - start + 1) // numframes +
-                      ((end - start + 1) % numframes > 0)
-        batch_list = vd.decode_mpeg(self.vid_path, 
+        numbatches = (end - start + 1) // numframes + ((end - start + 1)
+                                                       % numframes > 0)
+        batch_list = vd.decode_mpeg(self.vid_path,
                                     start_idx=start, end_idx=end,
                                     batch_size=numframes, stride=b_stride)
-        
+
         test_mpeg_nbatches('batch_size = stride test:', nbatches=numbatches,
                            vd_nbatches=len(batch_list))
-        
+
         batch = batch_list[0]
         prompt = 'batch_size = stride test: check first batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
-        test_mpeg_frame(prompt, vd_frame=batch[0], 
+        test_mpeg_frame(prompt, vd_frame=batch[0],
                         frame=self.correct_data[start])
         prompt = 'batch_size = stride test: check first batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
@@ -147,9 +146,10 @@ class TestVideoDecoder(unittest.TestCase):
         batch = batch_list[-1]
         prompt = 'batch_size = stride test: check last batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
-        test_mpeg_frame(prompt, vd_frame=batch[0], 
-                        frame=self.correct_data[start + 
-                            numframes * (end - start + 1 // numframes)])
+        test_mpeg_frame(prompt, vd_frame=batch[0],
+                        frame=self.correct_data[start \
+                                                + numframes * (end - start + 1 \
+                                                               // numframes)])
         prompt = 'batch_size = stride test: check last batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=np.zeros(self.correct_data[0].shape))
@@ -160,19 +160,19 @@ class TestVideoDecoder(unittest.TestCase):
         end = 100
         numframes = 15
         b_stride = 10
-        numbatches = ((end - start + 1) // b_stride) +
-                      (((end - start + 1) % b_stride) >(numframes - b_stride))
-        batch_list = vd.decode_mpeg(self.vid_path, 
+        numbatches = ((end - start + 1) // b_stride) + \
+            (((end - start + 1) % b_stride) > (numframes - b_stride))
+        batch_list = vd.decode_mpeg(self.vid_path,
                                     start_idx=start, end_idx=end,
-                                    batch_size = numframes, stride = b_stride)
-        
+                                    batch_size=numframes, stride=b_stride)
+
         test_mpeg_nbatches('batch_size > stride test:', nbatches=numbatches,
                            vd_nbatches=len(batch_list))
 
         batch = batch_list[0]
         prompt = 'batch_size > stride test: check first batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
-        test_mpeg_frame(prompt, vd_frame=batch[0], 
+        test_mpeg_frame(prompt, vd_frame=batch[0],
                         frame=self.correct_data[start])
         prompt = 'batch_size > stride test: check first batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
@@ -181,19 +181,19 @@ class TestVideoDecoder(unittest.TestCase):
         prompt = 'batch_size > stride test: check second batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
         test_mpeg_frame(prompt, vd_frame=batch[0],
-                        frame = self.correct_data[start + b_stride])
+                        frame=self.correct_data[start + b_stride])
         prompt = 'batch_size > stride test: check second batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
-                        frame=self.correct_data[start + b_stride +
-                                                  numframes - 1])
+                        frame=self.correct_data[start + b_stride + \
+                                                numframes - 1])
         batch = batch_list[-1]
         prompt = 'batch_size>stride test: check last batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
         test_mpeg_frame(prompt, vd_frame=batch[0],
-                frame=self.correct_data[start + 
-                    b_stride * (numbatches -
-                     (((end - start + 1) % b_stride) < (
-                      numframes - b_stride))))])
+                        frame=self.correct_data[start +
+                        b_stride * (numbatches -
+                                    (((end - start + 1) % b_stride) < (
+                                        numframes - b_stride)))])
         # TODO: add mini test to check last "real" frame in padded batch
         prompt = 'batch_size > stride test: check last batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
@@ -206,12 +206,12 @@ class TestVideoDecoder(unittest.TestCase):
         end = 100
         numframes = 10
         b_stride = 15
-        numbatches = ((end - start + 1) // b_stride) + 
-                        (((end - start + 1) % b_stride) > 0)
-        batch_list = vd.decode_mpeg(self.vid_path, 
+        numbatches = ((end - start + 1) // b_stride) + (((end - start + 1)
+                                                        % b_stride) > 0)
+        batch_list = vd.decode_mpeg(self.vid_path,
                                     start_idx=start, end_idx=end,
-                                    batch_size = numframes, stride = b_stride)
-        
+                                    batch_size=numframes, stride=b_stride)
+
         test_mpeg_nbatches('batch_size > stride test:', nbatches=numbatches,
                            vd_nbatches=len(batch_list))
 
@@ -226,20 +226,21 @@ class TestVideoDecoder(unittest.TestCase):
         batch = batch_list[-1]
         prompt = 'batch_size < stride test: check last batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
-        test_mpeg_frame(prompt, vd_frame=batch[0], 
+        test_mpeg_frame(prompt, vd_frame=batch[0],
                         frame=self.correct_data[start +
-                            b_stride * ((end - start + 1) // b_stride)])
-        prompt = 'batch_size < stride test: check last batch, ' +
-                    'last \"real frame\"'
+                                                b_stride * ((end - start + 1) \
+                                                            // b_stride)])
+        prompt = 'batch_size < stride test: check last batch, ' + \
+                 'last \"real frame\"'
         test_mpeg_frame(prompt, vd_frame=batch[
-                            (end - start + 1) % b_stride - 1], 
+                        (end - start + 1) % b_stride - 1],
                         frame=self.correct_data[-1])
         prompt = 'batch_size < stride test: check last batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=np.zeros(self.correct_data[0].shape))
 
         # TODO: Test batch_size < stride, with padding off.
-        
+
         del batch_list
         del batch
 
