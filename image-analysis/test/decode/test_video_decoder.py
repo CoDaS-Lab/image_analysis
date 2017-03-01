@@ -55,7 +55,7 @@ class TestVideoDecoder(unittest.TestCase):
 
         # Verifies that the frames are the same.
         def test_mpeg_frame(self, message='', *, frame=0, vd_frame=0):
-            self.assertEqual(np.array_equal(frame, vd_frame), True, message +
+            self.assertTrue(np.array_equal(frame, vd_frame), message +
                              '\nDecoded frame does not match.')
 
         # Checks for the number of correct batches..
