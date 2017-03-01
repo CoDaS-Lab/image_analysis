@@ -218,7 +218,7 @@ class TestVideoDecoder(unittest.TestCase):
         batch = batch_list[0]
         prompt = 'batch_size < stride test: check first batch, first frame'
         test_mpeg_dimensions(prompt, nframes=numframes, vd_batch=batch)
-        test_mpeg_frame(prompt, vd_frame=batch[0], 
+        test_mpeg_frame(prompt, vd_frame=batch[0],
                         frame=self.correct_data[start])
         prompt = 'batch_size < stride test: check first batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
