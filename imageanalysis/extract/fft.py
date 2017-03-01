@@ -41,7 +41,6 @@ class FFT(Feature):
         # derive polar coordinates: (theta, radius), where theta is in degrees
         theta = np.arctan2(v, u) * 180 / np.pi
         radii = (u**2 + v**2) ** 0.5
-        del u, v
 
         # using radii for one quadrant, build the other 3 quadrants
         flipped_radii = np.fliplr(radii[:, 1:target_size / 2])
@@ -50,7 +49,6 @@ class FFT(Feature):
         radii = np.concatenate((radii, flipped_radii), axis=0)
         radii = np.fft.fftshift(radii)  # come back and GPU optimize FFT
         # note: the right-most column and bottom-most row were sliced off
-        del flipped_radii
 
         # using theta for one quadrant, build the other 3 quadrants
         flipped_theta = 90 + np.fliplr((theta[1:target_size / 2 + 1, :].T))
@@ -61,7 +59,6 @@ class FFT(Feature):
         # might be able to optimize by transposing and then flipping
         # instead of flip and then flip
         theta = np.concatenate((flipped, theta), axis=0)
-        del flipped_theta
 
         center_orientation_2 = 180 + center_orientation
         # The 2D frequency spectrum is mirror symmetric, orientations must be
