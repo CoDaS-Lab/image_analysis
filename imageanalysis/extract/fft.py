@@ -165,6 +165,7 @@ class FFT(Feature):
         if plan_inverse is None:
             return ValueError('Invalid plan_inverse: {0}'.format(plan_inverse))
 
+        # this is what requires GPU optimization
         # perform discrete Fourier transform on input frame
         dft_frame = cv2.dft(np.float32(input_frame),
                             flags=cv2.DFT_COMPLEx_OUTPUT)
