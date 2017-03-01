@@ -1,9 +1,5 @@
 import numpy as np
 import cv2
-import pycuda.autoinit
-import pycuda.gpuarray as gpuarray
-import pycuda.cumath as cumath
-import skcuda.fft as cuda_fft
 import math
 from feature import Feature
 
@@ -132,7 +128,7 @@ class FFT(Feature):
             returns the amplitudes with noise added
         """
         x = y = np.arange(1, size).astype(float32)
-        u, v = np.meshgrid(x, y) # coordinates for a square grid
+        u, v = np.meshgrid(x, y)  # coordinates for a square grid
         u -= size / 2
         v -= size / 2
 
@@ -142,6 +138,7 @@ class FFT(Feature):
         amplitude[0, 0] = 1
         amplitude = 1 / amplitude
         amplitude[0, 0] = 0
+
         return amplitude
 
     def fft_mask(input_frame, mask, plan_inverse):
@@ -159,120 +156,47 @@ class FFT(Feature):
         OUTPUT:
             return the transformed and processed frame
         """
+        if input_frame is None:
+            return ValueError('Frame is invalid: {0}'.format(input_frame))
+
+        if mask not in [1, 2]:
+            return ValueError('Invalid mask: {0}'.format(mask))
+
+        if plan_inverse is None:
+            return ValueError('Invalid plan_inverse: {0}'.format(plan_inverse))
 
         # perform discrete Fourier transform on input frame
         dft_frame = cv2.dft(np.float32(input_frame),
                             flags=cv2.DFT_COMPLEx_OUTPUT)
-        gpu_phase = gpuarray.to_gpu(cv2.phase(dft_frame[:,:,0],
-                                              dft_frame[:,:,1]))
+        gpu_phase = gpuarray.to_gpu(cv2.phase(dft_frame[:, :, 0],
+                                              dft_frame[:, :, 1]))
         output = gpu.array.empty_like(gpu_phase)
         size = np.shape(dft_frame)[1]
-        if mask == 1
+        if mask == 1:
             amp = noise_amp(size)
-        elif mask == 2
-            amp = np.abs(dft_frame) * (1-filter_func(90, 20, size/2,
-                                                     .1, size, 
-                                                     falloff='triangle'))
+        elif mask == 2:
+            amp = np.abs(dft_frame) * (1 - filter_func(90, 20, size / 2,
+                                                       .1, size,
+                                                       falloff='triangle'))
             # replaced "t" with " falloff='triangle'": is this oK?
         cu_fft.ifft(
             cumath.exp(gpu_phase * 1j) * amp,
             output, plan_inverse, True)
-            
-            #altimg = amp*g_complex.get()
-            iframe = gpuarray.to_gpu(amp*g_complex.get())
-            iframe_gpu = gpuarray.empty_like(iframe)
-            cu_fft.ifft(iframe, iframe_gpu, plan_inverse, True)
+
+        # altimg = amp*g_complex.get()
+        iframe = gpuarray.to_gpu(amp * g_complex.get())
+        iframe_gpu = gpuarray.empty_like(iframe)
+        cu_fft.ifft(iframe, iframe_gpu, plan_inverse, True)
         # normalize the image for display
         # should this be one by numpy instead of the gpu?
         output_frame = output.get().real
         output_frame -= output_frame.min()
         output_frame /= output_frame.max
+
         return output_frame
 
-    # TODO: implement using scikit-cuda
-    def fft_gpu(self, input_frame, filter_mask):
-        """
-        DESCRIPTION:
-            Transforms a matrix using fft using gpu, multiplies the
-            result by a mask, and then transforms the matrix back using ifft.
-
-        INPUT:
-            input_frame: numpy array of pixel values
-            filter_mask: int determining the type of filter to implement 1=iso,
-            2 = horizontal decrement
-
-        OUTPUT:
-            Return the transformed and processed frame.
-        """
-        frame_gpu = gpuarray.to_gpu(input_frame)
-        frame_fft = gpuarray.empty((input_frame.shape[0], input_frame.shape[1]\
-                                    // (2 + 1)), np.complex64)
-        plan_forward = cuda_fft.Plan(frame_gpu, np.float32, np.complex64)
-        cuda_fft.fft(frame_gpu, frame_fft, plan_forward)
-
-        return frame_fft.get()
-
-    # TODO: implement using pyfftw
-    def fft_cpu(self, input_frame, mask):
-        """
-        DESCRIPTION:
-            Transforms a matrix using fft using cpu (parallelized), multiplies
-            the result by a mask, and then transforms the matrix back using
-            ifft
-
-        INPUT:
-            input_frame: numpy array of pixel values
-            filter_mask: int determining the type of filter to implement 1=iso,
-            2 = horizontal decrement
-
-        OUTPUT:
-            Return the transformed and processed frame.
-        """
-        if input_frame is None:
-            return ValueError('Frame is invalid: {0}'.format(input_frame))
-
-        if mask not in [1, 2]:
-            return ValueError('Invalid mask: {0}'.format(mask))
-
-    def extract(serlf, input_frame, mask, gpu=False):
-        if input_frame is None:
-            return ValueError('Frame is invalid: {0}'.format(input_frame))
-
-        if mask not in [1, 2]:
-            return ValueError('Invalid mask: {0}'.format(mask))
-
-        frame_fft = fft_gpu(input_frame)
-        frame_gpu = gpuarray.to_gpu(input_frame)
-        plan_inverse = cuda_fft.Plan(frame_gpu.shape, np.complex64, np.float32)
-        phase = np.arctan2(frame_fft.imag, frame_fft.real)
-        phase_gpu = gpuarray.to_gpu(phase)
-        out = gpuarray.empty_like(phase_gpu)
-        size = frame_fft.shape
-
-        if mask == 1:
-            amp = noise_amp(size[1])
-        else:
-            amp = math.abs(frame_fft) * (1 - filter_func(90, 20, size[1] / 2,
-                                         .1, size[1], 'triangle'))
-
-        cuda_fft.ifft(
-            cumath.exp(phase_gpu * 1j) * amp,
-            out, plan_inverse, True
-        )
-
-        # g_complex() ???????
-        # alt_img = amp * g_complex()
-        # iframe = gpuarray.to_gpu(alt_img)
-        # iframe_gpu = gpuarray.empty_like(iframe)
-        # cuda_fft.ifft(iframe, iframe_gpu, plan_inverse, True)
-
-        # normalize image
-        # outframe = out.get().real
-        # outframe -= outframe.min()
-        # outframe /= outframe.max()
-        # return outframe
-
-        return None
+        def extract(self):
+            return self
 
 
 
