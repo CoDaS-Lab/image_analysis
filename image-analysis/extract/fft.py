@@ -45,7 +45,7 @@ class FFT(Feature):
 
         # using radii for one quadrant, build the other 3 quadrants
         flipped_radii = np.fliplr(radii[:, 1:target_size / 2])
-        radii = np.concatenate((radii, flipped_lr_radii), [<64;20;20Maxis=1)
+        radii = np.concatenate((radii, flipped_lr_radii), axis=1)
         flipped_radii = np.flipud(radii[1:target_size / 2, :])
         radii = np.concatenate((radii, flipped_radii), axis=0)
         radii = np.fft.fftshift(radii)  # come back and GPU optimize FFT
