@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 import pycuda.autoinit
 import pycuda.gpuarray as gpuarray
 import pycuda.cumath as cumath
@@ -13,11 +14,11 @@ class FFT(Feature):
 
     def filter_func(center_orientation, orientation_width, high_cutoff,
                     low_cutoff, target_size, falloff=''):
-
         """
         DESCRIPTION:
-            Creates a filter that can be multiplied by the amplitude spectrum of an
-            image to increase/decrease specific orientations/spatial frequencies.
+            Creates a filter that can be multiplied by the amplitude spectrum 
+            of an image to increase/decrease specific orientations/spatial 
+            frequencies.
 
         INPUTS:
             center_orientation: int for the center orientation (0-180).
@@ -44,7 +45,7 @@ class FFT(Feature):
 
         # using radii for one quadrant, build the other 3 quadrants
         flipped_radii = np.fliplr(radii[:, 1:target_size / 2])
-        radii = np.concatenate((radii, flipped_lr_radii), axis=1)
+        radii = np.concatenate((radii, flipped_lr_radii), [<64;20;20Maxis=1)
         flipped_radii = np.flipud(radii[1:target_size / 2, :])
         radii = np.concatenate((radii, flipped_radii), axis=0)
         radii = np.fft.fftshift(radii)  # come back and GPU optimize FFT
@@ -124,8 +125,8 @@ class FFT(Feature):
     def noise_amp(size):
         """
         DESCRIPTION:
-            Creates a size x size matrix of randomly generated noise with amplitude values with
-            1/f slope
+            Creates a size x size matrix of randomly generated noise with 
+            amplitude values with1/f slope
 
         INPUT:
             size: size of matrix
@@ -134,16 +135,62 @@ class FFT(Feature):
             returns the amplitudes with noise added
         """
         x = y = np.arange(1, size).astype(float32)
-        u, v = np.meshgrid(x, y)
+        u, v = np.meshgrid(x, y) # coordinates for a square grid
         u -= size / 2
         v -= size / 2
 
         amplitude = np.flipud(np.fliplr(np.fft.fftshift(
-                                        (((u**2 + v**2) ** 0.5) / size) * (2)**.5)))
+                                        (((u**2 + v**2) ** 0.5) / size) \
+                                        * (2)**.5)))
         amplitude[0, 0] = 1
         amplitude = 1 / amplitude
         amplitude[0, 0] = 0
         return amplitude
+
+    def fft_mask(input_frame, mask, plan_inverse):
+        """
+        DESCRIPTION:
+            Transforms a matrix using FFT, multiplies the result by a mask, and
+            then transforms the matrix back using Inverse FFT.
+
+        INPUTS:
+            input_frame: (m x n) numpy array
+            mask: int determining the type of filter to implement, where
+                  1 = iso and 2 = horizontal decrement, etc.
+            plan_inverse: skcuda.fft.Plan object
+
+        OUTPUT:
+            return the transformed and processed frame
+        """
+
+        # perform discrete Fourier transform on input frame
+        dft_frame = cv2.dft(np.float32(input_frame),
+                            flags=cv2.DFT_COMPLEx_OUTPUT)
+        gpu_phase = gpuarray.to_gpu(cv2.phase(dft_frame[:,:,0],
+                                              dft_frame[:,:,1]))
+        output = gpu.array.empty_like(gpu_phase)
+        size = np.shape(dft_frame)[1]
+        if mask == 1
+            amp = noise_amp(size)
+        elif mask == 2
+            amp = np.abs(dft_frame) * (1-filter_func(90, 20, size/2,
+                                                     .1, size, 
+                                                     falloff='triangle'))
+            # replaced "t" with " falloff='triangle'": is this oK?
+        cu_fft.ifft(
+            cumath.exp(gpu_phase * 1j) * amp,
+            output, plan_inverse, True)
+            
+            #altimg = amp*g_complex.get()
+            iframe = gpuarray.to_gpu(amp*g_complex.get())
+            iframe_gpu = gpuarray.empty_like(iframe)
+            cu_fft.ifft(iframe, iframe_gpu, plan_inverse, True)
+        # normalize the image for display
+        # should this be one by numpy instead of the gpu?
+        output_frame = output.get().real
+        output_frame -= output_frame.min()
+        output_frame /= output_frame.max
+        return output_frame
 
     # TODO: implement using scikit-cuda
     def fft_gpu(self, input_frame, filter_mask):
