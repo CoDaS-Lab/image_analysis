@@ -159,7 +159,7 @@ class FFT(Feature):
         OUTPUT:
             return the transformed and processed frame
         """
-
+        # this is what requires GPU optimization
         # perform discrete Fourier transform on input frame
         dft_frame = cv2.dft(np.float32(input_frame),
                             flags=cv2.DFT_COMPLEx_OUTPUT)
