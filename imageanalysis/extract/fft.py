@@ -47,7 +47,7 @@ class FFT(Feature):
         radii = np.concatenate((radii, flipped_lr_radii), axis=1)
         flipped_radii = np.flipud(radii[1:target_size / 2, :])
         radii = np.concatenate((radii, flipped_radii), axis=0)
-        radii = np.fft.fftshift(radii)  # come back and GPU optimize FFT
+        radii = np.fft.fftshift(radii)
         # note: the right-most column and bottom-most row were sliced off
 
         # using theta for one quadrant, build the other 3 quadrants
