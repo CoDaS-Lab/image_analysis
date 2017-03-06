@@ -1,4 +1,4 @@
-# image-analysis
+# imageanalysis
 
 ### Python Dependencies
 * numpy >= 1.12.0
