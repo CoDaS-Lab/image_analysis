@@ -1,9 +1,15 @@
 import os, sys
 sys.path.append(os.getcwd() + "/../")
-import image_analysis as codas
+
+
 import skimage.io
-from matplotlib import pyplot as plt
 import wget
+
+from matplotlib import pyplot as plt
+from decode import video_decoder as vd
+from extract import feature_extractor as fe
+from extract.features import RGBToGray
+from extract.features import BatchOP
 
 # Meeting Notes
 # Before presenting demo, review the 2 specified data structures
@@ -19,14 +25,14 @@ if not os.path.exists(vid_path + 'test_video.mp4'):
     wget.download("https://s3.amazonaws.com/testcodas/test_video.mp4", vid_path)
 
 # Decode video to build dataset
-batch_list = codas.vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
-                                  batch_size=2, end_idx=10)
+batch_list = vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
+                            batch_size=2, end_idx=10)
 
 print('Batch_list contains {0} batches!'.format(len(batch_list)))
 
 # Extract features (e.g. Grayscale and "BatchOP") from data
-data_structure = codas.fe.extract_features(batch_list,
-                                           [codas.RGBToGray, codas.BatchOP])
+data_structure = fe.extract_features(batch_list,
+                                     [RGBToGray, BatchOP])
 
 # Now, let's access  some of the features extracted from frames
 imgs = [data_structure[0]['input']['frame'],
