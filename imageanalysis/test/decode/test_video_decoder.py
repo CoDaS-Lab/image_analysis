@@ -78,7 +78,7 @@ class TestVideoDecoder(unittest.TestCase):
             self.assertTrue(np.array_equal(frame, vd_frame), message +
                             '\nDecoded frame does not match.')
 
-        # Checks for the number of correct batches..
+        # Checks for the number of correct batches.
         def test_mpeg_nbatches(message='', *,
                                nbatches=0, vd_nbatches=0):
             self.assertEqual(nbatches, vd_nbatches, message +
@@ -222,13 +222,13 @@ class TestVideoDecoder(unittest.TestCase):
 
         # TODO: Test batch_size > stride, with padding off.
 
-        # Test batch_size < stride, with padding on.
+        # Test batch_size < stride.
         start = 0
         end = 100
         numframes = 10
         b_stride = 15
-        numbatches = ((end - start + 1) // b_stride) + (((end - start + 1)
-                                                        % b_stride) > 0)
+        numbatches = ((end - start + 1) // b_stride) + \
+                     (((end - start + 1) % b_stride) > 0)
         batch_list = vd.decode_mpeg(self.vid_path,
                                     start_idx=start, end_idx=end,
                                     batch_size=numframes, stride=b_stride)
@@ -252,12 +252,11 @@ class TestVideoDecoder(unittest.TestCase):
                          b_stride * ((end - start + 1) // b_stride)])
         prompt = 'batch_size < stride test: check last batch, ' + \
                  'last \"real frame\"'
-        #test_mpeg_frame(prompt, vd_frame=batch[
-        #                (end - start + 1) % b_stride - 1],
-        #                frame=self.correct_data[-1])
-        #prompt = 'batch_size < stride test: check last batch, last frame'
-        #test_mpeg_frame(prompt, vd_frame=batch[-1],
-        #                frame=np.zeros(self.correct_data[0].shape))
+        test_mpeg_frame(prompt, vd_frame=batch[-(((end - start + 1) % b_stride)\
+                        > 0) * (((end - start + 1) % 15) - numframes)],
+                        frame=self.correct_data[-1 - (((end-start+1) % b_stride\
+                        - numframes) > 0) * ((end - start + 1) % b_stride\
+                        - numframes)])
 
         # TODO: Test batch_size < stride, with padding off.
 
