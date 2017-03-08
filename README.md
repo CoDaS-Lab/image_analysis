@@ -26,7 +26,7 @@ brew install ffmpeg
 ## Testing
 change directory to directory of test folder:
 ```
-cd /path/to/directory/image-analysis/image-analysis
+cd /path/to/directory/image-analysis/imageanalysis
 ```
 Download testing files:  
 ```
