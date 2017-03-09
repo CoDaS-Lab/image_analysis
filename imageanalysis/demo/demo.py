@@ -1,10 +1,8 @@
-import os, sys
+import os
+import sys
 sys.path.append(os.getcwd() + "/../")
-
-
 import skimage.io
 import wget
-
 from matplotlib import pyplot as plt
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
@@ -36,7 +34,7 @@ data_structure = fe.extract_features(batch_list,
 
 # Now, let's access  some of the features extracted from frames
 imgs = [data_structure[0]['input']['frame'],
-        data_structure[0]['input']['Grayscale']]
+        data_structure[0]['input']['grayscale']]
 skimage.io.imshow_collection(imgs)
 plt.show()
 
