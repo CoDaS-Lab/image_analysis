@@ -1,8 +1,4 @@
 import unittest
-import os
-import sys
-top_dir = os.path.dirname(__file__) + '/../../'
-sys.path.append(top_dir)
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
 from extract import features
@@ -10,7 +6,7 @@ from extract import features
 
 class TestFeatureExtractor(unittest.TestCase):
     def setUp(self):
-        self.video_path = '../test_data/test_video.mp4'
+        self.video_path = 'test/test_data/test_video.mp4'
 
     def test_gen_frame_features(self):
         # load 9 frames
@@ -47,7 +43,6 @@ class TestFeatureExtractor(unittest.TestCase):
 
     def test_extract_features(self):
         video = vd.decode_mpeg(self.video_path, end_idx=8)
-        grayscale = features.RGBToGray
 
         frames = fe.extract_features(video, [features.RGBToGray])
 
