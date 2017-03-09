@@ -22,17 +22,27 @@ brew install ffmpeg
 ```
 
 ### Requirements (Ubuntu)
+Installing ffmpeg:
+```
+sudo apt-get install ffmpeg
+```
 
 ## Testing
 change directory to directory of test folder:
 ```
 cd /path/to/directory/image-analysis/imageanalysis
 ```
-Download testing files:  
+Download testing file:
 ```
 wget -P test/test_data/ https://s3.amazonaws.com/testcodas/test_video.mp4
+wget -P test/test_data/ https://s3.amazonaws.com/testcodas/test_video_data.npy
 ```
 Run unittest discover
 ```
 python -m unittest discover
+```
+
+Run a single test case
+```
+python -m unittest test.module_name.test_file_name
 ```
