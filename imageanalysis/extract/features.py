@@ -1,7 +1,6 @@
 import skimage.color
 import skimage.transform
 import skimage.io
-import skvideo.io
 
 
 class Feature:
@@ -20,7 +19,7 @@ class Feature:
 
 class RGBToGray(Feature):
     def __init__(self):
-        Feature.__init__(self, 'Grayscale', frame_op=True)
+        Feature.__init__(self, 'grayscale', frame_op=True)
 
     def extract(self, RGB_frame):
         return skimage.color.rgb2gray(RGB_frame)

@@ -131,8 +131,7 @@ def extract_features(batch_list, op_list):
     for batch in batch_list:
         batch_dictionary = gen_batch_features([batch], batch_ops)
         frame_dictionaries += (batch_to_frame_dictionaries(batch_dictionary))
-        if count == 0:
-            a = batch_to_frame_dictionaries(batch_dictionary)
+
         if len(frame_ops) != 0:
             for frame in batch:
                 frame_dictionary = gen_frame_features([[frame]], frame_ops)
