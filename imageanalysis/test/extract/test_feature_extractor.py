@@ -1,4 +1,5 @@
 import unittest
+import os
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
 from extract import features
@@ -6,7 +7,12 @@ from extract import features
 
 class TestFeatureExtractor(unittest.TestCase):
     def setUp(self):
-        self.video_path = 'test/test_data/test_video.mp4'
+        data_dir = 'test/test_data/'
+        vid_link = 'https://s3.amazonaws.com/testcodas/test_video.mp4'
+        if not os.path.exists(data_dir + 'test_video.mp4'):
+            wget.download(vid_link, data_dir)
+
+        self.video_path = data_dir + 'test_video.mp4'
 
     def test_gen_frame_features(self):
         # load 9 frames

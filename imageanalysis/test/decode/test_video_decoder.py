@@ -5,8 +5,6 @@ import os
 import sys
 import numpy as np
 import wget
-import test_video_decoder_data as vd_data
-sys.path.append(os.getcwd() + '/../../')
 from decode import video_decoder as vd
 
 """ Do not delete these comments.
@@ -20,18 +18,17 @@ the issue was video_decoder.py, skvideo, or the test(s).
 
 class TestVideoDecoder(unittest.TestCase):
     def setUp(self):
-        data_dir = os.getcwd() + '/../test_data'
-        vd_data.download_data()
-#        vid_link = 'https://s3.amazonaws.com/testcodas/test_video.mp4'
-#        data_link = 'https://s3.amazonaws.com/testcodas/test_video_data.npy'
-#
-#        if not os.path.exists(data_dir + '/test_video.mp4'):
-#            wget.download(vid_link, data_dir)
-#        if not os.path.exists(data_dir + '/test_video_data.npy'):
-#            wget.download(data_link, data_dir)
-        self.vid_path = os.getcwd() + '/../test_data/test_video.mp4'
-        self.correct_data = np.load(os.getcwd() + '/../test_data/' +
-                                    'test_video_data.npy')
+        data_dir = 'test/test_data/'
+        vid_link = 'https://s3.amazonaws.com/testcodas/test_video.mp4'
+        data_link = 'https://s3.amazonaws.com/testcodas/test_video_data.npy'
+
+        if not os.path.exists(data_dir + 'test_video.mp4'):
+            wget.download(vid_link, data_dir)
+        if not os.path.exists(data_dir + 'test_video_data.npy'):
+            wget.download(data_link, data_dir)
+
+        self.vid_path = data_dir + 'test_video.mp4'
+        self.correct_data = np.load(data_dir + 'test_video_data.npy')
         self.nframes = self.correct_data.shape[0]
         self.width = self.correct_data.shape[2]
         self.height = self.correct_data.shape[1]
