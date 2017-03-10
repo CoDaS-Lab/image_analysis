@@ -27,6 +27,23 @@ Installing ffmpeg:
 sudo apt-get install ffmpeg
 ```
 
+### Requirements (Windows)
+Installing ffmpeg:  
+```
+1. Download a static build from [here](http://ffmpeg.zeranoe.com/builds/).
+2. unpack it in the folder of your choice.
+3. [Open a command prompt with administrator's rights](Just-Enough-Command-Line-for-Installing).
+4. Run the command: setx /M PATH "path\to\ffmpeg\bin;%PATH%"
+Be sure to alter the command so that ``path\to`` reflects the folder path from your root to ``ffmpeg\bin``.  
+```
+
+Installing sk-video:  
+pip version of sk-video doesn't have support for windows yet! Download the github lastest version which was recently updated for windows:
+```
+https://github.com/scikit-video/scikit-video
+```
+and follow the dependecies and installation instructions (github installation)
+
 ## Testing
 change directory to directory of test folder:
 ```
@@ -45,4 +62,9 @@ python -m unittest discover
 Run a single test case
 ```
 python -m unittest test.module_name.test_file_name
+```
+
+Or for a specific function
+```
+python -m unittest test.module_name.test_file_name.test_class_name.test_function
 ```
