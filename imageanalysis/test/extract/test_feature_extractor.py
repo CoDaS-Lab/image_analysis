@@ -50,12 +50,13 @@ class TestFeatureExtractor(unittest.TestCase):
     def test_extract_features(self):
         video = vd.decode_mpeg(self.video_path, end_idx=8)
 
-        frames = fe.extract_features(video, [features.RGBToGray])
+        frames = fe.extract_features(video, [features.RGBToGray,
+                                             features.BatchOP])
 
         for frame in frames:
             self.assertIsNotNone(frame['input'])
-            for feature in frame['input']:
-                self.assertIsNotNone(frame['input'][feature])
+            self.assertIsNotNone(frame['input']['grayscale'])
+            self.assertIsNotNone(frame['input']['batch_length'])
 
 
 if __name__ == '__name__':

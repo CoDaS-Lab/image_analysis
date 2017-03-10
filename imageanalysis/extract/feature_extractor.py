@@ -135,6 +135,9 @@ def extract_features(batch_list, op_list):
         if len(frame_ops) != 0:
             for frame in batch:
                 frame_dictionary = gen_frame_features([[frame]], frame_ops)
-                frame_dictionaries[count].update(frame_dictionary[0])
+
+                # add frame features
+                for feat, val in frame_dictionary[0]['input'].items():
+                    frame_dictionaries[count]['input'][feat] = val
                 count += 1
     return frame_dictionaries
