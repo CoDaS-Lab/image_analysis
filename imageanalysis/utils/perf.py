@@ -19,5 +19,3 @@ def timeit(thresh=None):
             return result
         return timed
     return decorator
-
-    return timed
