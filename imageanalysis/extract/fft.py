@@ -12,11 +12,11 @@ class FFT(Feature):
                     low_cutoff, target_size, falloff=''):
         """
         DESCRIPTION:
-            Creates a filter that can be multiplied by the amplitude spectrum 
-            of an image to increase/decrease specific orientations/spatial 
+            Creates a filter that can be multiplied by the amplitude spectrum
+            of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-        INPUTS:
+        PARMS:
             center_orientation: int for the center orientation (0-180).
             orientation_width: int for the orientation width of the filter.
             high_cutoff: int high spatial frequency cutoff.
@@ -25,7 +25,7 @@ class FFT(Feature):
             falloff: string 'triangle' or 'rectangle' shape of the filter
                      falloff from the center.
 
-        OUTPUTS:
+        RETURNS:
             filt: return the bowtie shaped filter.
         """
         if (target_size % 2) != 0:
@@ -79,7 +79,7 @@ class FFT(Feature):
             cwb2 += 90
             ccwb2 += 90
 
-        # theta = theta[0:target_size,0:target_size]; only need this to check 
+        # theta = theta[0:target_size,0:target_size]; only need this to check
         # dim's
         # sffilter = np.zeros(radii.shape)
         # anfilter = np.zeros(theta.shape)
@@ -118,13 +118,13 @@ class FFT(Feature):
     def noise_amp(size):
         """
         DESCRIPTION:
-            Creates a size x size matrix of randomly generated noise with 
+            Creates a size x size matrix of randomly generated noise with
             amplitude values with1/f slope
 
-        INPUT:
+        PARM:
             size: size of matrix
 
-        OUTPUT:
+        RETURN:
             returns the amplitudes with noise added
         """
         x = y = np.arange(1, size).astype(float32)
@@ -147,13 +147,13 @@ class FFT(Feature):
             Transforms a matrix using FFT, multiplies the result by a mask, and
             then transforms the matrix back using Inverse FFT.
 
-        INPUTS:
+        PARMS:
             input_frame: (m x n) numpy array
             mask: int determining the type of filter to implement, where
                   1 = iso and 2 = horizontal decrement, etc.
             plan_inverse: skcuda.fft.Plan object
 
-        OUTPUT:
+        RETURN:
             return the transformed and processed frame
         """
         if input_frame is None:
@@ -167,9 +167,9 @@ class FFT(Feature):
 
         # this is what requires GPU optimization
         # perform discrete Fourier transform on input frame
-        dft_frame = cv2.dft(np.float32(input_frame),
-                            flags=cv2.DFT_COMPLEx_OUTPUT)
-        gpu_phase = gpuarray.to_gpu(cv2.phase(dft_frame[:, :, 0],
+        dft_frame = cv3.dft(np.float32(input_frame),
+                            flags=cv3.DFT_COMPLEx_OUTPUT)
+        gpu_phase = gpuarray.to_gpu(cv3.phase(dft_frame[:, :, 0],
                                               dft_frame[:, :, 1]))
         output = gpu.array.empty_like(gpu_phase)
         size = np.shape(dft_frame)[1]
@@ -198,7 +198,3 @@ class FFT(Feature):
 
         def extract(self):
             return self
-
-
-
-
