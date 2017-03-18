@@ -11,7 +11,7 @@ def gen_batch_features(batch_list, batch_op_list):
         batch_op_list: list of batch_op objects that extract features
                     from batches
 
-    RETURNS:
+    RETURN:
         batch_dictionaries: list of dictionaries, each representing a batch
     """
     batch_dictionaries = []
@@ -42,7 +42,7 @@ def gen_frame_features(batch_list, frame_op_list):
         batch_op_list: list of batch_op objects that extract features from
                     batches
 
-    RETURNS:
+    RETURN:
         frame_dictionaries: list of dictionaries, each representing a frame
     """
     frame_dictionaries = []
@@ -74,7 +74,7 @@ def batch_to_frame_dictionaries(batch_dictionaries):
                         arrays) of frames; each dictionary should have same
                         exact keys, and each batch should be an ndarry
 
-    RETURNS:
+    RETURN:
         frame_dictionary: list of dictionaries representing frames
     """
     frame_dictionaries = []
@@ -112,7 +112,7 @@ def extract_features(batch_list, op_list):
         batch_list: list of batches (numpy arrays)
         op_list: list of objects (of type 'feature')
 
-    RETURNS:
+    RETURN:
         frame_dictioanries: list of dictionaries, each representing a frame
     """
     batch_ops = []

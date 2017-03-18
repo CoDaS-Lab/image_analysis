@@ -6,8 +6,8 @@ import wget
 from matplotlib import pyplot as plt
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
-from extract.features import RGBToGray
-from extract.features import BatchOP
+from demo_features import RGBToGray
+from demo_features import BatchOP
 
 # Meeting Notes
 # Before presenting demo, review the 2 specified data structures
