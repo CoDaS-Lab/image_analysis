@@ -19,8 +19,8 @@ the issue was video_decoder.py, skvideo, or the test(s).
 class TestVideoDecoder(unittest.TestCase):
     def setUp(self):
         data_dir = 'test/test_data/'
-        vid_link = 'https://s3.amazonaws.com/testcodas/test_video.mp4'
-        data_link = 'https://s3.amazonaws.com/testcodas/test_video_data.npy'
+        vid_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video.mp4'
+        data_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video_data.npy'
 
         if not os.path.exists(data_dir + 'test_video.mp4'):
             wget.download(vid_link, data_dir)
