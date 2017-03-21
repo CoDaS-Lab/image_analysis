@@ -1,14 +1,21 @@
+import os
+import sys
+sys.path.append(os.getcwd() + "/../")
+
 import numpy as np
-import cv2
+import pyfftw
 import math
-from feature import Feature
+from skimage.color import rgb2gray
+from skimage.transform import rotate
+from utils.perf import *
+from extract.feature import Feature
 
 
 class FFT(Feature):
     def __init__(self):
-        Feature.__init__(self, 'FastFourierTransform', frame_op=True)
+        Feature.__init__(self, 'fast_fourier_transform', frame_op=True)
 
-    def filter_func(center_orientation, orientation_width, high_cutoff,
+    def filter_func(self, center_orientation, orientation_width, high_cutoff,
                     low_cutoff, target_size, falloff=''):
         """
         DESCRIPTION:
@@ -16,7 +23,7 @@ class FFT(Feature):
             of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-        PARMS:
+        PARAMS:
             center_orientation: int for the center orientation (0-180).
             orientation_width: int for the orientation width of the filter.
             high_cutoff: int high spatial frequency cutoff.
@@ -25,13 +32,13 @@ class FFT(Feature):
             falloff: string 'triangle' or 'rectangle' shape of the filter
                      falloff from the center.
 
-        RETURNS:
+        RETURN:
             filt: return the bowtie shaped filter.
         """
         if (target_size % 2) != 0:
             raise ValueError('Target_size should be even!')
 
-        x = y = np.arange(0, target_size / 2 + 1).astype(float32)
+        x = y = np.linspace(1, target_size // 2, target_size // 2 + 1)
         u, v = np.meshgrid(x, y)
 
         # derive polar coordinates: (theta, radius), where theta is in degrees
@@ -39,22 +46,22 @@ class FFT(Feature):
         radii = (u**2 + v**2) ** 0.5
 
         # using radii for one quadrant, build the other 3 quadrants
-        flipped_radii = np.fliplr(radii[:, 1:target_size / 2])
-        radii = np.concatenate((radii, flipped_lr_radii), axis=1)
-        flipped_radii = np.flipud(radii[1:target_size / 2, :])
+        flipped_radii = np.fliplr(radii[:, 1:target_size // 2])
+        radii = np.concatenate((radii, flipped_radii), axis=1)
+        flipped_radii = np.flipud(radii[1:target_size // 2, :])
         radii = np.concatenate((radii, flipped_radii), axis=0)
         radii = np.fft.fftshift(radii)
         # note: the right-most column and bottom-most row were sliced off
 
         # using theta for one quadrant, build the other 3 quadrants
-        flipped_theta = 90 + np.fliplr((theta[1:target_size / 2 + 1, :].T))
+        flipped_theta = 90 + np.fliplr((theta[1:target_size // 2 + 1, :].T))
         # note: +1 is done for theta, but not for radii
         # note: transpose is done for theta, but not for radii
         theta = np.concatenate((flipped_theta, theta), axis=1)
         flipped_theta = 180 + np.flipud(np.fliplr(theta[1:, :]))
         # might be able to optimize by transposing and then flipping
         # instead of flip and then flip
-        theta = np.concatenate((flipped, theta), axis=0)
+        theta = np.concatenate((flipped_theta, theta), axis=0)
 
         center_orientation_2 = 180 + center_orientation
         # The 2D frequency spectrum is mirror symmetric, orientations must be
@@ -62,13 +69,13 @@ class FFT(Feature):
         # repeated using both center_orientation's
 
         # clockwise orientation cutoff, from center_orientation
-        cwb1 = center_orientation + width / 2
+        cwb1 = center_orientation + orientation_width / 2
         # counterclockwise orientation cutoff, from center_orientation
-        ccwb1 = center_orientation - width / 2
+        ccwb1 = center_orientation - orientation_width / 2
         # clockwise orientation cutoff, from center_orientation_2
-        cwb2 = center_orientation_2 + width / 2
+        cwb2 = center_orientation_2 + orientation_width / 2
         # counterclockwise orientation cutoff, from center_orientation_2
-        ccwb2 = center_orientation_2 - width / 2
+        ccwb2 = center_orientation_2 - orientation_width / 2
 
         if ccwb1 < 0:
             theta = np.fliplr(theta).T
@@ -79,11 +86,10 @@ class FFT(Feature):
             cwb2 += 90
             ccwb2 += 90
 
-        # theta = theta[0:target_size,0:target_size]; only need this to check
-        # dim's
-        # sffilter = np.zeros(radii.shape)
-        # anfilter = np.zeros(theta.shape)
+        theta = theta[0:target_size, 0:target_size]
 
+        # dim's
+        anfilter = np.zeros(theta.shape)
         sffilter = (low_cutoff <= radii) & (radii <= high_cutoff)
 
         if falloff == 'rectangle':
@@ -93,61 +99,61 @@ class FFT(Feature):
         elif falloff == 'triangle':
             for idx, val in np.ndenumerate(theta):
                 if ccwb1 <= val <= cwb1 and val <= center_orientation:
-                    anfilter[idx] = (val - center_orientation + width / 2) \
-                        * 2 / width
+                    anfilter[idx] = (val - center_orientation + orientation_width / 2) \
+                        * 2 / orientation_width
                 elif ccwb1 <= val <= cwb1 and val > center_orientation:
-                    anfilter[idx] = (-val + center_orientation_2 + width / 2) \
-                        * 2 / width
+                    anfilter[idx] = (-val + center_orientation_2 + orientation_width / 2) \
+                        * 2 / orientation_width
                 elif ccwb2 <= val <= cwb2 and val <= center_orientation_2:
-                    anfilter[idx] = (val - center_orientation_2 + width / 2) \
-                        * 2 / width
+                    anfilter[idx] = (val - center_orientation_2 + orientation_width / 2) \
+                        * 2 / orientation_width
                 elif ccwb2 <= val <= cwb2 and val > center_orientation_2:
-                    anfilter[idx] = (-val + center_orientation_2 + width / 2) \
-                        * 2 / width
+                    anfilter[idx] = (-val + center_orientation_2 + orientation_width / 2) \
+                        * 2 / orientation_width
                 else:
                     anfilter[idx] = 0
         else:
-            angfilter1 = np.exp(-((theta - center_orientation) / (.5 * width))\
+            angfilter1 = np.exp(-((theta - center_orientation) / (.5 * orientation_width))\
                                 ** 4)
-            angfilter1 = np.exp(-((theta - center_orientation_2) / (.5 * width))\
+            angfilter2 = np.exp(-((theta - center_orientation_2) / (.5 * orientation_width))\
                                 ** 4)
             anfilter = angfilter1 + angfilter2
 
         return(sffilter * anfilter)
 
-    def noise_amp(size):
+    def noise_amp(self, size):
         """
         DESCRIPTION:
             Creates a size x size matrix of randomly generated noise with
-            amplitude values with1/f slope
+            amplitude values with 1/f slope
 
-        PARM:
+        PARAMS:
             size: size of matrix
 
         RETURN:
             returns the amplitudes with noise added
         """
-        x = y = np.arange(1, size).astype(float32)
+        x = y = np.linspace(1, size, size)
         u, v = np.meshgrid(x, y)  # coordinates for a square grid
         u -= size / 2
         v -= size / 2
 
         amplitude = np.flipud(np.fliplr(np.fft.fftshift(
-                                        (((u**2 + v**2) ** 0.5) / size) \
-                                        * (2)**.5)))
+                                        (((u**2 + v**2) ** 0.5) / size) *
+                                        (2) ** 0.5)))
         amplitude[0, 0] = 1
         amplitude = 1 / amplitude
         amplitude[0, 0] = 0
-
         return amplitude
 
-    def fft_mask(input_frame, mask, plan_inverse):
+    @timeit()
+    def fft_mask(self, input_frame, mask):
         """
         DESCRIPTION:
             Transforms a matrix using FFT, multiplies the result by a mask, and
             then transforms the matrix back using Inverse FFT.
 
-        PARMS:
+        PARAMS:
             input_frame: (m x n) numpy array
             mask: int determining the type of filter to implement, where
                   1 = iso and 2 = horizontal decrement, etc.
@@ -162,39 +168,38 @@ class FFT(Feature):
         if mask not in [1, 2]:
             return ValueError('Invalid mask: {0}'.format(mask))
 
-        if plan_inverse is None:
-            return ValueError('Invalid plan_inverse: {0}'.format(plan_inverse))
-
-        # this is what requires GPU optimization
-        # perform discrete Fourier transform on input frame
-        dft_frame = cv3.dft(np.float32(input_frame),
-                            flags=cv3.DFT_COMPLEx_OUTPUT)
-        gpu_phase = gpuarray.to_gpu(cv3.phase(dft_frame[:, :, 0],
-                                              dft_frame[:, :, 1]))
-        output = gpu.array.empty_like(gpu_phase)
+        dft_frame = pyfftw.interfaces.numpy_fft.fft2(input_frame)
+        phase = np.arctan2(dft_frame.imag, dft_frame.real)
         size = np.shape(dft_frame)[1]
+
         if mask == 1:
-            amp = noise_amp(size)
+            amp = self.noise_amp(size)
         elif mask == 2:
-            amp = np.abs(dft_frame) * (1 - filter_func(90, 20, size / 2,
-                                                       .1, size,
-                                                       falloff='triangle'))
-            # replaced "t" with " falloff='triangle'": is this oK?
-        cu_fft.ifft(
-            cumath.exp(gpu_phase * 1j) * amp,
-            output, plan_inverse, True)
+            amp = np.abs(dft_frame)
+            # remove this when we have n x n images, amp is not same shape
+            rows = input_frame.shape[1] - input_frame.shape[0]
+            padding = np.zeros((rows, size))
+            amp = np.append(amp, padding, axis=0)
+            amp = amp * (1 - self.filter_func(90, 20, size // 2,
+                                              .1, size,
+                                              falloff='triangle'))
 
-        # altimg = amp*g_complex.get()
-        iframe = gpuarray.to_gpu(amp * g_complex.get())
-        iframe_gpu = gpuarray.empty_like(iframe)
-        cu_fft.ifft(iframe, iframe_gpu, plan_inverse, True)
-        # normalize the image for display
-        # should this be one by numpy instead of the gpu?
-        output_frame = output.get().real
-        output_frame -= output_frame.min()
-        output_frame /= output_frame.max
+        phase = np.exp(phase * 1j)
+        # phase shape is not same as amp so pad it with zeros
+        # remove this when we have n x n images
+        rows = amp.shape[0] - phase.shape[0]
+        padding = np.zeros((rows, size))
+        phase = np.append(phase, padding, axis=0)
+        amp = phase * amp
 
-        return output_frame
+        # remove the padded values
+        amp = amp[:240, :]
+        altimg = pyfftw.interfaces.numpy_fft.fft2(amp).real
+        altimg -= altimg.min()
+        altimg /= altimg.max()
 
-        def extract(self):
-            return self
+        return altimg
+
+    def extract(self, frame):
+        flipped_gray = rotate(rgb2gray(frame), 180)
+        return self.fft_mask(flipped_gray, 2)
