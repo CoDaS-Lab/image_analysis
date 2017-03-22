@@ -4,9 +4,9 @@ sys.path.append(os.getcwd() + "/../")
 
 import numpy as np
 import pyfftw
-import math
 from skimage.color import rgb2gray
-from skimage.transform import rotate
+from skimage.color import gray2rgb
+from matplotlib import pyplot as plt
 from utils.perf import *
 from extract.feature import Feature
 
@@ -121,6 +121,7 @@ class FFT(Feature):
 
         return(sffilter * anfilter)
 
+    @timeit()
     def noise_amp(self, size):
         """
         DESCRIPTION:
@@ -133,23 +134,23 @@ class FFT(Feature):
         RETURN:
             returns the amplitudes with noise added
         """
+
+        slope = 1
         x = y = np.linspace(1, size, size)
-        u, v = np.meshgrid(x, y)  # coordinates for a square grid
-        u -= size / 2
-        v -= size / 2
+        xgrid, ygrid = np.meshgrid(x, y)  # coordinates for a square grid
+        xgrid = np.subtract(xgrid, size // 2)
+        ygrid = np.subtract(ygrid, size // 2)
 
-        amplitude = np.flipud(np.fliplr(np.fft.fftshift(
-                                        (((u**2 + v**2) ** 0.5) / size) *
-                                        (2) ** 0.5)))
-        amplitude[0, 0] = 1
-        amplitude = 1 / amplitude
-        amplitude[0, 0] = 0
-        return amplitude
+        amp = np.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) + np.square(ygrid)), size * np.sqrt(2)))
+        amp = np.rot90(amp, 2)
+        amp[0, 0] = 1
+        amp = 1 / amp**slope
+        amp[0, 0] = 0
+        return amp
 
-    @timeit()
     def fft_mask(self, input_frame, mask):
         """
-        DESCRIPTION:
+        DESCRIPTION:``
             Transforms a matrix using FFT, multiplies the result by a mask, and
             then transforms the matrix back using Inverse FFT.
 
@@ -185,12 +186,10 @@ class FFT(Feature):
                                               falloff='triangle'))
 
         phase = np.exp(phase * 1j)
-        # phase shape is not same as amp so pad it with zeros
-        # remove this when we have n x n images
         rows = amp.shape[0] - phase.shape[0]
         padding = np.zeros((rows, size))
         phase = np.append(phase, padding, axis=0)
-        amp = phase * amp
+        amp = np.multiply(phase, amp)
 
         # remove the padded values
         amp = amp[:240, :]
@@ -201,5 +200,5 @@ class FFT(Feature):
         return altimg
 
     def extract(self, frame):
-        flipped_gray = rotate(rgb2gray(frame), 180)
-        return self.fft_mask(flipped_gray, 2)
+        grayframe = np.rot90(rgb2gray(frame), 2)
+        return self.fft_mask(grayframe, 1)
