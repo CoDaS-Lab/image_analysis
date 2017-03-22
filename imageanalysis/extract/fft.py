@@ -141,7 +141,8 @@ class FFT(Feature):
         xgrid = np.subtract(xgrid, size // 2)
         ygrid = np.subtract(ygrid, size // 2)
 
-        amp = np.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) + np.square(ygrid)), size * np.sqrt(2)))
+        amp = np.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) + np.square(ygrid)),
+                                        size * np.sqrt(2)))
         amp = np.rot90(amp, 2)
         amp[0, 0] = 1
         amp = 1 / amp**slope
@@ -187,7 +188,7 @@ class FFT(Feature):
 
         phase = np.exp(phase * 1j)
         rows = amp.shape[0] - phase.shape[0]
-        padding = np.zeros((rows, size))
+        padding = np.ones((rows, size))
         phase = np.append(phase, padding, axis=0)
         amp = np.multiply(phase, amp)
 
@@ -201,4 +202,9 @@ class FFT(Feature):
 
     def extract(self, frame):
         grayframe = np.rot90(rgb2gray(frame), 2)
-        return self.fft_mask(grayframe, 1)
+        filtered_img = self.fft_mask(grayframe, 1)
+        RMS = 9
+        filtered_img = np.multiply(RMS, filtered_img)
+        filtered_img = np.multiply(filtered_img, np.std(filtered_img))
+        filtered_img = np.add(filtered_img, 5)
+        return filtered_img
