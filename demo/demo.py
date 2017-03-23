@@ -34,11 +34,11 @@ pipeline_output = fe.extract_features(batch_list,
                                      [RGBToGray, BatchOP])
 
 # Now, let's access  some of the features extracted from frames
-imgs = [data_structure[0]['input']['frame'],
-        data_structure[0]['input']['grayscale']]
+imgs = [pipeline_output[0]['input']['frame'],
+        pipeline_output[0]['input']['grayscale']]
 skimage.io.imshow_collection(imgs)
 plt.show()
 
 # You can access particular features and keys in the data structure, too!
-for key, thing in data_structure[0]['input'].items():
+for key, thing in pipeline_output[0]['input'].items():
     print(key)
