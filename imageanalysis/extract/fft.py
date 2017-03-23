@@ -99,24 +99,28 @@ class FFT(Feature):
         elif falloff == 'triangle':
             for idx, val in np.ndenumerate(theta):
                 if ccwb1 <= val <= cwb1 and val <= center_orientation:
-                    anfilter[idx] = (val - center_orientation + orientation_width / 2) \
-                        * 2 / orientation_width
+                    anfilter[idx] = (val - center_orientation +
+                                     orientation_width / 2) * \
+                        2 / orientation_width
                 elif ccwb1 <= val <= cwb1 and val > center_orientation:
-                    anfilter[idx] = (-val + center_orientation_2 + orientation_width / 2) \
-                        * 2 / orientation_width
+                    anfilter[idx] = (-val + center_orientation_2 +
+                                     orientation_width / 2) * \
+                        2 / orientation_width
                 elif ccwb2 <= val <= cwb2 and val <= center_orientation_2:
-                    anfilter[idx] = (val - center_orientation_2 + orientation_width / 2) \
+                    anfilter[idx] = (val - center_orientation_2 +
+                                     orientation_width / 2) \
                         * 2 / orientation_width
                 elif ccwb2 <= val <= cwb2 and val > center_orientation_2:
-                    anfilter[idx] = (-val + center_orientation_2 + orientation_width / 2) \
+                    anfilter[idx] = (-val + center_orientation_2 +
+                                     orientation_width / 2) \
                         * 2 / orientation_width
                 else:
                     anfilter[idx] = 0
         else:
-            angfilter1 = np.exp(-((theta - center_orientation) / (.5 * orientation_width))\
-                                ** 4)
-            angfilter2 = np.exp(-((theta - center_orientation_2) / (.5 * orientation_width))\
-                                ** 4)
+            angfilter1 = np.exp(-((theta - center_orientation) /
+                                  (.5 * orientation_width)) ** 4)
+            angfilter2 = np.exp(-((theta - center_orientation_2) /
+                                  (.5 * orientation_width)) ** 4)
             anfilter = angfilter1 + angfilter2
 
         return(sffilter * anfilter)
@@ -141,7 +145,8 @@ class FFT(Feature):
         xgrid = np.subtract(xgrid, size // 2)
         ygrid = np.subtract(ygrid, size // 2)
 
-        amp = np.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) + np.square(ygrid)),
+        amp = np.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) +
+                                        np.square(ygrid)),
                                         size * np.sqrt(2)))
         amp = np.rot90(amp, 2)
         amp[0, 0] = 1
