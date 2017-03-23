@@ -30,7 +30,7 @@ batch_list = vd.decode_mpeg(vid_path + 'test_video.mp4',
 print('Batch_list contains {0} batches!'.format(len(batch_list)))
 
 # Extract features (e.g. Grayscale and "BatchOP") from data
-data_structure = fe.extract_features(batch_list,
+pipeline_output = fe.extract_features(batch_list,
                                      [RGBToGray, BatchOP])
 
 # Now, let's access  some of the features extracted from frames
