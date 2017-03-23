@@ -20,10 +20,11 @@ vid_path = os.getcwd() + '/../test/test_data/'
 
 # Download test_video.mp4 into directory if it doesn't already exist
 if not os.path.exists(vid_path + 'test_video.mp4'):
-    wget.download("https://s3.amazonaws.com/codasimageanalysis/test_video.mp4", vid_path)
+    wget.download("https://s3.amazonaws.com/codasimageanalysis/test_video.mp4", 
+                  vid_path)
 
 # Decode video to build dataset
-batch_list = vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
+batch_list = vd.decode_mpeg(vid_path + 'test_video.mp4',
                             batch_size=2, end_idx=10)
 
 print('Batch_list contains {0} batches!'.format(len(batch_list)))
