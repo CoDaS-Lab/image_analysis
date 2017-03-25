@@ -1,12 +1,16 @@
 import unittest
 import os
 import wget
+import time
+import sys
+from utils.perf import *
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
 from test.extract import test_features as features
 
 
 class TestFeatureExtractor(unittest.TestCase):
+
     def setUp(self):
         data_dir = 'test/test_data/'
         vid_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video.mp4'
@@ -14,6 +18,11 @@ class TestFeatureExtractor(unittest.TestCase):
             wget.download(vid_link, data_dir)
 
         self.video_path = data_dir + 'test_video.mp4'
+        self.timing_start = time.time()
+
+    def tearDown(self):
+        elapsed = time.time() - self.timing_start
+        print('\n{} ({:.5f} sec)'.format(self.id(), elapsed))
 
     def test_gen_frame_features(self):
         # load 9 frames
@@ -48,6 +57,7 @@ class TestFeatureExtractor(unittest.TestCase):
 
         del video
 
+    # @timeit(classname=__name__)
     def test_extract_features(self):
         video = vd.decode_mpeg(self.video_path, end_idx=8)
 
