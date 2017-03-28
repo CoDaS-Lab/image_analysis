@@ -89,4 +89,4 @@ ENV/
 .ropeproject
 
 # Test data
-imageanalysis/test/test_data/**/*
+test/test_data/**/*
