@@ -57,7 +57,6 @@ class TestFeatureExtractor(unittest.TestCase):
 
         del video
 
-    # @timeit(classname=__name__)
     def test_extract_features(self):
         video = vd.decode_mpeg(self.video_path, end_idx=8)
 
