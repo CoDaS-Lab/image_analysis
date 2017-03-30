@@ -6,9 +6,9 @@ from setuptools import setup
 
 
 setup(
-    name='image-analysis',
+    name='image_analysis',
     version='0.0.1',
-    url='https://github.com/CoDaS-Lab/image-analysis',
+    url='https://github.com/CoDaS-Lab/image_analysis',
     license='BSD',
     author='CoDaSLab http://shaftolab.com/',
     author_email='s@sophiaray.info',
@@ -19,7 +19,7 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3.5',
     ],
-    packages=['imageanalysis'],
+    packages=['image_analysis'],
     install_requires=['scipy >= 0.18.1','scikit-learn>=0.17', 'ffmpy>=0.2.0',
             'sk-video>=1.1.7', 'scikit-image>=0.12.0', 'wget>=3.2'],
     extras_require=None,

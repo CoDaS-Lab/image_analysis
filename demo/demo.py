@@ -20,24 +20,25 @@ vid_path = os.getcwd() + '/../test/test_data/'
 
 # Download test_video.mp4 into directory if it doesn't already exist
 if not os.path.exists(vid_path + 'test_video.mp4'):
-    wget.download("https://s3.amazonaws.com/codasimageanalysis/test_video.mp4", vid_path)
+    wget.download("https://s3.amazonaws.com/codasimageanalysis/test_video.mp4", 
+                  vid_path)
 
 # Decode video to build dataset
-batch_list = vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
+batch_list = vd.decode_mpeg(vid_path + 'test_video.mp4',
                             batch_size=2, end_idx=10)
 
 print('Batch_list contains {0} batches!'.format(len(batch_list)))
 
 # Extract features (e.g. Grayscale and "BatchOP") from data
-data_structure = fe.extract_features(batch_list,
+pipeline_output = fe.extract_features(batch_list,
                                      [RGBToGray, BatchOP])
 
 # Now, let's access  some of the features extracted from frames
-imgs = [data_structure[0]['input']['frame'],
-        data_structure[0]['input']['grayscale']]
+imgs = [pipeline_output[0]['input']['frame'],
+        pipeline_output[0]['input']['grayscale']]
 skimage.io.imshow_collection(imgs)
 plt.show()
 
 # You can access particular features and keys in the data structure, too!
-for key, thing in data_structure[0]['input'].items():
+for key, thing in pipeline_output[0]['input'].items():
     print(key)

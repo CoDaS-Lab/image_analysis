@@ -2,6 +2,7 @@ import unittest
 import warnings
 import skvideo.io
 import os
+import time
 import sys
 import numpy as np
 import wget
@@ -34,8 +35,11 @@ class TestVideoDecoder(unittest.TestCase):
         self.height = self.correct_data.shape[1]
         self.nchannels = self.correct_data.shape[3]
 
-    def test_true(self):
-        self.assertTrue(1, 1)
+        self.timing_start = time.time()
+
+    def tearDown(self):
+        elapsed = time.time() - self.timing_start
+        print('\n{} ({:.5f} sec)'.format(self.id(), elapsed))
 
     def test_decode_mpeg(self):
         # Ignore weird resource warnings for now.

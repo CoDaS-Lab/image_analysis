@@ -15,4 +15,3 @@ class Feature:
 
     def extract(self, **inputs_for_feature_extraction):
         raise NotImplementedError
-

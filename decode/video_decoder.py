@@ -9,7 +9,7 @@ def pad_batch(batch, batch_size, frame, pad=True):
     DESCRIPTION:
         Take in a batch, pad it with 0s if necessary and return appended batch
 
-    ARGS:
+    PARAMS:
         frame: a numpy array extracted from an MPEG
                 (length x width x channel)
         batch: list of frames
@@ -42,7 +42,7 @@ def decode_mpeg(v_path, batch_size=1, stride=1, start_idx=0, end_idx=-1,
         Creates a list of batches of frames from an MPEG file.
 
     ARGS:
-        v_path: Path to MPEG video (i.e. include the video's name & 
+        v_path: Path to MPEG video (i.e. include the video's name &
                 extension)
         batch_size: Number of frames in each batch
         stride: Stride indicates beginning of batches, i.e. every stride'th
