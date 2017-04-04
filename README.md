@@ -6,6 +6,7 @@
 * scikit-learn >=0.17
 * sk-video >=1.17
 * scikit-image >=0.12.0
+* matplotlib >= 2.0.0 (for demos only)
 * python 3.5
 * wget
 
