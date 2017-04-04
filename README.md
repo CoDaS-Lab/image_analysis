@@ -1,17 +1,22 @@
 # imageanalysis
 
+### Optional Dependencies (Demos ect.)
+*  matplotlib >= 2.0.0
+
+
 ### Python Dependencies
 * numpy >= 1.12.0
 * scipy >= 0.18.1
 * scikit-learn >=0.17
 * sk-video >=1.17
 * scikit-image >=0.12.0
-* matplotlib >= 2.0.0 (for demos only)
 * python 3.5
 * wget
+* pyfftw
 
 ### External Dependencies
 * ffmpeg >=3.2.2 or libav (10 or 11)
+* fftw >= 3
 
 ## Installation
 
@@ -26,6 +31,10 @@ brew install ffmpeg
 Installing ffmpeg:
 ```
 sudo apt-get install ffmpeg
+```
+Installing fftw:
+``` 
+sudo sudo apt-get install fftw3
 ```
 
 ### Requirements (Windows)

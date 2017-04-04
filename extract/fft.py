@@ -7,7 +7,7 @@ import pyfftw
 from skimage.color import rgb2gray
 from skimage.color import gray2rgb
 from matplotlib import pyplot as plt
-from utils.perf import *
+from decode.utils import timeit
 from extract.feature import Feature
 
 

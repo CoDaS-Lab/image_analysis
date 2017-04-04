@@ -5,7 +5,6 @@ sys.path.append(os.getcwd() + "/../")
 import skimage.io
 import wget
 from matplotlib import pyplot as plt
-from utils.perf import *
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
 from extract.fft import FFT
