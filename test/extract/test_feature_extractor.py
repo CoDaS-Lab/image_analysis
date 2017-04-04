@@ -3,7 +3,6 @@ import os
 import wget
 import time
 import sys
-from utils.perf import *
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
 from test.extract import test_features as features

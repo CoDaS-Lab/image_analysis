@@ -15,8 +15,8 @@ class TestUtils(unittest.TestCase):
 
     def test_load_mult_imgs(self):
         img_dir = os.getcwd() + '/test/test_data/testimgs/'
-        testimg1 = skimage.io.imread(img_dir + 'testimg1.jpg')
-        testimg2 = skimage.io.imread(img_dir + 'testimg2.jpg')
+        testimg1 = skimage.io.imread(img_dir + 'test1.jpg')
+        testimg2 = skimage.io.imread(img_dir + 'test2.jpg')
         imgs = utils.load_mult_images(dirname=img_dir)
 
         self.assertTrue(np.array_equal(testimg1, imgs[0][0]))
