@@ -3,7 +3,6 @@ import warnings
 import skvideo.io
 import os
 import time
-import sys
 import numpy as np
 import wget
 from decode import video_decoder as vd
@@ -18,6 +17,7 @@ the issue was video_decoder.py, skvideo, or the test(s).
 
 
 class TestVideoDecoder(unittest.TestCase):
+
     def setUp(self):
         data_dir = 'test/test_data/'
         vid_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video.mp4'
