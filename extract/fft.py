@@ -198,17 +198,17 @@ class FFT(Feature):
 
         # remove the padded values
         amp = amp[:240, :]
-        altimg = pyfftw.interfaces.numpy_fft.fft2(amp).real
+        altimg = pyfftw.interfaces.numpy_fft.ifft2(amp).real
         altimg -= altimg.min()
         altimg /= altimg.max()
 
         return altimg
 
     def extract(self, frame):
-        grayframe = np.rot90(rgb2gray(frame), 2)
+        grayframe = rgb2gray(frame)
         filtered_img = self.fft_mask(grayframe, 1)
-        RMS = 9
-        filtered_img = np.multiply(RMS, filtered_img)
-        filtered_img = np.multiply(filtered_img, np.std(filtered_img))
-        filtered_img = np.add(filtered_img, 5)
+        # RMS = 9
+        # filtered_img = np.multiply(RMS, filtered_img)
+        # filtered_img = np.multiply(filtered_img, np.std(filtered_img))
+        # filtered_img = np.add(filtered_img, 5)
         return filtered_img
