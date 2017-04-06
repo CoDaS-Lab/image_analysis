@@ -125,7 +125,6 @@ class FFT(Feature):
 
         return(sffilter * anfilter)
 
-    @timeit()
     def noise_amp(self, size):
         """
         DESCRIPTION:
