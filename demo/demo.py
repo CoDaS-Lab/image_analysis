@@ -20,7 +20,7 @@ vid_path = os.getcwd() + '/../test/test_data/'
 
 # Download test_video.mp4 into directory if it doesn't already exist
 if not os.path.exists(vid_path + 'test_video.mp4'):
-    wget.download("https://s3.amazonaws.com/codasimageanalysis/test_video.mp4", 
+    wget.download('https://s3.amazonaws.com/codasimageanalysis/test_video.mp4',
                   vid_path)
 
 # Decode video to build dataset
@@ -31,7 +31,7 @@ print('Batch_list contains {0} batches!'.format(len(batch_list)))
 
 # Extract features (e.g. Grayscale and "BatchOP") from data
 pipeline_output = fe.extract_features(batch_list,
-                                     [RGBToGray, BatchOP])
+                                      [RGBToGray, BatchOP])
 
 # Now, let's access  some of the features extracted from frames
 imgs = [pipeline_output[0]['input']['frame'],

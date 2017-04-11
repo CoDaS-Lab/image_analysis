@@ -52,5 +52,6 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(len(imgs[0]), batchsize)
         self.assertEqual(len(imgs[1]), batchsize)
 
+
 if __name__ == '__name__':
     unittest.main()

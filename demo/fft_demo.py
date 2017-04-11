@@ -13,7 +13,7 @@ from extract.fft import FFT
 vid_path = os.getcwd() + '/../test/test_data/'
 
 if not os.path.exists(vid_path + 'test_video.mp4'):
-    wget.download("https://s3.amazonaws.com/codasimageanalysis/test_video.mp4",
+    wget.download('https://s3.amazonaws.com/codasimageanalysis/test_video.mp4',
                   vid_path)
 
 batch_list = vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',

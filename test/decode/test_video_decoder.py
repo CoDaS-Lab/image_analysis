@@ -260,5 +260,6 @@ class TestVideoDecoder(unittest.TestCase):
 
         # TODO: Test batch_size < stride, with padding off.
 
+
 if __name__ == '__main__':
     unittest.main()
