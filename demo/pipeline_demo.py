@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
 from demo_features import RGBToGray
-from extract.bowtie_filter import BowtieFilter
+from extract.orientation_filter import OrientationFilter
 from demo_features import BatchOP
 from extract.pipeline import Pipeline
 
@@ -17,7 +17,7 @@ vid_path = os.getcwd() + '/../test/test_data/'
 data = vd.decode_mpeg(vid_path + 'test_video.mp4',
                       batch_size=2, end_idx=9, stride=2)
 
-bowtie = BowtieFilter(mask=2)
+bowtie = OrientationFilter(mask='bowtie')
 
 bpipe = Pipeline(data=data,
                  save=False,

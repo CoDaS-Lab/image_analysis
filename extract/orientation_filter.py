@@ -11,7 +11,7 @@ from decode.utils import timeit
 from extract.feature import Feature
 
 
-class BowtieFilter(Feature):
+class OrientationFilter(Feature):
     """DESCRIPTION:\n
             Creates a filter that can be multiplied by the amplitude spectrum
             of an image to increase/decrease specific orientations/spatial
@@ -26,18 +26,28 @@ class BowtieFilter(Feature):
             falloff: string 'triangle' or 'rectangle' shape of the filter
                     falloff from the center."""
 
-    def __init__(self, mask=None, center_orientation=None,
-                 orientation_width=None, high_cutoff=None, low_cutoff=None,
+    def __init__(self, mask='bowtie', center_orientation=90,
+                 orientation_width=20, high_cutoff=None, low_cutoff=.1,
                  target_size=None, falloff='', ):
-        Feature.__init__(self, 'bowtie_filter', frame_op=True, batch_op=False)
 
-        self.mask = mask or 1
-        self.center_orientation = center_orientation or 90
-        self.orientation_width = orientation_width or 20
+        Feature.__init__(self, mask + '_filter', frame_op=True, 
+                         batch_op=False)
+
+        self.mask = mask
+        available_mask = ['bowtie', 'noise']
+        if self.mask not in available_mask:
+            raise ValueError('mask: {0} does not exist'.format(mask))
+
+        self.center_orientation = center_orientation
+        self.orientation_width = orientation_width
         self.high_cutoff = high_cutoff
-        self.low_cutoff = low_cutoff or .1
+        self.low_cutoff = low_cutoff
         self.target_size = target_size
+
         self.falloff = falloff or 'triangle'
+        available_falloff = ['rectangle', 'triangle']
+        if self.falloff not in available_falloff:
+            raise ValueError('falloff: {0} does not exist'.format(self.falloff))
 
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
                low_cutoff, target_size, falloff=''):
@@ -202,20 +212,25 @@ class BowtieFilter(Feature):
         size = np.shape(dft_frame)[1]
 
         # create filter
-        if self.mask == 1:
+        if self.mask == 'noise':
             amp = self.noise_amp(size)
-        elif self.mask == 2:
+        elif self.mask == 'bowtie':
             amp = np.abs(dft_frame)
             # remove this when we have n x n images, amp is not same shape
             rows = grayframe.shape[1] - grayframe.shape[0]
             padding = np.zeros((rows, size))
             amp = np.append(amp, padding, axis=0)
-            self.high_cutoff = size // 2
-            self.target_size = size
+            if self.high_cutoff is None:
+                self.high_cutoff = size // 2
+
+            if self.target_size is None:
+                self.target_size = size
+
             bowtie = self.bowtie(self.center_orientation,
                                  self.orientation_width, self.high_cutoff,
                                  self.low_cutoff, self.target_size,
                                  self.falloff)
+
             amp = amp * (1 - bowtie)
 
         # fft spectrum  * amp (filter)

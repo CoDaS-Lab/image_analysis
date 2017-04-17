@@ -7,7 +7,7 @@ import wget
 from matplotlib import pyplot as plt
 from decode import video_decoder as vd
 from extract import feature_extractor as fe
-from extract.bowtie_filter import BowtieFilter
+from extract.orientation_filter import OrientationFilter
 
 
 vid_path = os.getcwd() + '/../test/test_data/'
@@ -21,7 +21,7 @@ batch_list = vd.decode_mpeg(os.getcwd() + '/../test/test_data/test_video.mp4',
 
 
 transformed_data = fe.extract_features(batch_list,
-                                       [BowtieFilter])
+                                       [OrientationFilter])
 
 # Now, let's access  some of the features extracted from frames
 img = img_fft = transformed_data[0]['input']['frame']
