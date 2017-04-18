@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.getcwd() + "/../")
-
 import skimage.io
 import wget
 from matplotlib import pyplot as plt
@@ -39,7 +38,6 @@ print(frame['input'].keys())
 print(frame['metadata'].keys())
 
 
-imgs = [frame['input']['original'],
-        frame['input'][bowtie.key_name]]
-skimage.io.imshow_collection(imgs)
+img = frame['input'][bowtie.key_name]
+skimage.io.imshow(img)
 plt.show()
