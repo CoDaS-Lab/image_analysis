@@ -7,7 +7,7 @@ from decode import video_decoder as vd
 from extract.pipeline import Pipeline
 from test.extract import test_features as features
 
-# TODO: write test for train_models and predict, and transform regular save
+# TODO: write test for train_models and predict
 
 
 class TestPipeline(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestPipeline(unittest.TestCase):
         elapsed = time.time() - self.timing_start
         print('\n{} ({:.5f} sec)'.format(self.id(), elapsed))
 
-    def test_transform_regular(self):
+    def test_transform_parallel_save(self):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
@@ -48,15 +48,15 @@ class TestPipeline(unittest.TestCase):
                 # op_keys should have only two items batchNum, rgb2gray,
                 # maxPixel, and original
                 self.assertEqual(len(op_keys), 4)
-                self.assertTrue(maxPixel.key_name in op_keys)
-                self.assertTrue(batchNum.key_name in op_keys)
-                self.assertTrue(rgb2gray.key_name in op_keys)
-                self.assertTrue('original' in op_keys)
+                self.assertIsNotNone(frame['input'][maxPixel.key_name])
+                self.assertIsNotNone(frame['input'][rgb2gray.key_name])
+                self.assertIsNotNone(frame['input'][batchNum.key_name])
+                self.assertIsNotNone(frame['input']['original'])
 
                 metadata = list(frame['metadata'].keys())
                 self.assertEqual(len(metadata), 2)
-                self.assertTrue('frame_num' in metadata)
-                self.assertTrue('batch_num' in metadata)
+                self.assertIsNotNone(frame['metadata']['frame_num'])
+                self.assertIsNotNone(frame['metadata']['batch_num'])
 
     def test_transform_sequential(self):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
@@ -80,13 +80,44 @@ class TestPipeline(unittest.TestCase):
                 # op_keys should have only two items batchOP and rgb2gray
                 # without the original
                 self.assertEqual(len(op_keys), 2)
-                self.assertTrue(maxPixel.key_name in op_keys)
-                self.assertTrue(batchNum.key_name in op_keys)
+                self.assertIsNotNone(frame['input'][maxPixel.key_name])
+                self.assertIsNotNone(frame['input'][batchNum.key_name])
 
                 metadata = list(frame['metadata'].keys())
                 self.assertEqual(len(metadata), 2)
-                self.assertTrue('frame_num' in metadata)
-                self.assertTrue('batch_num' in metadata)
+                self.assertIsNotNone(frame['metadata']['frame_num'])
+                self.assertIsNotNone(frame['metadata']['batch_num'])
+
+    def test_transform_sequential_save(self):
+
+        data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
+                              stride=2)
+
+        rgb2gray = features.RGBToGray()
+        maxPixel = features.MaxPixel()
+        batchNum = features.BatchOP()
+
+        testpipe = Pipeline(data=data,
+                            save=True,
+                            parallel=False,
+                            operations=[rgb2gray, maxPixel, batchNum],
+                            models=None)
+        # extract information or transform data by calling:
+        pipeline_ouput = testpipe.transform()
+
+        for batch in pipeline_ouput:
+            for frame in batch:
+                op_keys = list(frame['input'].keys())
+                self.assertEqual(len(op_keys), 4)
+                self.assertIsNotNone(frame['input'][maxPixel.key_name])
+                self.assertIsNotNone(frame['input'][rgb2gray.key_name])
+                self.assertIsNotNone(frame['input'][batchNum.key_name])
+                self.assertIsNotNone(frame['input']['original'])
+
+                metadata = list(frame['metadata'].keys())
+                self.assertEqual(len(metadata), 2)
+                self.assertIsNotNone(frame['metadata']['frame_num'])
+                self.assertIsNotNone(frame['metadata']['batch_num'])
 
     def test_create_dict(self):
         fake_transformations = {'test1': 123456}

@@ -52,7 +52,7 @@ class Pipeline:
             raise ValueError('No data in the pipeline')
 
         if self.parallel and self.save:
-            return self.transform_regular_save()
+            return self.transform_parallel_save()
         elif self.parallel and not self.save:
             raise ValueError('Can\'t extract all features and not save at\
                              the same time')
@@ -61,7 +61,6 @@ class Pipeline:
         elif not self.parallel and self.save:
             return self.transform_sequential_save()
 
-    # TODO: implement this function
     def transform_sequential_save(self):
         """
         DESCRIPTION:
@@ -72,7 +71,56 @@ class Pipeline:
         RETURN:
             transformed_data
         """
-        pass
+
+        frame_count = 0
+        batch_count = 0
+        self.data_dict = []
+
+        for batch in self.data:
+            batch_dict = []
+            batch_transforms = {
+                'original': batch
+            }
+            # temp data will get fed to next operation for each operation
+            # create copy of batch don't change batch
+            temp_batch = batch
+
+            for op in self.batch_operations:
+                # remove the last data added and we'll pass to next
+                # operation in pipeline
+                temp_batch = op.extract(temp_batch)
+                batch_transforms.update({op.key_name: temp_batch})
+
+            for frame in batch:
+                # since we running sequentialy only last operation is added
+                # well keep track of  key of last operation
+                frame_transforms = {
+                    'original': frame
+                }
+                temp_frame = frame
+
+                for op in self.frame_operations:
+                    # extract next feature based on current feature(sequential)
+                    temp_frame = op.extract(temp_frame)
+                    frame_transforms.update({op.key_name: temp_frame})
+
+                # add batch features, if any
+                frame_transforms.update(batch_transforms)
+
+                # create dict of frame features
+                metadata = {
+                    'frame_num': frame_count,
+                    'batch_num': batch_count
+                }
+                frame_dict = self.create_dict(transforms=frame_transforms,
+                                              metadata=metadata)
+                batch_dict.append(frame_dict)
+                frame_count += 1
+
+            batch_count += 1
+            self.data_dict.append(batch_dict)
+
+        return self.data_dict
 
     def transform_sequential(self):
         """
@@ -139,7 +187,7 @@ class Pipeline:
 
         return self.data_dict
 
-    def transform_regular_save(self):
+    def transform_parallel_save(self):
         """
         DESCRIPTION:
             extracts all information in operations list. By regular we mean

@@ -57,7 +57,6 @@ def decode_mpeg(v_path, batch_size=1, stride=1, start_idx=0, end_idx=-1,
         if the last batch is not full, it is padded with frames of:
         np.zeros((frame.shape))
 
-    #TODO create optional saving, incase someone wants to visualize the frames
     """
 
     if start_idx < 0 or end_idx < -1:
