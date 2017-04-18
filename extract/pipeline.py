@@ -1,5 +1,8 @@
 import numpy as np
 
+# TODO add functionality to get info from previous pipelines 
+# or 'pipeline chaining'
+
 
 class Pipeline:
     """
@@ -265,7 +268,6 @@ class Pipeline:
         return frame_dict
 
     def data_as_nparray(self, data=None):
-        # TODO: write test
         """
         DESCRIPTION:
             returns the data as numpy arrays

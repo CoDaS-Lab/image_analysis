@@ -4,7 +4,7 @@ import numpy as np
 import skimage.io
 from functools import wraps
 
-_default_ext = ('.jpg', '.png')
+default_ext = ('.jpg', '.png')
 
 
 def timeit(thresh=None, classname=''):
@@ -63,7 +63,7 @@ def load_mult_images(dirname, exts=None, batchsize=1):
         raise ValueError('batchsize: {0} is invalid'.format(batchsize))
 
     if exts is None:
-        exts = _default_ext
+        exts = default_ext
     elif not isinstance(exts, tuple):
         raise ValueError('exts: {0} is invalid'.format(exts.__class__))
 
