@@ -30,7 +30,7 @@ class OrientationFilter(Feature):
                  orientation_width=20, high_cutoff=None, low_cutoff=.1,
                  target_size=None, falloff='', ):
 
-        Feature.__init__(self, mask + '_filter', frame_op=True, 
+        Feature.__init__(self, mask + '_filter', frame_op=True,
                          batch_op=False)
 
         self.mask = mask
@@ -137,7 +137,7 @@ class OrientationFilter(Feature):
                                      orientation_width / 2) * \
                         2 / orientation_width
                 elif ccwb1 <= val <= cwb1 and val > center_orientation:
-                    anfilter[idx] = (-val + center_orientation_2 +
+                    anfilter[idx] = (-val + center_orientation +
                                      orientation_width / 2) * \
                         2 / orientation_width
                 elif ccwb2 <= val <= cwb2 and val <= center_orientation_2:
