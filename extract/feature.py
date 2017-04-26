@@ -14,6 +14,8 @@ class Feature:
         self.batch_op = batch_op
         self.frame_op = frame_op
         self.key_name = key_name
+        self.save = False
+
 
     def extract(self, **args):
         """
