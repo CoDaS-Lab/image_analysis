@@ -47,7 +47,7 @@ class OrientationFilter(Feature):
         self.falloff = falloff or 'triangle'
         available_falloff = ['rectangle', 'triangle']
         if self.falloff not in available_falloff:
-            raise ValueError('falloff: {0} does not exist'.format(self.falloff))
+            raise ValueError('falloff: {0} is invalid'.format(self.falloff))
 
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
                low_cutoff, target_size, falloff=''):
