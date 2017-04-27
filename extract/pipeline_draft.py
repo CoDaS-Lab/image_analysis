@@ -1,13 +1,15 @@
 import numpy as np
 from feature import Feature
 
+
 class Pipeline:
     def __init__(self, ops=None, data=None, seq=None, save_all=None,
                  models=None):
         self.data = data
         self.models = models      # Should be a list of models.
-        self.save_all = save_all  # True saves all, False saves none, and
-                                  # None uses defaults set by user.
+        # True saves all, False saves none, and
+        # None uses defaults set by user.
+        self.save_all = save_all
 
         self.batch_ops = None
         self.frame_ops = None
@@ -16,7 +18,6 @@ class Pipeline:
 
         self.empty_frame = {}           # Defined by set method below.
         self.output = []          # Output data structure of the pipeline.
-
 
     def set_ops(self, ops, seq):
         batch_ops = []
@@ -29,8 +30,8 @@ class Pipeline:
                 elif op.frame_op:
                     frame_ops.append(op)
                 else:
-                    raise ValueError('One and only one of either batch op or '
-                                      + 'or frame op is allowed to be True!')
+                    raise ValueError('One and only one of either batch op or' +
+                                     'or frame op is allowed to be True!')
         elif ops is None or ops == []:
             batch_ops = []
             frame_ops = []
@@ -40,16 +41,14 @@ class Pipeline:
                 assert isinstance(op, Feature)
         elif seq is None or seq == []:
             seq = []
-        
+
         self.batch_ops = batch_ops
         self.frame_ops = frame_ops
         self.seq_ops = seq
 
-
     def reset_ops(self, ops=None, seq=None):
         self.set_ops(ops, seq)
 
-    
     def set_batch_ops(self, batch_ops=None):
         if batch_ops is None:
             batch_ops = []
@@ -60,24 +59,22 @@ class Pipeline:
 
         self.batch_ops = batch_ops
 
-
     def set_frame_ops(self, frame_ops=None):
         if frame_ops is None:
             frame_ops = []
-        
+
         for op in frame_ops:
             assert isinstance(op, Feature)
             assert op.frame_op
 
         self.frame_ops = frame_ops
 
-
-    def set_seq(self, seq=[]):
+    def set_seq(self, seq=None):
         for op in seq_ops:
             assert isinstance(Feature)
-        # Need to handle case of someone sending a batch into frame op & vise versa
+        # Need to handle case of someone sending a batch into frame op 
+        # & vise versa
         self.seq_ops = seq_ops
-
 
     def set_empty_frame(self, batch_ops, frame_ops, seq_ops):
         assert isinstance(batch_ops, list)
@@ -102,9 +99,8 @@ class Pipeline:
 
         self.empty_frame = frame
 
-
     def extract(self, keep_input_data=True):
-        if self.batch_ops == self.frame_ops == self.seq_ops == []
+        if self.batch_ops == self.frame_ops == self.seq_ops == []:
             raise ValueError('No features were specified for extraction.')
         elif self.seq_ops == []:
             self.extract_nonseq(self.data, self.batch_ops, self.frame_ops)
@@ -117,7 +113,7 @@ class Pipeline:
             self.data = []
 
     def extract_nonseq(self, data, batch_ops, frame_ops, seq_ops):
-        self.set_frame(batch_ops, frame_ops, seq_ops):
+        self.set_frame(batch_ops, frame_ops, seq_ops)
         n_frame = 0
         n_batch = 0
 
@@ -125,46 +121,44 @@ class Pipeline:
             batch_dict = {}
             for op in batch_ops:
                 batch_dict.update({op.key_name: op.extract(batch)})
-            
+
             for frame in batch:
                 frame_dict = self.empty_frame
                 for op in frame_ops:
-                    frame_dict['frame_features'][op.key_name] = op.extract(frame)
+                    frame_dict['frame_features'][op.key_name] = op.extract(
+                        frame)
                     frame_dict['batch_features'].update(batch_dict)
                 frame_dict['meta_data'].update({'frame_number': n_frame,
-                                           'batch_number': n_batch})
+                                               'batch_number': n_batch})
                 self.output.append(frame_dict)
                 n_frame += 1
             n_batch += 1
 
-
     def extract_sequence(self, seq_ops):
         for op in seq_ops:
             if op.save:
-            # Still need to implement something that accoutns for save vars.
-
+                # Still need to implement something that accoutns for save vars
+                pass
 
     def as_ndarray(self, frame_key=None, batch_key=None, seq_key=None):
         keys = [frame_key] + [batch_key] + [seq_key]
-        
+
         key_count = 0
         for x in keys:
             if x is not None:
                 key_count += 1
         if key_count != 1:
             raise ValueError('One and only one of the three keys may be set.')
-        
-        elif keys[0] is not None:
-            asdf
-        elif keys[1] is not None:
 
-        
+        # elif keys[0] is not None:
+        #     asdf
+        # elif keys[1] is not None:
+
         data = []
         for frame_dict in self.output:
             data.append(self.frame_dict[key])
-        
-        return np.array(data)
 
+        return np.array(data)
 
     def predict(self, model=''):
         pass
