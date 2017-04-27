@@ -1,7 +1,5 @@
 import os
 import sys
-sys.path.append(os.getcwd())
-
 import numpy as np
 import pyfftw
 from skimage.color import rgb2gray
@@ -69,8 +67,8 @@ class OrientationFilter(Feature):
         RETURN:\n
             filt: return the bowtie shaped filter.
         """
-        if (target_size % 2) != 0:
-            raise ValueError('Target_size should be even!')
+        # if (target_size % 2) != 0:
+        #     raise ValueError('Target_size should be even!')
 
         x = y = np.linspace(1, target_size // 2, target_size // 2 + 1)
         u, v = np.meshgrid(x, y)
@@ -128,7 +126,7 @@ class OrientationFilter(Feature):
 
         if falloff == 'rectangle':
             anfilter = ((ccwb1 <= theta) & (theta <= cwb1)) | (
-                (ccwb2 <= theta) & (theta <= csb2))
+                (ccwb2 <= theta) & (theta <= cwb2))
             # filt = sffiler*anfilter
         elif falloff == 'triangle':
             for idx, val in np.ndenumerate(theta):
@@ -216,10 +214,6 @@ class OrientationFilter(Feature):
             amp = self.noise_amp(size)
         elif self.mask == 'bowtie':
             amp = np.abs(dft_frame)
-            # remove this when we have n x n images, amp is not same shape
-            rows = grayframe.shape[1] - grayframe.shape[0]
-            padding = np.zeros((rows, size))
-            amp = np.append(amp, padding, axis=0)
             if self.high_cutoff is None:
                 self.high_cutoff = size // 2
 
@@ -235,25 +229,11 @@ class OrientationFilter(Feature):
 
         # fft spectrum  * amp (filter)
         phase = np.exp(phase * 1j)
-        rows = amp.shape[0] - phase.shape[0]
-        padding = np.ones((rows, size))
-        phase = np.append(phase, padding, axis=0)
         amp = np.multiply(phase, amp)
 
-        # remove the padded values
-        amp = amp[:240, :]
         # inverse fft and normalize
         altimg = pyfftw.interfaces.numpy_fft.ifft2(amp).real
         altimg -= altimg.min()
         altimg /= altimg.max()
 
         return altimg
-
-    # def extract(self, frame):
-    #     grayframe = rgb2gray(frame)
-    #     filtered_img = self.fft_mask(grayframe, 1)
-    #     # RMS = 9
-    #     # filtered_img = np.multiply(RMS, filtered_img)
-    #     # filtered_img = np.multiply(filtered_img, np.std(filtered_img))
-    #     # filtered_img = np.add(filtered_img, 5)
-    #     return filtered_img
