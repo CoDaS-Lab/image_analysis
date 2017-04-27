@@ -1,8 +1,5 @@
 import numpy as np
 
-# TODO add functionality to get info from previous pipelines 
-# or 'pipeline chaining'
-
 
 class Pipeline:
     """
