@@ -1,20 +1,21 @@
 import numpy as np
 from feature import Feature
 
-class Pipeline
+class Pipeline:
     def __init__(self, ops=None, data=None, seq=None, save_all=None,
                  models=None):
         self.data = data
-        self.save_all = save_all
-        # True saves all, False saves none. None uses default.
-        self.models = models  # Should be a list of models.
-        self.frame = {}  #  Defined by set method below.
-        self.output = []  #  Output data structure of the pipeline
+        self.models = models      # Should be a list of models.
+        self.save_all = save_all  # True saves all, False saves none, and
+                                  # None uses defaults set by user.
 
         self.batch_ops = None
         self.frame_ops = None
         self.seq_ops = None
         self.set_op_lists(ops, seq)
+
+        self.frame = {}           # Defined by set method below.
+        self.output = []          # Output data structure of the pipeline.
 
     def set_ops(self, ops, seq):
         batch_ops = []
@@ -64,7 +65,7 @@ class Pipeline
         self.frame_ops = frame_ops
 
 
-    def set_seq_ops(self, seq_ops=[]):
+    def set_seq(self, seq=[]):
         for op in seq_ops:
             assert isinstance(Feature)
         # Need to handle case of someone sending a batch into frame op & vise versa
@@ -78,8 +79,9 @@ class Pipeline
 
         frame = {
             'input': None,
+            'meta_data': None,
             'batch_features': {},
-            'frame_features': {}
+            'frame_features': {},
             'seq': None,
             'seq_features': {},
             'seq_output': None}
@@ -92,22 +94,6 @@ class Pipeline
             frame['seq_features'].update(op.key: None)
 
         self.frame = frame
-
-
-    def get_batch_ops(self):
-        return self.batch_ops
-
-
-    def get_frame_ops(self):
-        return self.frame_ops
-
-
-    def get_seq_ops(self):
-        return self.seq_ops
-
-
-    def get_empty_frame(self):
-        return self.frame
 
 
     def extract(self, keep_input_data=True):
@@ -123,14 +109,18 @@ class Pipeline
         if keep_input_data is False:
             self.data = []
 
-    def extract_nonseq(self, data, batch_ops, frame_ops):
+    def extract_nonseq(self, data, batch_ops, frame_ops, seq_ops):
+        frame = self.set_frame(self, batch_ops, frame_ops, seq_ops):
+        n_frame = 0
+        n_batch = 0
 
-        frame = mk_frame(self.batch_ops, self.frame_ops, self.seq_ops)
+        for batch in self.data:
+
 
     def extract_sequence(self, seq_ops):
         for op in seq_ops:
             if op.save:
-
+            # Still need to implement something that accoutns for save vars.
 
 
     def as_ndarray(self, key='output'):
@@ -273,7 +263,3 @@ class Pipeline
                         frame_dictionaries[count]['input'][feat] = val
                     count += 1
         return frame_dictionaries
-
-
-    def extract_non_seq(seq_ops):
-
