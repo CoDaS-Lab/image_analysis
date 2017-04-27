@@ -126,14 +126,13 @@ class Pipeline:
                 batch_dict.update({op.key_name: op.extract(batch)})
             
             for frame in batch:
-                frame = self.frame
+                frame_dict = self.empty_frame
                 for op in frame_ops:
-                    frame[op.key_name] = op.extract(frame)
-                for key, value in batch_dict.items():
-                    frame[key] = value
-                frame['meta_data'].update({'frame_number': n_frame})
-                frame['meta_data'].update({'batch_number': n_batch})
-                self.output.append(frame)
+                    frame_dict['frame_features'][op.key_name] = op.extract(frame)
+                    frame_dict['batch_features'].update(batch_dict)
+                frame_dict['meta_data'].update({'frame_number': n_frame,
+                                           'batch_number': n_batch})
+                self.output.append(frame_dict)
                 n_frame += 1
             n_batch += 1
 
