@@ -14,7 +14,7 @@ class Pipeline:
         self.seq_ops = None
         self.set_op_lists(ops, seq)
 
-        self.frame = {}           # Defined by set method below.
+        self.empty_frame = {}           # Defined by set method below.
         self.output = []          # Output data structure of the pipeline.
 
     def set_ops(self, ops, seq):
@@ -49,7 +49,10 @@ class Pipeline:
         self.set_ops(ops, seq)
 
     
-    def set_batch_ops(self, batch_ops=[]):
+    def set_batch_ops(self, batch_ops=None):
+        if batch_ops is None:
+            batch_ops = []
+
         for op in batch_ops:
             assert isinstance(op, Feature)
             assert op.batch_op
@@ -57,7 +60,10 @@ class Pipeline:
         self.batch_ops = batch_ops
 
 
-    def set_frame_ops(self, frame_ops=[]):
+    def set_frame_ops(self, frame_ops=None):
+        if frame_ops is None:
+            frame_ops = []
+        
         for op in frame_ops:
             assert isinstance(op, Feature)
             assert op.frame_op
@@ -72,7 +78,7 @@ class Pipeline:
         self.seq_ops = seq_ops
 
 
-    def set_frame(self, batch_ops, frame_ops, seq_ops):
+    def set_empty_frame(self, batch_ops, frame_ops, seq_ops):
         assert isinstance(batch_ops, list)
         assert isinstance(frame_ops, list)
         assert isinstance(seq_ops, list)
@@ -93,7 +99,7 @@ class Pipeline:
         for op in seq_ops:
             frame['seq_features'].update(op.key: None)
 
-        self.frame = frame
+        self.empty_frame = frame
 
 
     def extract(self, keep_input_data=True):
@@ -110,11 +116,26 @@ class Pipeline:
             self.data = []
 
     def extract_nonseq(self, data, batch_ops, frame_ops, seq_ops):
-        frame = self.set_frame(self, batch_ops, frame_ops, seq_ops):
+        self.set_frame(batch_ops, frame_ops, seq_ops):
         n_frame = 0
         n_batch = 0
 
         for batch in self.data:
+            batch_dict = {}
+            for op in batch_ops:
+                batch_dict.update({op.key_name: op.extract(batch)})
+            
+            for frame in batch:
+                frame = self.frame
+                for op in frame_ops:
+                    frame[op.key_name] = op.extract(frame)
+                for key, value in batch_dict.items():
+                    frame[key] = value
+                frame['meta_data'].update({'frame_number': n_frame})
+                frame['meta_data'].update({'batch_number': n_batch})
+                self.output.append(frame)
+                n_frame += 1
+            n_batch += 1
 
 
     def extract_sequence(self, seq_ops):
@@ -125,7 +146,7 @@ class Pipeline:
 
     def as_ndarray(self, key='output'):
         data = []
-        for frame_dict in self.output
+        for frame_dict in self.output:
             data.append(self.output[key])
         
         return np.array(data)
