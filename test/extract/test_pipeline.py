@@ -7,8 +7,6 @@ from decode import video_decoder as vd
 from extract.pipeline import Pipeline
 from test.extract import test_features as features
 
-# TODO: write test for train_models and predict
-
 
 class TestPipeline(unittest.TestCase):
 

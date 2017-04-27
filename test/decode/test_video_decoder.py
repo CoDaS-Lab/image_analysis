@@ -173,7 +173,6 @@ class TestVideoDecoder(unittest.TestCase):
         prompt = 'batch_size = stride test: check last batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=np.zeros(self.correct_data[0].shape))
-        # TODO:  Test batch_size = stride, with padding off.
 
         # Test batch_size > stride, with padding on.
         start = 0
@@ -214,12 +213,11 @@ class TestVideoDecoder(unittest.TestCase):
                         b_stride * (numbatches -
                                     (((end - start + 1) % b_stride) < (
                                         numframes - b_stride)))])
-        # TODO: add mini test to check last "real" frame in padded batch
+
         prompt = 'batch_size > stride test: check last batch, last frame'
         test_mpeg_frame(prompt, vd_frame=batch[-1],
                         frame=np.zeros(self.correct_data[0].shape))
 
-        # TODO: Test batch_size > stride, with padding off.
 
         # Test batch_size < stride.
         start = 0
@@ -257,8 +255,6 @@ class TestVideoDecoder(unittest.TestCase):
                                                 b_stride - numframes) > 0) *
                                                 ((end - start + 1) % b_stride -
                                                 numframes)])
-
-        # TODO: Test batch_size < stride, with padding off.
 
 
 if __name__ == '__main__':
