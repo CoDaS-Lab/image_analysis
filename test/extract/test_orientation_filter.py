@@ -36,17 +36,14 @@ class TestFeatureExtractor(unittest.TestCase):
         fimg = fft2(img)
 
         mask_filter = OrientationFilter(mask='bowtie', falloff='triangle')
-        filt = mask_filter.bowtie(90, 42, nPix, .2, nPix + 1, 'triangle')
-        filt = 1 - filt
-        filt = fftshift(filt)
-        out = ifft2(fimg * filt).real.astype(int)
+        orientation_widths = [1, 10, 20, 40, 80, 100]
+        for x in orientation_widths:
+            filt = mask_filter.bowtie(90, x, nPix, .2, nPix + 1, 'triangle')
+            filt = 1 - filt
+            filt = fftshift(filt)
+            out = ifft2(fimg * filt).real.astype(int)
 
-        skimage.io.imshow_collection([img, out])
-        plt.show()
-
-        # out = mask_filter.extract(img)
-        # skimage.io.imshow_collection([img, out])
-        # plt.show()
+            self.assertEquals(np.sum(out), 0)
 
 if __name__ == '__main__':
     unittest.main()

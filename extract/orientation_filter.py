@@ -67,8 +67,13 @@ class OrientationFilter(Feature):
         RETURN:\n
             filt: return the bowtie shaped filter.
         """
-        # if (target_size % 2) != 0:
-        #     raise ValueError('Target_size should be even!')
+        if (target_size % 2) != 0:
+            raise ValueError('Target_size should be even!')
+
+        if (orientation_width == 0):
+            raise ValueError('Can\'t set orientation_width to 0 because ' +
+                             'it will cause a division by zero in triangle ' +
+                             'filter code.')
 
         x = y = np.linspace(0, target_size // 2, target_size // 2 + 1)
         u, v = np.meshgrid(x, y)
