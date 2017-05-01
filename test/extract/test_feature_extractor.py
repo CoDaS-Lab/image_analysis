@@ -68,5 +68,5 @@ class TestFeatureExtractor(unittest.TestCase):
             self.assertIsNotNone(frame['input']['batch_length'])
 
 
-if __name__ == '__name__':
+if __name__ == '__main__':
     unittest.main()
