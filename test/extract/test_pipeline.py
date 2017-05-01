@@ -28,7 +28,7 @@ class TestPipeline(unittest.TestCase):
                               stride=2)
 
         rgb2gray = features.RGBToGray()
-        maxPixel = features.MaxPixel()
+        maxPixel = features.ArgMaxPixel()
 
         testpipe = Pipeline(data=data,
                             ops=[rgb2gray, maxPixel],
@@ -53,7 +53,7 @@ class TestPipeline(unittest.TestCase):
                               stride=2)
 
         rgb2gray = features.RGBToGray()
-        maxPixel = features.MaxPixel()
+        maxPixel = features.ArgMaxPixel()
 
         testpipe = Pipeline(data=data,
                             seq=[rgb2gray, maxPixel],
@@ -79,7 +79,7 @@ class TestPipeline(unittest.TestCase):
                               stride=2)
 
         rgb2gray = features.RGBToGray()
-        maxPixel = features.MaxPixel()
+        maxPixel = features.ArgMaxPixel()
         maxPixel.save = True
 
         testpipe = Pipeline(data=data,
@@ -118,7 +118,7 @@ class TestPipeline(unittest.TestCase):
                               stride=2)
 
         rgb2gray = features.RGBToGray()
-        maxPixel = features.MaxPixel()
+        maxPixel = features.ArgMaxPixel()
         batchNum = features.BatchOP()
 
         testpipe = Pipeline(data=data,

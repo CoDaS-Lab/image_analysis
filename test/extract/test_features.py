@@ -19,7 +19,7 @@ class BatchOP(Feature):
         return len(batch)
 
 
-class MaxPixel(Feature):
+class ArgMaxPixel(Feature):
     def __init__(self):
         Feature.__init__(self, 'max_pixel', frame_op=True)
 
