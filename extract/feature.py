@@ -10,12 +10,11 @@ class Feature:
 
     This can also be used as a machine learning model
     """
-    def __init__(self, key_name, batch_op=False, frame_op=False, **args):
+    def __init__(self, key_name, batch_op=False, frame_op=False, save=False):
         self.batch_op = batch_op
         self.frame_op = frame_op
         self.key_name = key_name
-        self.save = False
-
+        self.save = save
 
     def extract(self, **args):
         """
