@@ -1,301 +1,181 @@
 import numpy as np
+from extract.feature import Feature
+import copy
 
 
 class Pipeline:
-    """
-    This class is the glue that binds the extracting of features together with
-    running the statistical models. It keeps the frames as dictionaries by
-    default but there is a function to transform them to numpy arrays.
-    """
-
-    def __init__(self, data=None, parallel=False, save=False, operations=None,
+    def __init__(self, data=None, ops=None, seq=None, save_all=None,
                  models=None):
-        if operations is None:
-            self.operations = []
-        else:
-            self.operations = operations
+        self.data = data
+        self.models = models      # Should be a list of models.
+        # True saves all, False saves none, and
+        # None uses defaults set by user.
+        self.save_all = save_all
 
-        if models is None:
-            self.models = []
-        else:
-            self.models = models
+        self.batch_ops = None
+        self.frame_ops = None
+        self.seq_ops = None
+        self.set_ops(ops, seq)
 
-        if data is not None:
-            self.data = list(data)
-            self.nbatches = len(self.data)
-            self.nframes_per_batch = len(self.data[0])
-        else:
-            self.data = data
+        self.empty_frame = {}           # Defined by set method below.
+        self.output = []          # Output data structure of the pipeline.
 
-        self.batch_operations = []
-        self.frame_operations = []
-        self.save = save
-        self.parallel = parallel
+    def set_ops(self, ops=None, seq=None):
+        batch_ops = []
+        frame_ops = []
+        if ops is not None:
+            for op in ops:
+                assert isinstance(op, Feature)
+                if op.batch_op:
+                    batch_ops.append(op)
+                elif op.frame_op:
+                    frame_ops.append(op)
+                else:
+                    raise ValueError('One and only one of either batch op or' +
+                                     'or frame op is allowed to be True!')
+        elif ops is None or ops == []:
+            batch_ops = []
+            frame_ops = []
 
-        for op in self.operations:
-            if op.batch_op:
-                self.batch_operations.append(op)
-            elif op.frame_op:
-                self.frame_operations.append(op)
-            else:
-                raise ValueError('{0} is not a valid feature'.format(op))
+        if seq is not None:
+            for op in seq:
+                assert isinstance(op, Feature)
+        elif seq is None or seq == []:
+            seq = []
 
-    def transform(self):
-        """
-        DESCRIPTION:
-            extracts or transforms the data
+        self.batch_ops = batch_ops
+        self.frame_ops = frame_ops
+        self.seq_ops = seq
 
-        RETURN:
-            transformed_data
-        """
-        if self.data is None:
-            raise ValueError('No data in the pipeline')
+    def set_batch_ops(self, batch_ops=None):
+        if batch_ops is None:
+            batch_ops = []
 
-        if self.parallel and self.save:
-            return self.transform_parallel_save()
-        elif self.parallel and not self.save:
-            raise ValueError('Can\'t extract all features and not save at\
-                             the same time')
-        elif not self.parallel and not self.save:
-            return self.transform_sequential()
-        elif not self.parallel and self.save:
-            return self.transform_sequential_save()
+        for op in batch_ops:
+            assert isinstance(op, Feature)
+            assert op.batch_op
 
-    def transform_sequential_save(self):
-        """
-        DESCRIPTION:
-            extracts information in sequential order of features in the lists.
-            Taking each output of the operations as input to the next but
-            saves  the  data
+        self.batch_ops = batch_ops
 
-        RETURN:
-            transformed_data
-        """
+    def set_frame_ops(self, frame_ops=None):
+        if frame_ops is None:
+            frame_ops = []
 
-        frame_count = 0
-        batch_count = 0
-        self.data_dict = []
+        for op in frame_ops:
+            assert isinstance(op, Feature)
+            assert op.frame_op
 
-        for batch in self.data:
-            batch_dict = []
-            batch_transforms = {
-                'original': batch
-            }
-            # temp data will get fed to next operation for each operation
-            # create copy of batch don't change batch
-            temp_batch = batch
+        self.frame_ops = frame_ops
 
-            for op in self.batch_operations:
-                # remove the last data added and we'll pass to next
-                # operation in pipeline
-                temp_batch = op.extract(temp_batch)
-                batch_transforms.update({op.key_name: temp_batch})
+    def set_seq(self, seq=None):
+        for op in seq_ops:
+            assert isinstance(Feature)
+        # Need to handle case of someone sending a batch into frame op
+        # & vise versa
+        self.seq_ops = seq_ops
 
-            for frame in batch:
-                # since we running sequentialy only last operation is added
-                # well keep track of  key of last operation
-                frame_transforms = {
-                    'original': frame
-                }
-                temp_frame = frame
+    def set_empty_frame(self, batch_ops, frame_ops, seq_ops):
+        assert isinstance(batch_ops, list)
+        assert isinstance(frame_ops, list)
+        assert isinstance(seq_ops, list)
 
-                for op in self.frame_operations:
-                    # extract next feature based on current feature(sequential)
-                    temp_frame = op.extract(temp_frame)
-                    frame_transforms.update({op.key_name: temp_frame})
-
-                # add batch features, if any
-                frame_transforms.update(batch_transforms)
-
-                # create dict of frame features
-                metadata = {
-                    'frame_num': frame_count,
-                    'batch_num': batch_count
-                }
-                frame_dict = self.create_dict(transforms=frame_transforms,
-                                              metadata=metadata)
-                batch_dict.append(frame_dict)
-                frame_count += 1
-
-            batch_count += 1
-            self.data_dict.append(batch_dict)
-
-        return self.data_dict
-
-    def transform_sequential(self):
-        """
-        DESCRIPTION:
-            extracts information in sequential order of features in the lists.
-            Taking each output of the operations as input to the next but
-            does not save the transformed data
-
-        RETURN:
-            transformed_data
-        """
-        frame_count = 0
-        batch_count = 0
-        self.data_dict = []
-
-        for batch in self.data:
-            batch_dict = []
-            batch_transforms = {}
-            # temp data will get fed to next operation for each operation
-            # create copy of batch don't change batch
-            last_op_name = ''
-            temp_batch = batch
-
-            for op in self.batch_operations:
-                # remove the last data added and we'll pass to next
-                # operation in pipeline
-                temp_batch = op.extract(temp_batch)
-                last_op_name = op.key_name
-
-            # add extracted stuff to batch_transforms
-            # if last_op_name isn't empty then we ran batch ops
-            if last_op_name != '':
-                batch_transforms.update({last_op_name: temp_batch})
-
-            for frame in batch:
-                # since we running sequentialy only last operation is added
-                # well keep track of  key of last operation
-                last_op_name = 'original'
-                frame_transforms = {}
-                temp = frame
-
-                for op in self.frame_operations:
-                    # extract next feature based on current feature(sequential)
-                    temp = op.extract(temp)
-                    last_op_name = op.key_name
-
-                # add batch features, if any
-                frame_transforms.update(batch_transforms)
-                # add frame features, if any
-                frame_transforms.update({last_op_name: temp})
-
-                # create dict of frame features
-                metadata = {
-                    'frame_num': frame_count,
-                    'batch_num': batch_count
-                }
-                frame_dict = self.create_dict(transforms=frame_transforms,
-                                              metadata=metadata)
-                batch_dict.append(frame_dict)
-                frame_count += 1
-
-            batch_count += 1
-            self.data_dict.append(batch_dict)
-
-        return self.data_dict
-
-    def transform_parallel_save(self):
-        """
-        DESCRIPTION:
-            extracts all information in operations list. By regular we mean
-            that the transformations have no dependencies between each other.
-            This one saves all extracted features.
-
-        RETURN:
-            transformed_data
-        """
-        frame_count = 0
-        batch_count = 0
-        self.data_dict = []
-
-        for batch in self.data:
-            batch_transforms = {}
-            batch_dict = []
-
-            # extract batch stuff
-            for op in self.batch_operations:
-                batch_transforms.update({op.key_name: op.extract(batch)})
-
-            for frame in batch:
-                frame_transforms = {
-                    'original': np.copy(frame)
-                }
-                # add batch stuff to frame_transforms
-                frame_transforms.update(batch_transforms)
-
-                # extract frame stuff
-                for op in self.frame_operations:
-                    frame_transforms.update({op.key_name: op.extract(frame)})
-
-                metadata = {
-                    'frame_num': frame_count,
-                    'batch_num': batch_count
-                }
-
-                # create frame dictionary with all the extracted stuff
-                # and metadata
-                frame_dict = self.create_dict(transforms=frame_transforms,
-                                              metadata=metadata)
-                batch_dict.append(frame_dict)
-                frame_count += 1
-
-            batch_count += 1
-            self.data_dict.append(batch_dict)
-
-        return self.data_dict
-
-    def create_dict(self, transforms=None, metadata=None):
-        """
-        DESCRIPTION:
-            creates the dictionary data structure for each frame
-
-        RETURN:
-            frame as dictionary
-        """
-        if transforms is None:
-            transforms = {}
-
-        if metadata is None:
-            metadata = {}
-
-        frame_dict = {
+        frame = {
             'input': {},
-            'metadata': {}
-        }
+            'meta_data': {},
+            'batch_features': {},
+            'frame_features': {},
+            'seq': {},
+            'seq_features': {},
+            'seq_output': {}}
 
-        for key, value in transforms.items():
-            frame_dict['input'].update({key: value})
+        for op in batch_ops:
+            frame['batch_features'].update({op.key_name: None})
+        for op in frame_ops:
+            frame['frame_features'].update({op.key_name: None})
+        for op in seq_ops:
+            frame['seq_features'].update({op.key_name: None})
 
-        for key, value in metadata.items():
-            frame_dict['metadata'].update({key: value})
+        self.empty_frame = frame
 
-        return frame_dict
+    def extract(self, keep_input_data=True):
+        if self.batch_ops == self.frame_ops == self.seq_ops == []:
+            raise ValueError('No features were specified for extraction.')
+            self.extract_nonseq(self.data, self.batch_ops, self.frame_ops)
 
-    def data_as_nparray(self, data=None):
-        """
-        DESCRIPTION:
-            returns the data as numpy arrays
+        self.set_empty_frame(self.batch_ops, self.frame_ops, self.seq_ops)
+        self.output = []
+        n_frame = 0
+        n_batch = 0
 
-        PARAMS:
-            data: data to return as np array. If none is passed the the
-                  pipeline's data is used
+        for batch in self.data:
+            batch_dict = {}
+            for op in self.batch_ops:
+                batch_dict.update({op.key_name: op.extract(batch)})
 
-        RETURN:
-            data in numpy array form
-        """
-        data_dict = data
-        if data_dict is None:
-            data_dict = self.data_dict
-
-        output = []
-        for batch in data_dict:
-            temp_batch = []
             for frame in batch:
-                feature_maps = []
-                # create the feature map at each frame
-                for key, val in frame['input'].items():
-                    feature_maps.append(val)
+                frame_dict = copy.deepcopy(self.empty_frame)
+                frame_dict['input'] = frame
+                for op in self.frame_ops:
+                    frame_dict['frame_features'][op.key_name] = op.extract(
+                        frame)
+                frame_dict['batch_features'].update(batch_dict)
+                frame_dict['meta_data'].update({'frame_number': n_frame,
+                                               'batch_number': n_batch})
+                self.output.append(frame_dict)
+                n_frame += 1
+            n_batch += 1
 
-                temp_batch.append(np.array(feature_maps))
+        if self.seq_ops != [] and self.seq_ops is not None:
+            for frame in self.output:
+                temp = frame['input']
+                for op in self.seq_ops:
+                    temp = op.extract(temp)
+                    if op.save is True or self.save_all is True:
+                        frame['seq_features'].update({op.key_name: temp})
+            frame['seq_output'] = temp
 
-            output.append(np.array(temp_batch))
-        return np.array(output)
+        if keep_input_data is False:
+            self.data = []
 
-    def train_models(self):
+        return self.output
+
+    def as_ndarray(self, frame_key=None, batch_key=None, seq_key=None):
+        keys = [frame_key] + [batch_key] + [seq_key]
+
+        key_count = 0
+        for x in keys:
+            if x is not None:
+                key_count += 1
+        if key_count != 1:
+            raise ValueError('One and only one of the three keys may be set.')
+
+        data = []
+        if frame_key is not None:
+            for frame_dict in self.output:
+                data.append(frame_dict['frame_features'][frame_key])
+        elif batch_key is not None:
+            for frame_dict in self.output:
+                data.append(frame_dict['batch_features'][batch_key])
+        elif seq_key is not None:
+            for frame_dict in self.output:
+                data.append(frame_dict['seq_features'][seq_key])
+        else:
+            raise ValueError('Someone broke the as_ndarray method!')
+
+        return np.array(data)
+
+    def predict(self, model=''):
         pass
 
-    def predict(self):
+    def train(self, model=''):
         pass
+
+    def display(self):
+        print('This method will not print input data.')
+        print('models: {}'.format(self.models))
+        print('save_all: {}'.format(self.save_all))
+        print('batch_ops: {}'.format(self.batch_ops))
+        print('frame_ops: {}'.format(self.frame_ops))
+        print('seq_ops: {}'.format(self.seq_ops))
+        print('empty frame: {}'.format(self.empty_frame))
+        print('This method will not print output data.')

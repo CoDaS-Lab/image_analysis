@@ -36,7 +36,7 @@ class TestFeatureExtractor(unittest.TestCase):
         fimg = fft2(img)
 
         mask_filter = OrientationFilter(mask='bowtie', falloff='triangle')
-        filt = mask_filter.bowtie(90, 42, nPix, .2, nPix + 1, 'triangle')
+        filt = mask_filter.bowtie(90, 20, nPix, .2, nPix + 1, 'triangle')
         filt = 1 - filt
         filt = fftshift(filt)
         out = ifft2(fimg * filt).real.astype(int)

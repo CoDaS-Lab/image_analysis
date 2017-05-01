@@ -23,99 +23,82 @@ class TestPipeline(unittest.TestCase):
         elapsed = time.time() - self.timing_start
         print('\n{} ({:.5f} sec)'.format(self.id(), elapsed))
 
-    def test_transform_parallel_save(self):
+    def test_operations_save(self):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
         rgb2gray = features.RGBToGray()
         maxPixel = features.MaxPixel()
-        batchNum = features.BatchOP()
 
         testpipe = Pipeline(data=data,
-                            parallel=True,
-                            save=True,
-                            operations=[rgb2gray, maxPixel, batchNum],
-                            models=None)
-
+                            ops=[rgb2gray, maxPixel],
+                            save_all=True)
         # extract information or transform data by calling:
-        pipeline_ouput = testpipe.transform()
+        pipeline_ouput = testpipe.extract()
 
-        for batch in pipeline_ouput:
-            for frame in batch:
-                op_keys = list(frame['input'].keys())
-                # op_keys should have only two items batchNum, rgb2gray,
-                # maxPixel, and original
-                self.assertEqual(len(op_keys), 4)
-                self.assertIsNotNone(frame['input'][maxPixel.key_name])
-                self.assertIsNotNone(frame['input'][rgb2gray.key_name])
-                self.assertIsNotNone(frame['input'][batchNum.key_name])
-                self.assertIsNotNone(frame['input']['original'])
+        for frame in pipeline_ouput:
+            op_keys = list(frame['frame_features'].keys())
+            self.assertEqual(len(op_keys), 2)
+            self.assertIsNotNone(frame['frame_features'][maxPixel.key_name])
+            self.assertIsNotNone(frame['frame_features'][rgb2gray.key_name])
+            self.assertIsNotNone(frame['input'])
 
-                metadata = list(frame['metadata'].keys())
-                self.assertEqual(len(metadata), 2)
-                self.assertIsNotNone(frame['metadata']['frame_num'])
-                self.assertIsNotNone(frame['metadata']['batch_num'])
+            metadata = list(frame['meta_data'].keys())
+            self.assertEqual(len(metadata), 2)
+            self.assertIsNotNone(frame['meta_data']['frame_number'])
+            self.assertIsNotNone(frame['meta_data']['batch_number'])
 
-    def test_transform_sequential(self):
+    def test_sequential_save(self):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
         rgb2gray = features.RGBToGray()
         maxPixel = features.MaxPixel()
-        batchNum = features.BatchOP()
 
         testpipe = Pipeline(data=data,
-                            save=False,
-                            parallel=False,
-                            operations=[rgb2gray, maxPixel, batchNum],
-                            models=None)
+                            seq=[rgb2gray, maxPixel],
+                            save_all=True)
         # extract information or transform data by calling:
-        pipeline_ouput = testpipe.transform()
+        pipeline_ouput = testpipe.extract()
 
-        for batch in pipeline_ouput:
-            for frame in batch:
-                op_keys = list(frame['input'].keys())
-                # op_keys should have only two items batchOP and rgb2gray
-                # without the original
-                self.assertEqual(len(op_keys), 2)
-                self.assertIsNotNone(frame['input'][maxPixel.key_name])
-                self.assertIsNotNone(frame['input'][batchNum.key_name])
+        for frame in pipeline_ouput:
+            op_keys = list(frame['frame_features'].keys())
+            self.assertEqual(len(op_keys), 0)
+            self.assertIsNotNone(frame['seq_features'][maxPixel.key_name])
+            self.assertIsNotNone(frame['seq_features'][rgb2gray.key_name])
+            self.assertIsNotNone(frame['input'])
 
-                metadata = list(frame['metadata'].keys())
-                self.assertEqual(len(metadata), 2)
-                self.assertIsNotNone(frame['metadata']['frame_num'])
-                self.assertIsNotNone(frame['metadata']['batch_num'])
+            metadata = list(frame['meta_data'].keys())
+            self.assertEqual(len(metadata), 2)
+            self.assertIsNotNone(frame['meta_data']['frame_number'])
+            self.assertIsNotNone(frame['meta_data']['batch_number'])
 
-    def test_transform_sequential_save(self):
+    def test_sequential_nonsave(self):
 
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
         rgb2gray = features.RGBToGray()
         maxPixel = features.MaxPixel()
-        batchNum = features.BatchOP()
+        maxPixel.save = True
 
         testpipe = Pipeline(data=data,
-                            save=True,
-                            parallel=False,
-                            operations=[rgb2gray, maxPixel, batchNum],
-                            models=None)
+                            seq=[rgb2gray, maxPixel],
+                            save_all=False)
         # extract information or transform data by calling:
-        pipeline_ouput = testpipe.transform()
+        pipeline_ouput = testpipe.extract()
 
-        for batch in pipeline_ouput:
-            for frame in batch:
-                op_keys = list(frame['input'].keys())
-                self.assertEqual(len(op_keys), 4)
-                self.assertIsNotNone(frame['input'][maxPixel.key_name])
-                self.assertIsNotNone(frame['input'][rgb2gray.key_name])
-                self.assertIsNotNone(frame['input'][batchNum.key_name])
-                self.assertIsNotNone(frame['input']['original'])
+        for frame in pipeline_ouput:
+            op_keys = list(frame['frame_features'].keys())
+            self.assertEqual(len(op_keys), 0)
+            print(frame)
+            self.assertIsNotNone(frame['seq_features'][maxPixel.key_name])
+            self.assertIsNotNone(frame['input'])
 
-                metadata = list(frame['metadata'].keys())
-                self.assertEqual(len(metadata), 2)
-                self.assertIsNotNone(frame['metadata']['frame_num'])
-                self.assertIsNotNone(frame['metadata']['batch_num'])
+            metadata = list(frame['meta_data'].keys())
+            self.assertEqual(len(metadata), 2)
+            self.assertIsNotNone(frame['meta_data']['frame_number'])
+            self.assertIsNotNone(frame['meta_data']['batch_number'])
 
     def test_create_dict(self):
         fake_transformations = {'test1': 123456}
@@ -151,5 +134,5 @@ class TestPipeline(unittest.TestCase):
         # feature maps per frame (3 extracted features above + original frame)
         self.assertTupleEqual(pipeline_ouput.shape, (5, 2, 4))
 
-if __name__ == '__name__':
+if __name__ == '__main__':
     unittest.main()
