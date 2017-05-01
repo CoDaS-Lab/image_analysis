@@ -16,3 +16,11 @@ class BatchOP(Feature):
 
     def extract(self, batch):
         return len(batch)
+
+
+class MaxPixel(Feature):
+    def __init__(self):
+        Feature.__init__(self, 'max_pixel', frame_op=True)
+
+    def extract(self, frame):
+        return np.max(frame)
