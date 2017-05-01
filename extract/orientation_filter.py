@@ -70,7 +70,7 @@ class OrientationFilter(Feature):
         # if (target_size % 2) != 0:
         #     raise ValueError('Target_size should be even!')
 
-        x = y = np.linspace(1, target_size // 2, target_size // 2 + 1)
+        x = y = np.linspace(0, target_size // 2, target_size // 2 + 1)
         u, v = np.meshgrid(x, y)
 
         # derive polar coordinates: (theta, radius), where theta is in degrees
@@ -124,11 +124,11 @@ class OrientationFilter(Feature):
         anfilter = np.zeros(theta.shape)
         sffilter = (low_cutoff <= radii) & (radii <= high_cutoff)
 
-        if falloff == 'rectangle':
+        if falloff is 'rectangle':
             anfilter = ((ccwb1 <= theta) & (theta <= cwb1)) | (
                 (ccwb2 <= theta) & (theta <= cwb2))
             # filt = sffiler*anfilter
-        elif falloff == 'triangle':
+        elif falloff is 'triangle':
             for idx, val in np.ndenumerate(theta):
                 if ccwb1 <= val <= cwb1 and val <= center_orientation:
                     anfilter[idx] = (val - center_orientation +
