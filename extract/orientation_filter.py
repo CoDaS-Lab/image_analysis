@@ -4,7 +4,7 @@ import numpy as np
 from pyfftw.interfaces.numpy_fft import fftshift
 from pyfftw.interfaces.numpy_fft import fft2
 from pyfftw.interfaces.numpy_fft import ifft2
-from skimage.color import rgb2gray
+from skvideo.utils import rgb2gray
 from matplotlib import pyplot as plt
 from decode.utils import timeit
 from extract.feature import Feature
