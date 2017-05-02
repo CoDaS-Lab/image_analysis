@@ -1,9 +1,10 @@
 import os
 import sys
 import numpy as np
-import pyfftw
+from pyfftw.interfaces.numpy_fft import fftshift
+from pyfftw.interfaces.numpy_fft import fft2
+from pyfftw.interfaces.numpy_fft import ifft2
 from skimage.color import rgb2gray
-from skimage.color import gray2rgb
 from matplotlib import pyplot as plt
 from decode.utils import timeit
 from extract.feature import Feature
@@ -87,7 +88,7 @@ class OrientationFilter(Feature):
         radii = np.concatenate((radii, flipped_radii), axis=1)
         flipped_radii = np.flipud(radii[1:target_size // 2, :])
         radii = np.concatenate((radii, flipped_radii), axis=0)
-        radii = np.fft.fftshift(radii)
+        radii = fftshift(radii)
         # note: the right-most column and bottom-most row were sliced off
 
         # using theta for one quadrant, build the other 3 quadrants
@@ -210,17 +211,27 @@ class OrientationFilter(Feature):
 
         # fft spectrum
         grayframe = rgb2gray(frame)
-        dft_frame = pyfftw.interfaces.numpy_fft.fft2(grayframe)
+        dft_frame = fft2(grayframe)
         phase = np.arctan2(dft_frame.imag, dft_frame.real)
         size = np.shape(dft_frame)[1]
 
         # create filter
         if self.mask == 'noise':
             amp = self.noise_amp(size)
+            # fft spectrum  * amp (filter)
+            phase = np.exp(phase * 1j)
+            amp = np.multiply(phase, amp)
+
+            # inverse fft and normalize
+            altimg = ifft2(amp).real
+            altimg -= altimg.min()
+            altimg /= altimg.max()
+            return altimg
+
         elif self.mask == 'bowtie':
-            amp = np.abs(dft_frame)
+
             if self.high_cutoff is None:
-                self.high_cutoff = size // 2
+                self.high_cutoff = size
 
             if self.target_size is None:
                 self.target_size = size
@@ -230,15 +241,9 @@ class OrientationFilter(Feature):
                                  self.low_cutoff, self.target_size,
                                  self.falloff)
 
-            amp = amp * (1 - bowtie)
+            bowtie = 1 - bowtie
+            bowtie = fftshift(bowtie)
+            altimg = ifft2(dft_frame * bowtie).real.astype(int)
+            return altimg
 
-        # fft spectrum  * amp (filter)
-        phase = np.exp(phase * 1j)
-        amp = np.multiply(phase, amp)
-
-        # inverse fft and normalize
-        altimg = pyfftw.interfaces.numpy_fft.ifft2(amp).real
-        altimg -= altimg.min()
-        altimg /= altimg.max()
-
-        return altimg
+        return None
