@@ -4,7 +4,7 @@ import numpy as np
 from pyfftw.interfaces.numpy_fft import fftshift
 from pyfftw.interfaces.numpy_fft import fft2
 from pyfftw.interfaces.numpy_fft import ifft2
-from skvideo.utils import rgb2gray
+from skimage.color import rgb2gray
 from matplotlib import pyplot as plt
 from decode.utils import timeit
 from extract.feature import Feature
@@ -243,7 +243,7 @@ class OrientationFilter(Feature):
 
             bowtie = 1 - bowtie
             bowtie = fftshift(bowtie)
-            altimg = ifft2(dft_frame * bowtie).real.astype(int)
+            altimg = ifft2(dft_frame * bowtie).real #astype(int)
             return altimg
 
         return None
