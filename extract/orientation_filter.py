@@ -243,6 +243,8 @@ class OrientationFilter(Feature):
 
             bowtie = 1 - bowtie
             bowtie = fftshift(bowtie)
+            #np.save('filtered_img_amp_spectrum', 
+            #        fftshift(np.log(np.abs(dft_frame * bowtie))))
             altimg = ifft2(dft_frame * bowtie).real #astype(int)
             return altimg
 
