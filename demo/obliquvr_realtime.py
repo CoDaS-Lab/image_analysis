@@ -24,9 +24,8 @@ pipe = Pipeline(ops=[bowtie], save_all=True)
 # remove if you need to
 # cv2.namedWindow('Real-Time')
 # cv2.moveWindow('Real-Time', (1920 // 2) - imgsz, (1080 // 2) - imgsz)
-plt.ion()
+
 while True:
-        plt.clf()
         warnings.simplefilter("ignore")
         # Capture frame-by-frame
         ret, frame = cap.read()
@@ -35,16 +34,9 @@ while True:
         # resize image
         frame = skimage.transform.resize(frame, (imgsz, imgsz), mode='reflect')
         pipe.data = [[frame]]
-        # altframe = pipe.extract()[0]['frame_features']['bowtie_filter']
-        # altframe = skimage.transform.resize(altframe, (height, width), mode='reflect')
-        # cv2.imshow('Real-Time', altframe)
-
-        pipeline_output = pipe.extract()
-        imgs = [pipeline_output[0]['input'], 
-                pipeline_output[0]['frame_features']['bowtie_filter']]
-        filtered_minus_original = imgs[1] - rgb2gray(imgs[0])
-        plt.imshow(filtered_minus_original)
-        plt.show()
+        altframe = pipe.extract()[0]['frame_features']['bowtie_filter']
+        altframe = skimage.transform.resize(altframe, (height, width), mode='reflect')
+        cv2.imshow('Real-Time', altframe)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
