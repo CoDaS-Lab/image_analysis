@@ -24,7 +24,7 @@ class OrientationFilter(Feature):
             target_size: int total size.
             falloff: string 'triangle' or 'rectangle' shape of the filter
                     falloff from the center."""
-
+    @timeit(classname='OrientationFilter.__init__()')
     def __init__(self, mask='bowtie', center_orientation=90,
                  orientation_width=20, high_cutoff=None, low_cutoff=.1,
                  target_size=None, falloff='', ):
@@ -47,6 +47,18 @@ class OrientationFilter(Feature):
         available_falloff = ['rectangle', 'triangle']
         if self.falloff not in available_falloff:
             raise ValueError('falloff: {0} is invalid'.format(self.falloff))
+
+        if self.mask == 'bowtie':
+            self.filter = self.bowtie(center_orientation, orientation_width,
+                                      high_cutoff, low_cutoff, target_size,
+                                      falloff)
+            self.filter = 1 - self.filter
+            self.filter = fftshift(self.filter)
+        elif self.mask == 'noise':
+            # recheck this
+            self.filter = noise(target_size)
+        else:
+            raise ValueError('invalid mask: {0}'.format(self.mask))
 
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
                low_cutoff, target_size, falloff=''):
@@ -191,6 +203,7 @@ class OrientationFilter(Feature):
         amp[0, 0] = 0
         return amp
 
+    @timeit(classname='OrientationFilter.extract()')
     def extract(self, frame):
         """
         DESCRIPTION:\n
@@ -213,12 +226,10 @@ class OrientationFilter(Feature):
         grayframe = rgb2gray(frame)
         dft_frame = fft2(grayframe)
         phase = np.arctan2(dft_frame.imag, dft_frame.real)
-        size = np.shape(dft_frame)[1]
 
         # create filter
         if self.mask == 'noise':
-            amp = self.noise_amp(size)
-            # fft spectrum  * amp (filter)
+            amp = np.copy(self.filter)
             phase = np.exp(phase * 1j)
             amp = np.multiply(phase, amp)
 
@@ -229,23 +240,9 @@ class OrientationFilter(Feature):
             return altimg
 
         elif self.mask == 'bowtie':
-
-            if self.high_cutoff is None:
-                self.high_cutoff = size
-
-            if self.target_size is None:
-                self.target_size = size
-
-            bowtie = self.bowtie(self.center_orientation,
-                                 self.orientation_width, self.high_cutoff,
-                                 self.low_cutoff, self.target_size,
-                                 self.falloff)
-
-            bowtie = 1 - bowtie
-            bowtie = fftshift(bowtie)
-            #np.save('filtered_img_amp_spectrum', 
+            # np.save('filtered_img_amp_spectrum',
             #        fftshift(np.log(np.abs(dft_frame * bowtie))))
-            altimg = ifft2(dft_frame * bowtie).real #astype(int)
+            altimg = ifft2(dft_frame * self.filter).real  # astype(int)
             return altimg
 
         return None
