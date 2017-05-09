@@ -35,10 +35,11 @@ class TestFeatureExtractor(unittest.TestCase):
         img = np.sin(2 * np.pi * sf * ramp)
         fimg = fft2(img)
 
-        mask_filter = OrientationFilter(mask='bowtie', falloff='triangle')
         orientation_widths = [1, 10, 20, 40, 80, 100]
         for x in orientation_widths:
-            filt = mask_filter.bowtie(90, x, nPix, .2, nPix + 1, 'triangle')
+            filt = OrientationFilter('bowtie', 90, x, nPix, .2, nPix + 1,
+                                     'triangle')
+            filt = filt.filter
             filt = 1 - filt
             filt = fftshift(filt)
             out = ifft2(fimg * filt).real.astype(int)

@@ -11,7 +11,7 @@ from skimage.color import rgb2gray
 
 # Test the bowtie filter with sine waves
 # img = skimage.io.imread('../test1.jpg')[:426, :426, :]
-img = skimage.io.imread('../test2.jpg')[:1000, :1000, :]
+img = skimage.io.imread('bricks.jpg')[:1000, :1000, :]
 
 motion_analysis = Pipeline(data=[[img]],
                            ops=[OrientationFilter('bowtie', 90, 42, 1000, .2,
