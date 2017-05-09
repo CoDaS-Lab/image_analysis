@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+import pyfftw
 from pyfftw.interfaces.numpy_fft import fftshift
 from pyfftw.interfaces.numpy_fft import fft2
 from pyfftw.interfaces.numpy_fft import ifft2
@@ -37,6 +38,11 @@ class OrientationFilter(Feature):
         if self.mask not in available_mask:
             raise ValueError('mask: {0} does not exist'.format(mask))
 
+        if orientation_width == 0:
+            raise ValueError('Can\'t set orientation_width to 0 because ' +
+                             'it will cause a division by zero in triangle ' +
+                             'filter code.')
+
         self.center_orientation = center_orientation
         self.orientation_width = orientation_width
         self.high_cutoff = high_cutoff
@@ -47,6 +53,22 @@ class OrientationFilter(Feature):
         available_falloff = ['rectangle', 'triangle']
         if self.falloff not in available_falloff:
             raise ValueError('falloff: {0} is invalid'.format(self.falloff))
+
+        if self.mask == 'bowtie':
+            self.filter = self.bowtie(center_orientation, orientation_width,
+                                      high_cutoff, low_cutoff, target_size,
+                                      falloff)
+            self.filter = 1 - self.filter
+            self.filter = fftshift(self.filter)
+        elif self.mask == 'noise':
+            # recheck this
+            self.filter = noise(target_size)
+        else:
+            raise ValueError('invalid mask: {0}'.format(self.mask))
+
+        # improve performance of fft by caching pyfftw fft objects
+        # see here https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat
+        pyfftw.interfaces.cache.enable()
 
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
                low_cutoff, target_size, falloff=''):
@@ -68,13 +90,6 @@ class OrientationFilter(Feature):
         RETURN:\n
             filt: return the bowtie shaped filter.
         """
-        if (target_size % 2) != 0:
-            raise ValueError('Target_size should be even!')
-
-        if (orientation_width == 0):
-            raise ValueError('Can\'t set orientation_width to 0 because ' +
-                             'it will cause a division by zero in triangle ' +
-                             'filter code.')
 
         x = y = np.linspace(0, target_size // 2, target_size // 2 + 1)
         u, v = np.meshgrid(x, y)
@@ -207,18 +222,26 @@ class OrientationFilter(Feature):
             return the transformed and processed frame
         """
         if frame is None:
-            return ValueError('Frame is invalid: {0}'.format(grayframe))
+            return ValueError('Frame is none')
+
+        # target size and frame width must be the same
+        # https://github.com/CoDaS-Lab/IsoVideo/blob/master/isovideo/filter.py#L27
+        assert frame.shape[1] == self.target_size
 
         # fft spectrum
+        altimg = None
+        rows = frame.shape[0]
         grayframe = rgb2gray(frame)
+        # make image n x n where n is size of filter
+        padrows = abs(grayframe.shape[0] - self.filter.shape[0])
+        padding = np.zeros((padrows, frame.shape[1]))
+        grayframe = np.append(grayframe, padding, axis=0)
         dft_frame = fft2(grayframe)
         phase = np.arctan2(dft_frame.imag, dft_frame.real)
-        size = np.shape(dft_frame)[1]
 
         # create filter
         if self.mask == 'noise':
-            amp = self.noise_amp(size)
-            # fft spectrum  * amp (filter)
+            amp = np.copy(self.filter)
             phase = np.exp(phase * 1j)
             amp = np.multiply(phase, amp)
 
@@ -226,26 +249,14 @@ class OrientationFilter(Feature):
             altimg = ifft2(amp).real
             altimg -= altimg.min()
             altimg /= altimg.max()
-            return altimg
 
         elif self.mask == 'bowtie':
-
-            if self.high_cutoff is None:
-                self.high_cutoff = size
-
-            if self.target_size is None:
-                self.target_size = size
-
-            bowtie = self.bowtie(self.center_orientation,
-                                 self.orientation_width, self.high_cutoff,
-                                 self.low_cutoff, self.target_size,
-                                 self.falloff)
-
-            bowtie = 1 - bowtie
-            bowtie = fftshift(bowtie)
-            #np.save('filtered_img_amp_spectrum', 
+            # np.save('filtered_img_amp_spectrum',
             #        fftshift(np.log(np.abs(dft_frame * bowtie))))
-            altimg = ifft2(dft_frame * bowtie).real #astype(int)
-            return altimg
+            altimg = ifft2(dft_frame * self.filter).real  # astype(int)
 
-        return None
+        if altimg is not None:
+            # removed padded rows
+            altimg = altimg[:rows, :]
+
+        return altimg
