@@ -20,32 +20,23 @@ bowtie = OrientationFilter('bowtie', 90, 42, vidwidth // 2, .2, vidwidth,
 pipe = Pipeline(ops=[bowtie], save_all=True)
 bowtie.filter = bowtie.filter[:480, :]
 
+lasttime = time.time()
+while True:
+        warnings.simplefilter("ignore")
 
-def run():
-    # center window on screen
-    # it was showing up in weird places on mine (Anderson)
-    # remove if you need to
-    # cv2.namedWindow('Real-Time')
-    # cv2.moveWindow('Real-Time', (1920 // 2) - imgsz, (1080 // 2) - imgsz)\
-    lasttime = time.time()
-    nframes = 0
-    while True:
-            warnings.simplefilter("ignore")
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        pipe.data = [[frame]]
+        altframe = pipe.extract()[0]['frame_features']['bowtie_filter']
+        cv2.imshow('Real-Time', altframe)
+        # calculate how long we spend
+        elapsed = time.time() - lasttime
+        print('secs/frame: {0}'.format(elapsed))
+        lasttime = time.time()
 
-            # Capture frame-by-frame
-            ret, frame = cap.read()
-            pipe.data = [[frame]]
-            altframe = pipe.extract()[0]['frame_features']['bowtie_filter']
-            cv2.imshow('Real-Time', altframe)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-            # calculate how long we spend
-            elapsed = time.time() - lasttime
-            print('secs/frame: {0}'.format(elapsed))
-            lasttime = time.time()
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-run()
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
