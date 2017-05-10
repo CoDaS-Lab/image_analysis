@@ -14,10 +14,11 @@ from extract.pipeline import Pipeline
 cap = cv2.VideoCapture(0)
 # image size
 # we need to know the widths of the image in advance for the filter
-vidwidth = 640
+vidwidth = 848
 bowtie = OrientationFilter('bowtie', 90, 42, vidwidth // 2, .2, vidwidth,
                            'triangle')
 pipe = Pipeline(ops=[bowtie], save_all=True)
+bowtie.filter = bowtie.filter[:480, :]
 
 
 def run():

@@ -4,7 +4,6 @@ sys.path.append(os.getcwd() + "/../")
 import skimage.io
 import numpy as np
 from matplotlib import pyplot as plt
-from decode import video_decoder as vd
 from extract.orientation_filter import OrientationFilter
 from extract.pipeline import Pipeline
 from skimage.color import rgb2gray
@@ -29,11 +28,11 @@ print(pipeline_output[0]['frame_features']['bowtie_filter'].shape)
 
 imgs = [pipeline_output[0]['input'],
         pipeline_output[0]['frame_features']['bowtie_filter']]
-filtered_minus_original = imgs[1] - rgb2gray(imgs[0])
+# filtered_minus_original = imgs[1] - rgb2gray(imgs[0])
 # skimage.io.imshow_collection(imgs)
 # plt.imshow(rgb2gray(pipeline_output[0]['input']), cmap='gray')
-# plt.imshow(pipeline_output[0]['frame_features']['bowtie_filter'], cmap='gray')
-plt.imshow(filtered_minus_original)
+plt.imshow(pipeline_output[0]['frame_features']['bowtie_filter'], cmap='gray')
+# plt.imshow(filtered_minus_original)
 plt.show()
 # plt.imshow(img_filtered_amp_spectrum)
 # plt.show()

@@ -67,7 +67,7 @@ class OrientationFilter(Feature):
             raise ValueError('invalid mask: {0}'.format(self.mask))
 
         # improve performance of fft by caching pyfftw fft objects
-        # see here https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat
+        # see https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat
         pyfftw.interfaces.cache.enable()
 
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
@@ -232,10 +232,6 @@ class OrientationFilter(Feature):
         altimg = None
         rows = frame.shape[0]
         grayframe = rgb2gray(frame)
-        # make image n x n where n is size of filter
-        padrows = abs(grayframe.shape[0] - self.filter.shape[0])
-        padding = np.zeros((padrows, frame.shape[1]))
-        grayframe = np.append(grayframe, padding, axis=0)
         dft_frame = fft2(grayframe)
         phase = np.arctan2(dft_frame.imag, dft_frame.real)
 
@@ -254,9 +250,5 @@ class OrientationFilter(Feature):
             # np.save('filtered_img_amp_spectrum',
             #        fftshift(np.log(np.abs(dft_frame * bowtie))))
             altimg = ifft2(dft_frame * self.filter).real  # astype(int)
-
-        if altimg is not None:
-            # removed padded rows
-            altimg = altimg[:rows, :]
 
         return altimg
