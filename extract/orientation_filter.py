@@ -62,7 +62,7 @@ class OrientationFilter(Feature):
             self.filter = fftshift(self.filter)
         elif self.mask == 'noise':
             # recheck this
-            self.filter = noise(target_size)
+            self.filter = self.noise(target_size)
         else:
             raise ValueError('invalid mask: {0}'.format(self.mask))
 
@@ -205,7 +205,8 @@ class OrientationFilter(Feature):
         amp = 1 / amp**slope
         amp[0, 0] = 0
         return amp
-
+    
+    @timeit()
     def extract(self, frame):
         """
         DESCRIPTION:\n
