@@ -41,7 +41,7 @@ def decode_mpeg(v_path, batch_size=1, stride=1, start_idx=0, end_idx=-1,
     DESCRIPTION:
         Creates a list of batches of frames from an MPEG file.
 
-    ARGS:
+    PARAMS:
         v_path: Path to MPEG video (i.e. include the video's name &
                 extension)
         batch_size: Number of frames in each batch

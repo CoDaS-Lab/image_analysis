@@ -12,12 +12,12 @@ from extract.feature import Feature
 
 
 class OrientationFilter(Feature):
-    """DESCRIPTION:\n
+    """DESCRIPTION:
             Creates a filter that can be multiplied by the amplitude spectrum
             of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-        PARAMS:\n
+        PARAMS:
             center_orientation: int for the center orientation (0-180).
             orientation_width: int for the orientation width of the filter.
             high_cutoff: int high spatial frequency cutoff.
@@ -73,12 +73,12 @@ class OrientationFilter(Feature):
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
                low_cutoff, target_size, falloff=''):
         """
-        DESCRIPTION:\n
+        DESCRIPTION:
             Creates a filter that can be multiplied by the amplitude spectrum
             of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-        PARAMS:\n
+        PARAMS:
             center_orientation: int for the center orientation (0-180).
             orientation_width: int for the orientation width of the filter.
             high_cutoff: int high spatial frequency cutoff.
@@ -180,14 +180,14 @@ class OrientationFilter(Feature):
 
     def noise_amp(self, size):
         """
-        DESCRIPTION:\n
+        DESCRIPTION:
             Creates a size x size matrix of randomly generated noise with
             amplitude values with 1/f slope
 
-        PARAMS:\n
+        PARAMS:
             size: size of matrix
 
-        RETURN:\n
+        RETURN:
             returns the amplitudes with noise added
         """
 
@@ -205,21 +205,21 @@ class OrientationFilter(Feature):
         amp = 1 / amp**slope
         amp[0, 0] = 0
         return amp
-    
+
     @timeit()
     def extract(self, frame):
         """
-        DESCRIPTION:\n
+        DESCRIPTION:
             Transforms a matrix using FFT, multiplies the result by a mask, and
             then transforms the matrix back using Inverse FFT.\n
 
-        PARAMS:\n
+        PARAMS:
             input_frame: (m x n) numpy array
             mask: int determining the type of filter to implement, where
                   1 = iso (noize amp) and 2 = horizontal decrement
                   (bowtie)
 
-        RETURN:\n
+        RETURN:
             return the transformed and processed frame
         """
         if frame is None:

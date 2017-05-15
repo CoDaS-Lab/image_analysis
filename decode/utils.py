@@ -17,10 +17,6 @@ def timeit(thresh=None, classname=''):
                 than thresh
         classname: class where the function you timing is located
 
-    RETURN:
-        skiamge.io.ImageCollection object that can be indexed as a list.
-        Elements in this 'list' are numpy arrays of image values
-
     """
     def decorator(method):
         @wraps(method)
@@ -49,10 +45,6 @@ def load_mult_images(dirname, exts=None, batchsize=1):
         dirname: directory of the images
         exts: acceptable file extensions (must be a tuble)
         batchsize: size of the batches
-
-    RETURN:
-        skiamge.io.ImageCollection object that can be indexed as a list.
-        Elements in this 'list' are numpy arrays of image values
 
     """
 
@@ -87,9 +79,3 @@ def load_mult_images(dirname, exts=None, batchsize=1):
         batch_list.append(batch)
 
     return batch_list
-
-
-if __name__ == '__main__':
-    dirname = os.getcwd() + '/test/test_data/testimgs/'
-    imgs = load_mult_images(dirname, batchsize=2)
-    print(len(imgs))
