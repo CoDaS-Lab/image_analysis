@@ -5,11 +5,16 @@ import skimage.io
 
 class Feature:
     """
-    user defined subclasses should set (1) EITHER self.batch_op OR
-    self.frame_op to True, (2) set a key_name and (3) implement extract().
+    DESCRIPTION:
+            Base class for features we want to extract or transformations we
+            want to apply to data
 
-    This can also be used as a machine learning model
+    PARAMS:
+        batch_op: boolean to say the feature runs on batches of frames
+        frame_op: boolean to say the feature runs on each frame
+        save: boolean check to save feature in output dict
     """
+
     def __init__(self, key_name, batch_op=False, frame_op=False, save=False):
         self.batch_op = batch_op
         self.frame_op = frame_op
@@ -24,7 +29,15 @@ class Feature:
         raise NotImplementedError
 
     def train_model(self, **args):
+        """
+        DESCRIPTION:
+            train models on images
+        """
         raise NotImplementedError
 
     def predict(self, Y):
+        """
+        DESCRIPTION:
+            predict new points
+        """
         raise NotImplementedError
