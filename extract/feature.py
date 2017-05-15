@@ -6,7 +6,7 @@ import skimage.io
 class Feature:
     """
     DESCRIPTION:
-            Base classes for features we want to extract or transformations we
+            Base class for features we want to extract or transformations we
             want to apply to data
 
     PARAMS:
