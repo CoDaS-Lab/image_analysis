@@ -12,19 +12,21 @@ from extract.feature import Feature
 
 
 class OrientationFilter(Feature):
-    """DESCRIPTION:
+    """
+    DESCRIPTION:
             Creates a filter that can be multiplied by the amplitude spectrum
             of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-        PARAMS:
-            center_orientation: int for the center orientation (0-180).
-            orientation_width: int for the orientation width of the filter.
-            high_cutoff: int high spatial frequency cutoff.
-            low_cutoff: int low spatial frequency cutoff.
-            target_size: int total size.
-            falloff: string 'triangle' or 'rectangle' shape of the filter
-                    falloff from the center."""
+    PARAMS:
+        center_orientation: int for the center orientation (0-180).
+        orientation_width: int for the orientation width of the filter.
+        high_cutoff: int high spatial frequency cutoff.
+        low_cutoff: int low spatial frequency cutoff.
+        target_size: int total size.
+        falloff: string 'triangle' or 'rectangle' shape of the filter
+                falloff from the center.
+    """
 
     def __init__(self, mask='bowtie', center_orientation=90,
                  orientation_width=20, high_cutoff=None, low_cutoff=.1,
@@ -61,7 +63,6 @@ class OrientationFilter(Feature):
             self.filter = 1 - self.filter
             self.filter = fftshift(self.filter)
         elif self.mask == 'noise':
-            # recheck this
             self.filter = self.noise_amp(target_size)
         else:
             raise ValueError('invalid mask: {0}'.format(self.mask))
@@ -248,8 +249,6 @@ class OrientationFilter(Feature):
             altimg /= altimg.max()
 
         elif self.mask == 'bowtie':
-            # np.save('filtered_img_amp_spectrum',
-            #        fftshift(np.log(np.abs(dft_frame * bowtie))))
-            altimg = ifft2(dft_frame * self.filter).real  # astype(int)
+            altimg = ifft2(dft_frame * self.filter).real
 
         return altimg
