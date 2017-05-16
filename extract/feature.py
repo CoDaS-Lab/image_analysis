@@ -1,8 +1,3 @@
-import skimage.color
-import skimage.transform
-import skimage.io
-
-
 class Feature:
     """
     DESCRIPTION:

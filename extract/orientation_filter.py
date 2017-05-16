@@ -1,13 +1,9 @@
-import os
-import sys
 import numpy as np
 import pyfftw
 from pyfftw.interfaces.numpy_fft import fftshift
 from pyfftw.interfaces.numpy_fft import fft2
 from pyfftw.interfaces.numpy_fft import ifft2
 from skimage.color import rgb2gray
-from matplotlib import pyplot as plt
-from decode.utils import timeit
 from extract.feature import Feature
 
 
@@ -207,7 +203,6 @@ class OrientationFilter(Feature):
         amp[0, 0] = 0
         return amp
 
-    @timeit()
     def extract(self, frame):
         """
         DESCRIPTION:
