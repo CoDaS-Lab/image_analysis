@@ -4,7 +4,7 @@ import wget
 import time
 import numpy as np
 import skimage.io
-from decode import utils
+from utils import utils
 
 
 class TestUtils(unittest.TestCase):
@@ -12,22 +12,7 @@ class TestUtils(unittest.TestCase):
     def setUp(self):
         self.img_dir = 'test/test_data/testimgs/'
         self.testimg1_path = self.img_dir + 'test1.jpg'
-        testimg1_link = 'https://s3.amazonaws.com/codasimageanalysis/test1.jpg'
         self.testimg2_path = self.img_dir + 'test2.jpg'
-        testimg2_link = 'https://s3.amazonaws.com/codasimageanalysis/test2.jpg'
-
-        if not os.path.exists(self.testimg1_path):
-            if not os.path.exists(self.img_dir):
-                os.mkdir(self.img_dir)
-
-            wget.download(testimg1_link, self.img_dir)
-
-        if not os.path.exists(self.testimg2_path):
-            if not os.path.exists(self.img_dir):
-                os.mkdir(self.img_dir)
-
-            wget.download(testimg2_link, self.img_dir)
-
         self.timing_start = time.time()
 
     def tearDown(self):

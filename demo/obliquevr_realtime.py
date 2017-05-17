@@ -7,8 +7,8 @@ import cv2
 import time
 import skimage
 from decode import video_decoder as vd
-from extract.orientation_filter import OrientationFilter
-from extract.pipeline import Pipeline
+from pipeline.orientation_filter import OrientationFilter
+from pipeline.pipeline import Pipeline
 
 
 cap = cv2.VideoCapture(0)

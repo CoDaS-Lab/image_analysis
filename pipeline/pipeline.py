@@ -1,5 +1,5 @@
 import numpy as np
-from extract.feature import Feature
+from .feature import Feature
 import copy
 
 

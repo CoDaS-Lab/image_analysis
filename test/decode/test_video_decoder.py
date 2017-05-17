@@ -20,13 +20,6 @@ class TestVideoDecoder(unittest.TestCase):
 
     def setUp(self):
         data_dir = 'test/test_data/'
-        vid_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video.mp4'
-        data_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video_data.npy'
-
-        if not os.path.exists(data_dir + 'test_video.mp4'):
-            wget.download(vid_link, data_dir)
-        if not os.path.exists(data_dir + 'test_video_data.npy'):
-            wget.download(data_link, data_dir)
 
         self.vid_path = data_dir + 'test_video.mp4'
         self.correct_data = np.load(data_dir + 'test_video_data.npy')

@@ -5,10 +5,10 @@ import skimage.io
 import wget
 from matplotlib import pyplot as plt
 from decode import video_decoder as vd
-from extract import feature_extractor as fe
+from pipeline import feature_extractor as fe
 from demo_features import RGBToGray
 from demo_features import BatchOP
-from extract.pipeline import Pipeline
+from pipeline.pipeline import Pipeline
 
 vid_path = os.getcwd() + '/../test/test_data/'  # Path to test video.
 

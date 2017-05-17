@@ -4,8 +4,8 @@ import wget
 import time
 import sys
 from decode import video_decoder as vd
-from extract.pipeline import Pipeline
-from test.extract import test_features as features
+from pipeline.pipeline import Pipeline
+from test.pipeline import test_features as features
 
 
 class TestPipeline(unittest.TestCase):
@@ -13,10 +13,6 @@ class TestPipeline(unittest.TestCase):
     def setUp(self):
         data_dir = 'test/test_data/'
         self.vid_path = data_dir + 'test_video.mp4'
-        vid_link = 'https://s3.amazonaws.com/codasimageanalysis/test_video.mp4'
-        if not os.path.exists(self.vid_path):
-            wget.download(vid_link, data_dir)
-
         self.timing_start = time.time()
 
     def tearDown(self):

@@ -4,7 +4,7 @@ from pyfftw.interfaces.numpy_fft import fftshift
 from pyfftw.interfaces.numpy_fft import fft2
 from pyfftw.interfaces.numpy_fft import ifft2
 from skimage.color import rgb2gray
-from extract.feature import Feature
+from .feature import Feature
 
 
 class OrientationFilter(Feature):

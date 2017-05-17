@@ -1,6 +1,6 @@
 import skimage.color
 import numpy as np
-from extract.feature import Feature
+from pipeline.feature import Feature
 
 
 class RGBToGray(Feature):
