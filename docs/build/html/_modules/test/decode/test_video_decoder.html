@@ -1,0 +1,341 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>test.decode.test_video_decoder &#8212; image_analysis 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for test.decode.test_video_decoder</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">wget</span>
+<span class="kn">from</span> <span class="nn">decode</span> <span class="k">import</span> <span class="n">video_decoder</span> <span class="k">as</span> <span class="n">vd</span>
+
+<span class="sd">&quot;&quot;&quot; Do not delete these comments.</span>
+<span class="sd">Data for test_video.mp4 is saved in test_video_data.npy.</span>
+
+<span class="sd">You do not want to write tests using an skvideo function because if it breaks</span>
+<span class="sd">or changes in functionality, you will waste time trying to figure out whether</span>
+<span class="sd">the issue was video_decoder.py, skvideo, or the test(s).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="TestVideoDecoder"><a class="viewcode-back" href="../../../test.decode.html#test.decode.test_video_decoder.TestVideoDecoder">[docs]</a><span class="k">class</span> <span class="nc">TestVideoDecoder</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestVideoDecoder.setUp"><a class="viewcode-back" href="../../../test.decode.html#test.decode.test_video_decoder.TestVideoDecoder.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_dir</span> <span class="o">=</span> <span class="s1">&#39;test/test_data/&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;test_video.mp4&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;test_video_data.npy&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nchannels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timing_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TestVideoDecoder.tearDown"><a class="viewcode-back" href="../../../test.decode.html#test.decode.test_video_decoder.TestVideoDecoder.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_start</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1"> (</span><span class="si">{:.5f}</span><span class="s1"> sec)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">(),</span> <span class="n">elapsed</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestVideoDecoder.test_decode_mpeg"><a class="viewcode-back" href="../../../test.decode.html#test.decode.test_video_decoder.TestVideoDecoder.test_decode_mpeg">[docs]</a>    <span class="k">def</span> <span class="nf">test_decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Ignore weird resource warnings for now.</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Verifies dimensions: nframes x height x width, nchannels.</span>
+        <span class="k">def</span> <span class="nf">test_mpeg_dimensions</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nframes</span><span class="p">,</span>
+                                 <span class="n">vd_batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">vd_batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">vd_nframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span>
+                <span class="n">vd_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+                <span class="n">vd_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+                <span class="n">vd_nchannels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nchannels</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vd_nframes</span> <span class="o">=</span> <span class="n">vd_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">vd_height</span> <span class="o">=</span> <span class="n">vd_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">vd_width</span> <span class="o">=</span> <span class="n">vd_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">vd_nchannels</span> <span class="o">=</span> <span class="n">vd_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">nframes</span><span class="p">,</span> <span class="n">vd_nframes</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">nframes &#39;</span> <span class="o">+</span>
+                             <span class="s1">&#39;= </span><span class="si">{0}</span><span class="s1">, vd_nframes = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span><span class="p">,</span> <span class="n">vd_nframes</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">vd_height</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span>
+                             <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">self.height = </span><span class="si">{0}</span><span class="s1">, vd_height = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">vd_height</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">vd_width</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span>
+                             <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">selfwidth = </span><span class="si">{0}</span><span class="s1">, vd_width = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">vd_width</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nchannels</span><span class="p">,</span> <span class="n">vd_nchannels</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span>
+                             <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">self.nchannels = </span><span class="si">{0}</span><span class="s1">, vd_channels &#39;</span> <span class="o">+</span>
+                             <span class="s1">&#39;= </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nchannels</span><span class="p">,</span> <span class="n">vd_nchannels</span><span class="p">))</span>
+
+        <span class="c1"># Verifies that the frames are the same.</span>
+        <span class="k">def</span> <span class="nf">test_mpeg_frame</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">vd_frame</span><span class="p">),</span> <span class="n">message</span> <span class="o">+</span>
+                            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Decoded frame does not match.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Checks for the number of correct batches.</span>
+        <span class="k">def</span> <span class="nf">test_mpeg_nbatches</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                               <span class="n">nbatches</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vd_nbatches</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">nbatches</span><span class="p">,</span> <span class="n">vd_nbatches</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span>
+                             <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">nbatches = </span><span class="si">{0}</span><span class="s1">, vd_nbatches = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="n">nbatches</span><span class="p">,</span> <span class="n">vd_nbatches</span><span class="p">))</span>
+
+        <span class="c1"># Test default decode_mpeg settings.</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">numbatches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span>
+        <span class="n">batch_list</span> <span class="o">=</span> <span class="n">vd</span><span class="o">.</span><span class="n">decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span><span class="p">)</span>
+        <span class="n">test_mpeg_nbatches</span><span class="p">(</span><span class="s1">&#39;Default settings test:&#39;</span><span class="p">,</span> <span class="n">nbatches</span><span class="o">=</span><span class="n">numbatches</span><span class="p">,</span>
+                           <span class="n">vd_nbatches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_list</span><span class="p">))</span>
+
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;Default settings test: check first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;Default settings test: check last frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Test indices, with each frame as a separate batch: end &gt; start.</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">13</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="mi">88</span>
+        <span class="n">numbatches</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">batch_list</span> <span class="o">=</span> <span class="n">vd</span><span class="o">.</span><span class="n">decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span><span class="p">,</span> <span class="n">start_idx</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                                    <span class="n">end_idx</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+
+        <span class="n">test_mpeg_nbatches</span><span class="p">(</span><span class="s1">&#39;end &gt; start test:&#39;</span><span class="p">,</span> <span class="n">nbatches</span><span class="o">=</span><span class="n">numbatches</span><span class="p">,</span>
+                           <span class="n">vd_nbatches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_list</span><span class="p">))</span>
+
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;end &gt; start test: check first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span><span class="p">])</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;end &gt; start test: check last frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">end</span><span class="p">])</span>
+
+        <span class="c1"># Test each frame as a separate batch, using indices: start &gt; end.</span>
+        <span class="c1"># should raise valueerror</span>
+
+        <span class="c1"># Test each frame as a separate batch, using indices start = end != 1.</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">14</span>
+        <span class="n">numbatches</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">batch_list</span> <span class="o">=</span> <span class="n">vd</span><span class="o">.</span><span class="n">decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span><span class="p">,</span> <span class="n">start_idx</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                                    <span class="n">end_idx</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+
+        <span class="n">test_mpeg_nbatches</span><span class="p">(</span><span class="s1">&#39;end == start test:&#39;</span><span class="p">,</span> <span class="n">nbatches</span><span class="o">=</span><span class="n">numbatches</span><span class="p">,</span>
+                           <span class="n">vd_nbatches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_list</span><span class="p">))</span>
+
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;end == start test: check frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span><span class="p">])</span>
+
+        <span class="c1"># Test batch_size = stride, with padding on.</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="n">b_stride</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">numbatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">numframes</span> <span class="o">+</span> <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                                                       <span class="o">%</span> <span class="n">numframes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">batch_list</span> <span class="o">=</span> <span class="n">vd</span><span class="o">.</span><span class="n">decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span><span class="p">,</span>
+                                    <span class="n">start_idx</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_idx</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+                                    <span class="n">batch_size</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">b_stride</span><span class="p">)</span>
+
+        <span class="n">test_mpeg_nbatches</span><span class="p">(</span><span class="s1">&#39;batch_size = stride test:&#39;</span><span class="p">,</span> <span class="n">nbatches</span><span class="o">=</span><span class="n">numbatches</span><span class="p">,</span>
+                           <span class="n">vd_nbatches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_list</span><span class="p">))</span>
+
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size = stride test: check first batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span><span class="p">])</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size = stride test: check first batch, last frame&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">numframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size = stride test: check last batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> \
+                        <span class="o">+</span> <span class="n">numframes</span> <span class="o">*</span> <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">numframes</span><span class="p">)])</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size = stride test: check last batch, last frame&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="c1"># Test batch_size &gt; stride, with padding on.</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">b_stride</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">numbatches</span> <span class="o">=</span> <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">b_stride</span><span class="p">)</span> <span class="o">+</span> \
+            <span class="p">(((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">b_stride</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">numframes</span> <span class="o">-</span> <span class="n">b_stride</span><span class="p">))</span>
+        <span class="n">batch_list</span> <span class="o">=</span> <span class="n">vd</span><span class="o">.</span><span class="n">decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span><span class="p">,</span>
+                                    <span class="n">start_idx</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_idx</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+                                    <span class="n">batch_size</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">b_stride</span><span class="p">)</span>
+
+        <span class="n">test_mpeg_nbatches</span><span class="p">(</span><span class="s1">&#39;batch_size &gt; stride test:&#39;</span><span class="p">,</span> <span class="n">nbatches</span><span class="o">=</span><span class="n">numbatches</span><span class="p">,</span>
+                           <span class="n">vd_nbatches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_list</span><span class="p">))</span>
+
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &gt; stride test: check first batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span><span class="p">])</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &gt; stride test: check first batch, last frame&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">numframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &gt; stride test: check second batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">b_stride</span><span class="p">])</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &gt; stride test: check second batch, last frame&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">b_stride</span> <span class="o">+</span> \
+                                                <span class="n">numframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size&gt;stride test: check last batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span>
+                        <span class="n">b_stride</span> <span class="o">*</span> <span class="p">(</span><span class="n">numbatches</span> <span class="o">-</span>
+                                    <span class="p">(((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">b_stride</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span>
+                                        <span class="n">numframes</span> <span class="o">-</span> <span class="n">b_stride</span><span class="p">)))])</span>
+
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &gt; stride test: check last batch, last frame&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+
+        <span class="c1"># Test batch_size &lt; stride.</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">b_stride</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">numbatches</span> <span class="o">=</span> <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">b_stride</span><span class="p">)</span> <span class="o">+</span> \
+                     <span class="p">(((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">b_stride</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">batch_list</span> <span class="o">=</span> <span class="n">vd</span><span class="o">.</span><span class="n">decode_mpeg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vid_path</span><span class="p">,</span>
+                                    <span class="n">start_idx</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_idx</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+                                    <span class="n">batch_size</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">b_stride</span><span class="p">)</span>
+
+        <span class="n">test_mpeg_nbatches</span><span class="p">(</span><span class="s1">&#39;batch_size &gt; stride test:&#39;</span><span class="p">,</span> <span class="n">nbatches</span><span class="o">=</span><span class="n">numbatches</span><span class="p">,</span>
+                           <span class="n">vd_nbatches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_list</span><span class="p">))</span>
+
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &lt; stride test: check first batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span><span class="p">])</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &lt; stride test: check first batch, last frame&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">numframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &lt; stride test: check last batch, first frame&#39;</span>
+        <span class="n">test_mpeg_dimensions</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="n">numframes</span><span class="p">,</span> <span class="n">vd_batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span>
+                            <span class="n">start</span> <span class="o">+</span> <span class="n">b_stride</span> <span class="o">*</span> <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">b_stride</span><span class="p">)])</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;batch_size &lt; stride test: check last batch, &#39;</span> <span class="o">+</span> \
+                 <span class="s1">&#39;last </span><span class="se">\&quot;</span><span class="s1">real frame</span><span class="se">\&quot;</span><span class="s1">&#39;</span>
+        <span class="n">test_mpeg_frame</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">vd_frame</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="o">-</span><span class="p">(((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">b_stride</span><span class="p">)</span>\
+                        <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">15</span><span class="p">)</span> <span class="o">-</span> <span class="n">numframes</span><span class="p">)],</span>
+                        <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span>
+                                                <span class="n">b_stride</span> <span class="o">-</span> <span class="n">numframes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span>
+                                                <span class="p">((</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">b_stride</span> <span class="o">-</span>
+                                                <span class="n">numframes</span><span class="p">)])</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Codas Lab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

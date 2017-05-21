@@ -1,0 +1,214 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>test.pipeline package &#8212; image_analysis 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="test-pipeline-package">
+<h1>test.pipeline package<a class="headerlink" href="#test-pipeline-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-test.pipeline.test_features">
+<span id="test-pipeline-test-features-module"></span><h2>test.pipeline.test_features module<a class="headerlink" href="#module-test.pipeline.test_features" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="test.pipeline.test_features.ArgMaxPixel">
+<em class="property">class </em><code class="descclassname">test.pipeline.test_features.</code><code class="descname">ArgMaxPixel</code><a class="reference internal" href="_modules/test/pipeline/test_features.html#ArgMaxPixel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_features.ArgMaxPixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.html#pipeline.feature.Feature" title="pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">pipeline.feature.Feature</span></code></a></p>
+<dl class="method">
+<dt id="test.pipeline.test_features.ArgMaxPixel.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_features.html#ArgMaxPixel.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_features.ArgMaxPixel.extract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test.pipeline.test_features.BatchOP">
+<em class="property">class </em><code class="descclassname">test.pipeline.test_features.</code><code class="descname">BatchOP</code><a class="reference internal" href="_modules/test/pipeline/test_features.html#BatchOP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_features.BatchOP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.html#pipeline.feature.Feature" title="pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">pipeline.feature.Feature</span></code></a></p>
+<dl class="method">
+<dt id="test.pipeline.test_features.BatchOP.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_features.html#BatchOP.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_features.BatchOP.extract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="test.pipeline.test_features.RGBToGray">
+<em class="property">class </em><code class="descclassname">test.pipeline.test_features.</code><code class="descname">RGBToGray</code><a class="reference internal" href="_modules/test/pipeline/test_features.html#RGBToGray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_features.RGBToGray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.html#pipeline.feature.Feature" title="pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">pipeline.feature.Feature</span></code></a></p>
+<dl class="method">
+<dt id="test.pipeline.test_features.RGBToGray.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>RGB_frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_features.html#RGBToGray.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_features.RGBToGray.extract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-test.pipeline.test_orientation_filter">
+<span id="test-pipeline-test-orientation-filter-module"></span><h2>test.pipeline.test_orientation_filter module<a class="headerlink" href="#module-test.pipeline.test_orientation_filter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="test.pipeline.test_orientation_filter.TestFeatureExtractor">
+<em class="property">class </em><code class="descclassname">test.pipeline.test_orientation_filter.</code><code class="descname">TestFeatureExtractor</code><span class="sig-paren">(</span><em>methodName=’runTest’</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_orientation_filter.html#TestFeatureExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_orientation_filter.TestFeatureExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="test.pipeline.test_orientation_filter.TestFeatureExtractor.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_orientation_filter.html#TestFeatureExtractor.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_orientation_filter.TestFeatureExtractor.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_orientation_filter.TestFeatureExtractor.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_orientation_filter.html#TestFeatureExtractor.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_orientation_filter.TestFeatureExtractor.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_orientation_filter.TestFeatureExtractor.test_bowtie">
+<code class="descname">test_bowtie</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_orientation_filter.html#TestFeatureExtractor.test_bowtie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_orientation_filter.TestFeatureExtractor.test_bowtie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-test.pipeline.test_pipeline">
+<span id="test-pipeline-test-pipeline-module"></span><h2>test.pipeline.test_pipeline module<a class="headerlink" href="#module-test.pipeline.test_pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="test.pipeline.test_pipeline.TestPipeline">
+<em class="property">class </em><code class="descclassname">test.pipeline.test_pipeline.</code><code class="descname">TestPipeline</code><span class="sig-paren">(</span><em>methodName=’runTest’</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="test.pipeline.test_pipeline.TestPipeline.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_pipeline.TestPipeline.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_pipeline.TestPipeline.test_as_ndarray">
+<code class="descname">test_as_ndarray</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline.test_as_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline.test_as_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_pipeline.TestPipeline.test_operations_save">
+<code class="descname">test_operations_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline.test_operations_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline.test_operations_save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_pipeline.TestPipeline.test_sequential_nonsave">
+<code class="descname">test_sequential_nonsave</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline.test_sequential_nonsave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline.test_sequential_nonsave" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="test.pipeline.test_pipeline.TestPipeline.test_sequential_save">
+<code class="descname">test_sequential_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test/pipeline/test_pipeline.html#TestPipeline.test_sequential_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#test.pipeline.test_pipeline.TestPipeline.test_sequential_save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-test.pipeline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-test.pipeline" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">test.pipeline package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-test.pipeline.test_features">test.pipeline.test_features module</a></li>
+<li><a class="reference internal" href="#module-test.pipeline.test_orientation_filter">test.pipeline.test_orientation_filter module</a></li>
+<li><a class="reference internal" href="#module-test.pipeline.test_pipeline">test.pipeline.test_pipeline module</a></li>
+<li><a class="reference internal" href="#module-test.pipeline">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/test.pipeline.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Codas Lab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/test.pipeline.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

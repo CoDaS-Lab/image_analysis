@@ -1,0 +1,490 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pipeline package &#8212; image_analysis 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pipeline-package">
+<h1>pipeline package<a class="headerlink" href="#pipeline-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pipeline.feature">
+<span id="pipeline-feature-module"></span><h2>pipeline.feature module<a class="headerlink" href="#module-pipeline.feature" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pipeline.feature.Feature">
+<em class="property">class </em><code class="descclassname">pipeline.feature.</code><code class="descname">Feature</code><span class="sig-paren">(</span><em>key_name</em>, <em>batch_op=False</em>, <em>frame_op=False</em>, <em>save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.feature.Feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Base class for features we want to extract or transformations we
+want to apply to data</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">batch_op:</th><td class="field-body">boolean to say the feature runs on batches of frames</td>
+</tr>
+<tr class="field-even field"><th class="field-name">frame_op:</th><td class="field-body">boolean to say the feature runs on each frame</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">save:</th><td class="field-body">boolean check to save feature in output dict</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pipeline.feature.Feature.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>**args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/feature.html#Feature.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.feature.Feature.extract" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>extract features from the data</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.feature.Feature.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/feature.html#Feature.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.feature.Feature.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>predict new points</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.feature.Feature.train_model">
+<code class="descname">train_model</code><span class="sig-paren">(</span><em>**args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/feature.html#Feature.train_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.feature.Feature.train_model" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>train models on images</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pipeline.orientation_filter">
+<span id="pipeline-orientation-filter-module"></span><h2>pipeline.orientation_filter module<a class="headerlink" href="#module-pipeline.orientation_filter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pipeline.orientation_filter.OrientationFilter">
+<em class="property">class </em><code class="descclassname">pipeline.orientation_filter.</code><code class="descname">OrientationFilter</code><span class="sig-paren">(</span><em>mask=’bowtie’</em>, <em>center_orientation=90</em>, <em>orientation_width=20</em>, <em>high_cutoff=None</em>, <em>low_cutoff=0.1</em>, <em>target_size=None</em>, <em>falloff=”</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/orientation_filter.html#OrientationFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.orientation_filter.OrientationFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pipeline.feature.Feature" title="pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">pipeline.feature.Feature</span></code></a></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Creates a filter that can be multiplied by the amplitude spectrum
+of an image to increase/decrease specific orientations/spatial
+frequencies.</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">center_orientation:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">int for the center orientation (0-180)</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">orientation_width:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">int for the orientation width of the filter</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">high_cutoff:</th><td class="field-body">int high spatial frequency cutoff</td>
+</tr>
+<tr class="field-even field"><th class="field-name">low_cutoff:</th><td class="field-body">int low spatial frequency cutoff</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">target_size:</th><td class="field-body">int total size.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">falloff:</th><td class="field-body">string ‘triangle’ or ‘rectangle’ shape of the filter
+falloff from the center.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pipeline.orientation_filter.OrientationFilter.bowtie">
+<code class="descname">bowtie</code><span class="sig-paren">(</span><em>center_orientation</em>, <em>orientation_width</em>, <em>high_cutoff</em>, <em>low_cutoff</em>, <em>target_size</em>, <em>falloff=”</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/orientation_filter.html#OrientationFilter.bowtie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.orientation_filter.OrientationFilter.bowtie" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Creates a filter that can be multiplied by the amplitude spectrum
+of an image to increase/decrease specific orientations/spatial
+frequencies.</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">center_orientation:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">int for the center orientation (0-180).</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">orientation_width:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">int for the orientation width of the filter.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">high_cutoff:</th><td class="field-body">int high spatial frequency cutoff.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">low_cutoff:</th><td class="field-body">int low spatial frequency cutoff.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">target_size:</th><td class="field-body">int total size.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">falloff:</th><td class="field-body">string ‘triangle’ or ‘rectangle’ shape of the filter
+falloff from the center.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>RETURN:</p>
+<blockquote>
+<div>the bowtie shaped filter.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.orientation_filter.OrientationFilter.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/orientation_filter.html#OrientationFilter.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.orientation_filter.OrientationFilter.extract" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Transforms a matrix using FFT, multiplies the result by a mask, and
+then transforms the matrix back using Inverse FFT.</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input_frame:</th><td class="field-body">(m x n) numpy array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">mask:</th><td class="field-body">int determining the type of filter to implement, where
+1 = iso (noize amp) and 2 = horizontal decrement
+(bowtie)</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>RETURN:</dt>
+<dd>return the transformed and processed frame</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.orientation_filter.OrientationFilter.noise_amp">
+<code class="descname">noise_amp</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/orientation_filter.html#OrientationFilter.noise_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.orientation_filter.OrientationFilter.noise_amp" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Creates a size x size matrix of randomly generated noise with
+amplitude values with 1/f slope</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">size:</th><td class="field-body">size of matrix</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>RETURN:</dt>
+<dd>:returns the amplitudes with noise added</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pipeline.pipeline">
+<span id="pipeline-pipeline-module"></span><h2>pipeline.pipeline module<a class="headerlink" href="#module-pipeline.pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pipeline.pipeline.Pipeline">
+<em class="property">class </em><code class="descclassname">pipeline.pipeline.</code><code class="descname">Pipeline</code><span class="sig-paren">(</span><em>data=None</em>, <em>ops=None</em>, <em>seq=None</em>, <em>save_all=None</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>This class is the bridge between running features on images.
+Automates the process of extracting each feature, saving it,
+outputing it and putting it in dictionary form</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">data:</th><td class="field-body">image data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ops:</th><td class="field-body">features to run on images. These ops don’t have dependencies</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">seq:</th><td class="field-body">features to run in sequential way (output is input to another)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">save_all:</th><td class="field-body">boolean check to save all features ran</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">models:</th><td class="field-body">statistical models to run on the data</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.as_ndarray">
+<code class="descname">as_ndarray</code><span class="sig-paren">(</span><em>frame_key=None</em>, <em>batch_key=None</em>, <em>seq_key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.as_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.as_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>get a feature as a numpy array</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">frame_key:</th><td class="field-body">key of frame feature to get</td>
+</tr>
+<tr class="field-even field"><th class="field-name">batch_key:</th><td class="field-body">key of batch feature to get</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">seq_key:</th><td class="field-body">key of seq operations to get</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.display" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>print pipeline stuff like models we have and operations</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>keep_input_data=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.extract" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>extract all features</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">keep_input_data:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">boolean check whether we want to keep original 
+data</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>model=”</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.set_batch_ops">
+<code class="descname">set_batch_ops</code><span class="sig-paren">(</span><em>batch_ops=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.set_batch_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.set_batch_ops" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>update batch operations list</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">batch_ops:</th><td class="field-body">features to put in batch_ops</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.set_empty_frame">
+<code class="descname">set_empty_frame</code><span class="sig-paren">(</span><em>batch_ops</em>, <em>frame_ops</em>, <em>seq_ops</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.set_empty_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.set_empty_frame" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>creates an empty frame with the operation keys only</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">batch_ops:</th><td class="field-body">features to extract from batches</td>
+</tr>
+<tr class="field-even field"><th class="field-name">frame_ops:</th><td class="field-body">features to extract from frames</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">seq_ops:</th><td class="field-body">features to extract sequentially</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.set_frame_ops">
+<code class="descname">set_frame_ops</code><span class="sig-paren">(</span><em>frame_ops=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.set_frame_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.set_frame_ops" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>update frame operations list</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">frame_ops:</th><td class="field-body">features to put in frame_ops</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.set_ops">
+<code class="descname">set_ops</code><span class="sig-paren">(</span><em>ops=None</em>, <em>seq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.set_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.set_ops" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>puts ops and seq into separate list for better managing</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ops:</th><td class="field-body">features to run on images. These ops don’t have dependencies</td>
+</tr>
+<tr class="field-even field"><th class="field-name">seq:</th><td class="field-body">features to run in sequential way (output is input to another)</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.set_seq">
+<code class="descname">set_seq</code><span class="sig-paren">(</span><em>seq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.set_seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.set_seq" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>update sequential operations list</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">seq:</th><td class="field-body">features to put in seq_ops</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pipeline.pipeline.Pipeline.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>model=”</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/pipeline.html#Pipeline.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.pipeline.Pipeline.train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pipeline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pipeline" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pipeline package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pipeline.feature">pipeline.feature module</a></li>
+<li><a class="reference internal" href="#module-pipeline.orientation_filter">pipeline.orientation_filter module</a></li>
+<li><a class="reference internal" href="#module-pipeline.pipeline">pipeline.pipeline module</a></li>
+<li><a class="reference internal" href="#module-pipeline">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pipeline.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Codas Lab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/pipeline.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
