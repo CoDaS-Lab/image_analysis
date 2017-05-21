@@ -15,12 +15,12 @@ class OrientationFilter(Feature):
             frequencies.
 
     PARAMS:
-        center_orientation: int for the center orientation (0-180).
-        orientation_width: int for the orientation width of the filter.
-        high_cutoff: int high spatial frequency cutoff.
-        low_cutoff: int low spatial frequency cutoff.
-        target_size: int total size.
-        falloff: string 'triangle' or 'rectangle' shape of the filter
+        :center_orientation: int for the center orientation (0-180)
+        :orientation_width: int for the orientation width of the filter
+        :high_cutoff: int high spatial frequency cutoff
+        :low_cutoff: int low spatial frequency cutoff
+        :target_size: int total size.
+        :falloff: string 'triangle' or 'rectangle' shape of the filter
                 falloff from the center.
     """
 
@@ -76,16 +76,16 @@ class OrientationFilter(Feature):
             frequencies.
 
         PARAMS:
-            center_orientation: int for the center orientation (0-180).
-            orientation_width: int for the orientation width of the filter.
-            high_cutoff: int high spatial frequency cutoff.
-            low_cutoff: int low spatial frequency cutoff.
-            target_size: int total size.
-            falloff: string 'triangle' or 'rectangle' shape of the filter
+            :center_orientation: int for the center orientation (0-180).
+            :orientation_width: int for the orientation width of the filter.
+            :high_cutoff: int high spatial frequency cutoff.
+            :low_cutoff: int low spatial frequency cutoff.
+            :target_size: int total size.
+            :falloff: string 'triangle' or 'rectangle' shape of the filter
                     falloff from the center.
 
         RETURN:\n
-            filt: return the bowtie shaped filter.
+            the bowtie shaped filter.
         """
 
         x = y = np.linspace(0, target_size // 2, target_size // 2 + 1)
@@ -182,10 +182,10 @@ class OrientationFilter(Feature):
             amplitude values with 1/f slope
 
         PARAMS:
-            size: size of matrix
+            :size: size of matrix
 
         RETURN:
-            returns the amplitudes with noise added
+            :returns the amplitudes with noise added
         """
 
         slope = 1
@@ -210,8 +210,8 @@ class OrientationFilter(Feature):
             then transforms the matrix back using Inverse FFT.\n
 
         PARAMS:
-            input_frame: (m x n) numpy array
-            mask: int determining the type of filter to implement, where
+            :input_frame: (m x n) numpy array
+            :mask: int determining the type of filter to implement, where
                   1 = iso (noize amp) and 2 = horizontal decrement
                   (bowtie)
 

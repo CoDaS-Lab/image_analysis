@@ -13,9 +13,9 @@ def timeit(thresh=None, classname=''):
         python decorator to time functinos
 
     PARAMS:
-        thresh: minimum speed allowed. Throws error if function is slower
-                than thresh
-        classname: class where the function you timing is located
+        :thresh: minimum speed allowed. Throws error if function is slower
+            than thresh
+        :classname: class where the function you timing is located
 
     """
     def decorator(method):
@@ -42,9 +42,9 @@ def load_mult_images(dirname, exts=None, batchsize=1):
         Load multiple images at once into batches
 
     PARAMS:
-        dirname: directory of the images
-        exts: acceptable file extensions (must be a tuble)
-        batchsize: size of the batches
+        :dirname: directory of the images
+        :exts: acceptable file extensions (must be a tuble)
+        :batchsize: size of the batches
 
     """
 

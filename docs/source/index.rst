@@ -1,9 +1,9 @@
-.. Image Analysis documentation master file, created by
-   sphinx-quickstart on Thu Mar 30 11:12:05 2017.
+.. image_analysis documentation master file, created by
+   sphinx-quickstart on Sun May 21 13:36:21 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Image Analysis's documentation!
+Welcome to image_analysis's documentation!
 ==========================================
 
 .. toctree::

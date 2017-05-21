@@ -5,7 +5,6 @@ import skimage.io
 import wget
 from matplotlib import pyplot as plt
 from decode import video_decoder as vd
-from pipeline import feature_extractor as fe
 from demo_features import RGBToGray
 from demo_features import BatchOP
 from pipeline.pipeline import Pipeline
