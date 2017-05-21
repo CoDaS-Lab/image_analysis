@@ -1,13 +1,13 @@
 class Feature:
     """
     DESCRIPTION:
-            Base class for features we want to extract or transformations we
-            want to apply to data
+        Base class for features we want to extract or transformations we
+        want to apply to data
 
     PARAMS:
-        batch_op: boolean to say the feature runs on batches of frames
-        frame_op: boolean to say the feature runs on each frame
-        save: boolean check to save feature in output dict
+        :batch_op: boolean to say the feature runs on batches of frames
+        :frame_op: boolean to say the feature runs on each frame
+        :save: boolean check to save feature in output dict
     """
 
     def __init__(self, key_name, batch_op=False, frame_op=False, save=False):

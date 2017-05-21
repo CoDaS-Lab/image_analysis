@@ -11,11 +11,11 @@ class Pipeline:
         outputing it and putting it in dictionary form
 
     PARAMS:
-        data: image data
-        ops: features to run on images. These ops don't have dependencies
-        seq: features to run in sequential way (output is input to another)
-        save_all: boolean check to save all features ran
-        models: statistical models to run on the data
+        :data: image data
+        :ops: features to run on images. These ops don't have dependencies
+        :seq: features to run in sequential way (output is input to another)
+        :save_all: boolean check to save all features ran
+        :models: statistical models to run on the data
     """
     def __init__(self, data=None, ops=None, seq=None, save_all=None,
                  models=None):
@@ -37,8 +37,8 @@ class Pipeline:
             puts ops and seq into separate list for better managing
 
         PARAMS:
-            ops: features to run on images. These ops don't have dependencies
-            seq: features to run in sequential way (output is input to another)
+            :ops: features to run on images. These ops don't have dependencies
+            :seq: features to run in sequential way (output is input to another)
         """
         batch_ops = []
         frame_ops = []
@@ -72,7 +72,7 @@ class Pipeline:
             update batch operations list
 
         PARAMS:
-            batch_ops: features to put in batch_ops
+            :batch_ops: features to put in batch_ops
         """
         if batch_ops is None:
             batch_ops = []
@@ -89,7 +89,7 @@ class Pipeline:
             update frame operations list
 
         PARAMS:
-            frame_ops: features to put in frame_ops
+            :frame_ops: features to put in frame_ops
         """
         if frame_ops is None:
             frame_ops = []
@@ -106,7 +106,7 @@ class Pipeline:
             update sequential operations list
 
         PARAMS:
-            seq: features to put in seq_ops
+            :seq: features to put in seq_ops
         """
         for op in seq_ops:
             assert isinstance(Feature)
@@ -120,9 +120,9 @@ class Pipeline:
             creates an empty frame with the operation keys only
 
         PARAMS:
-            batch_ops: features to extract from batches
-            frame_ops: features to extract from frames
-            seq_ops: features to extract sequentially
+            :batch_ops: features to extract from batches
+            :frame_ops: features to extract from frames
+            :seq_ops: features to extract sequentially
         """
         assert isinstance(batch_ops, list)
         assert isinstance(frame_ops, list)
@@ -152,7 +152,7 @@ class Pipeline:
             extract all features
 
         PARAMS:
-            keep_input_data: boolean check whether we want to keep original 
+            :keep_input_data: boolean check whether we want to keep original 
                              data
         """
         if self.batch_ops == self.frame_ops == self.seq_ops == []:
@@ -202,9 +202,9 @@ class Pipeline:
             get a feature as a numpy array
 
         PARAMS:
-            frame_key: key of frame feature to get
-            batch_key: key of batch feature to get
-            seq_key: key of seq operations to get
+            :frame_key: key of frame feature to get
+            :batch_key: key of batch feature to get
+            :seq_key: key of seq operations to get
         """
         keys = [frame_key] + [batch_key] + [seq_key]
 
