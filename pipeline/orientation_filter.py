@@ -15,6 +15,7 @@ class OrientationFilter(Feature):
             frequencies.
 
     PARAMS:
+        :inputshape: shape of then input for pyfftw builder
         :center_orientation: int for the center orientation (0-180)
         :orientation_width: int for the orientation width of the filter
         :high_cutoff: int high spatial frequency cutoff
@@ -22,15 +23,28 @@ class OrientationFilter(Feature):
         :target_size: int total size.
         :falloff: string 'triangle' or 'rectangle' shape of the filter
                 falloff from the center.
+        :nthreads: number of multithreads
     """
 
-    def __init__(self, mask='bowtie', center_orientation=90,
-                 orientation_width=20, high_cutoff=None, low_cutoff=.1,
-                 target_size=None, falloff='', ):
+    def __init__(self, inputshape=(480, 640), mask='bowtie',
+                 center_orientation=90, orientation_width=20, high_cutoff=None,
+                 low_cutoff=.1, target_size=None, falloff='', nthreads=1):
 
         Feature.__init__(self, mask + '_filter', frame_op=True,
                          batch_op=False)
 
+        # improve performance of fft by caching pyfftw fft objects
+        # see https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat
+        pyfftw.interfaces.cache.enable()
+        # fft, ifft builder objects
+        # pyfftw requires the input shape and memory locations of input and
+        # output in advance to make it multithreaded
+        self.inputobj = pyfftw.empty_aligned(inputshape, dtype='complex128')
+        self.outputobj = pyfftw.empty_aligned(inputshape, dtype='float64')
+        self.fftobj = pyfftw.builders.fft2(self.inputobj, threads=nthreads)
+        self.ifftobj = pyfftw.builders.ifft2(self.outputobj, threads=nthreads)
+
+        self.inputshape = inputshape
         self.mask = mask
         available_mask = ['bowtie', 'noise']
         if self.mask not in available_mask:
@@ -63,9 +77,7 @@ class OrientationFilter(Feature):
         else:
             raise ValueError('invalid mask: {0}'.format(self.mask))
 
-        # improve performance of fft by caching pyfftw fft objects
-        # see https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat
-        pyfftw.interfaces.cache.enable()
+        self.filter = self.filter[:inputshape[0], :inputshape[1]]
 
     def bowtie(self, center_orientation, orientation_width, high_cutoff,
                low_cutoff, target_size, falloff=''):
@@ -194,9 +206,9 @@ class OrientationFilter(Feature):
         xgrid = np.subtract(xgrid, size // 2)
         ygrid = np.subtract(ygrid, size // 2)
 
-        amp = np.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) +
-                                        np.square(ygrid)),
-                                        size * np.sqrt(2)))
+        amp = fftshift(np.divide(np.sqrt(np.square(xgrid) +
+                                         np.square(ygrid)),
+                                 size * np.sqrt(2)))
         amp = np.rot90(amp, 2)
         amp[0, 0] = 1
         amp = 1 / amp**slope
@@ -223,13 +235,12 @@ class OrientationFilter(Feature):
 
         # target size and frame width must be the same
         # https://github.com/CoDaS-Lab/IsoVideo/blob/master/isovideo/filter.py#L27
-        assert frame.shape[1] == self.target_size
+        # assert frame.shape[1] == self.target_size
 
         # fft spectrum
         altimg = None
-        rows = frame.shape[0]
         grayframe = rgb2gray(frame)
-        dft_frame = fft2(grayframe)
+        dft_frame = self.fftobj(grayframe)
         phase = np.arctan2(dft_frame.imag, dft_frame.real)
 
         # create filter
@@ -239,11 +250,11 @@ class OrientationFilter(Feature):
             amp = np.multiply(phase, amp)
 
             # inverse fft and normalize
-            altimg = ifft2(amp).real
+            altimg = self.ifftobj(amp).real
             altimg -= altimg.min()
             altimg /= altimg.max()
 
         elif self.mask == 'bowtie':
-            altimg = ifft2(dft_frame * self.filter).real
+            altimg = self.ifftobj(dft_frame * self.filter).real
 
         return altimg
