@@ -15,6 +15,7 @@ class OrientationFilter(Feature):
             frequencies.
 
     PARAMS:
+        :inputshape: shape of then input for pyfftw builder
         :center_orientation: int for the center orientation (0-180)
         :orientation_width: int for the orientation width of the filter
         :high_cutoff: int high spatial frequency cutoff
@@ -22,6 +23,7 @@ class OrientationFilter(Feature):
         :target_size: int total size.
         :falloff: string 'triangle' or 'rectangle' shape of the filter
                 falloff from the center.
+        :nthreads: number of multithreads
     """
 
     def __init__(self, inputshape=(480, 640), mask='bowtie',
