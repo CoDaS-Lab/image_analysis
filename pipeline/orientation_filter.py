@@ -26,9 +26,10 @@ class OrientationFilter(Feature):
         :nthreads: number of multithreads
     """
 
-    def __init__(self, inputshape=(480, 640), mask='bowtie',
-                 center_orientation=90, orientation_width=20, high_cutoff=None,
-                 low_cutoff=.1, target_size=None, falloff='', nthreads=1):
+    def __init__(self, mask='bowtie', center_orientation=90,
+                 orientation_width=20, high_cutoff=None,
+                 low_cutoff=.1, target_size=None, falloff='', nthreads=1, 
+                 inputshape=(480, 640)):
 
         Feature.__init__(self, mask + '_filter', frame_op=True,
                          batch_op=False)

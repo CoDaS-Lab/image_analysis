@@ -16,8 +16,8 @@ cap = cv2.VideoCapture(0)
 # we need to know the widths of the image in advance for the filter
 vidwidth = 640
 imgshape = (480, 640)
-bowtie = OrientationFilter(imgshape, 'bowtie', 90, 42, vidwidth // 2, .2,
-                           vidwidth, 'triangle', nthreads=4)
+bowtie = OrientationFilter('bowtie', 90, 42, vidwidth // 2, .2, vidwidth,
+                           'triangle', nthreads=4, inputshape=imgshape)
 pipe = Pipeline(ops=[bowtie], save_all=True)
 
 lasttime = time.time()
