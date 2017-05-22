@@ -62,8 +62,12 @@ print(output)
 
 if readyforcommit:
     print('--- BUILD DOCS ---')
+    excludes = ['test', 'build.py', 'setup.py']
+    call(['sphinx-apidoc', '-f', '-o', './docs/source', '.', 'test', 'build.py', 'setup.py'])
+
     # go into docs folder
     os.chdir(os.path.abspath('./docs'))
+    # generate doc rst files for new files if any
     # clean
     call(['make', 'clean'])
     # rebuild html
