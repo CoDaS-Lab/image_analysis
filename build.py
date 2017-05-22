@@ -60,18 +60,7 @@ if 'FAILED' in output:
 print(output)
 
 
-if readyforcommit:
-    print('--- BUILD DOCS ---')
-    # go into docs folder
-    os.chdir(os.path.abspath('./docs'))
-    # clean
-    call(['make', 'clean'])
-    # rebuild html
-    call(['make', 'html'])
-    os.chdir(os.path.abspath('../'))
-    elapsed = time.time() - timestart
-    print('\n\nProject Build finished -> {:.3f}ms\n'.format(elapsed))
-else:
+if not readyforcommit:
     print('Fix errors before commiting\n')
     sys.exit(1)
 
