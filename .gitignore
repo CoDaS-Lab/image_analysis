@@ -92,7 +92,3 @@ ENV/
 
 # Visual Studio Code
 .vscode
-
-
-# Allow
-!docs/build
