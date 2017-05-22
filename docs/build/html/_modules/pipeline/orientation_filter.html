@@ -125,6 +125,7 @@
 <span class="sd">            frequencies.</span>
 
 <span class="sd">    PARAMS:</span>
+<span class="sd">        :inputshape: shape of then input for pyfftw builder</span>
 <span class="sd">        :center_orientation: int for the center orientation (0-180)</span>
 <span class="sd">        :orientation_width: int for the orientation width of the filter</span>
 <span class="sd">        :high_cutoff: int high spatial frequency cutoff</span>
@@ -132,15 +133,29 @@
 <span class="sd">        :target_size: int total size.</span>
 <span class="sd">        :falloff: string &#39;triangle&#39; or &#39;rectangle&#39; shape of the filter</span>
 <span class="sd">                falloff from the center.</span>
+<span class="sd">        :nthreads: number of multithreads</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;bowtie&#39;</span><span class="p">,</span> <span class="n">center_orientation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
-                 <span class="n">orientation_width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">high_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">low_cutoff</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">target_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">falloff</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">):</span>
+                 <span class="n">orientation_width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">high_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">low_cutoff</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">target_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">falloff</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                 <span class="n">inputshape</span><span class="o">=</span><span class="p">(</span><span class="mi">480</span><span class="p">,</span> <span class="mi">640</span><span class="p">)):</span>
 
         <span class="n">Feature</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span> <span class="o">+</span> <span class="s1">&#39;_filter&#39;</span><span class="p">,</span> <span class="n">frame_op</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                          <span class="n">batch_op</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+        <span class="c1"># improve performance of fft by caching pyfftw fft objects</span>
+        <span class="c1"># see https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat</span>
+        <span class="n">pyfftw</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+        <span class="c1"># fft, ifft builder objects</span>
+        <span class="c1"># pyfftw requires the input shape and memory locations of input and</span>
+        <span class="c1"># output in advance to make it multithreaded</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputobj</span> <span class="o">=</span> <span class="n">pyfftw</span><span class="o">.</span><span class="n">empty_aligned</span><span class="p">(</span><span class="n">inputshape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex128&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputobj</span> <span class="o">=</span> <span class="n">pyfftw</span><span class="o">.</span><span class="n">empty_aligned</span><span class="p">(</span><span class="n">inputshape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fftobj</span> <span class="o">=</span> <span class="n">pyfftw</span><span class="o">.</span><span class="n">builders</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputobj</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ifftobj</span> <span class="o">=</span> <span class="n">pyfftw</span><span class="o">.</span><span class="n">builders</span><span class="o">.</span><span class="n">ifft2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputobj</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputshape</span> <span class="o">=</span> <span class="n">inputshape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
         <span class="n">available_mask</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bowtie&#39;</span><span class="p">,</span> <span class="s1">&#39;noise&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_mask</span><span class="p">:</span>
@@ -173,9 +188,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid mask: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span>
 
-        <span class="c1"># improve performance of fft by caching pyfftw fft objects</span>
-        <span class="c1"># see https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat</span>
-        <span class="n">pyfftw</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">[:</span><span class="n">inputshape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span><span class="n">inputshape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 
 <div class="viewcode-block" id="OrientationFilter.bowtie"><a class="viewcode-back" href="../../pipeline.html#pipeline.orientation_filter.OrientationFilter.bowtie">[docs]</a>    <span class="k">def</span> <span class="nf">bowtie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_orientation</span><span class="p">,</span> <span class="n">orientation_width</span><span class="p">,</span> <span class="n">high_cutoff</span><span class="p">,</span>
                <span class="n">low_cutoff</span><span class="p">,</span> <span class="n">target_size</span><span class="p">,</span> <span class="n">falloff</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -304,9 +317,9 @@
         <span class="n">xgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">ygrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span> <span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">xgrid</span><span class="p">)</span> <span class="o">+</span>
-                                        <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">ygrid</span><span class="p">)),</span>
-                                        <span class="n">size</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="n">amp</span> <span class="o">=</span> <span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">xgrid</span><span class="p">)</span> <span class="o">+</span>
+                                         <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">ygrid</span><span class="p">)),</span>
+                                 <span class="n">size</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
         <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">amp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">amp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">amp</span><span class="o">**</span><span class="n">slope</span>
@@ -333,13 +346,12 @@
 
         <span class="c1"># target size and frame width must be the same</span>
         <span class="c1"># https://github.com/CoDaS-Lab/IsoVideo/blob/master/isovideo/filter.py#L27</span>
-        <span class="k">assert</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_size</span>
+        <span class="c1"># assert frame.shape[1] == self.target_size</span>
 
         <span class="c1"># fft spectrum</span>
         <span class="n">altimg</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">grayframe</span> <span class="o">=</span> <span class="n">rgb2gray</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
-        <span class="n">dft_frame</span> <span class="o">=</span> <span class="n">fft2</span><span class="p">(</span><span class="n">grayframe</span><span class="p">)</span>
+        <span class="n">dft_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fftobj</span><span class="p">(</span><span class="n">grayframe</span><span class="p">)</span>
         <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dft_frame</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">dft_frame</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
 
         <span class="c1"># create filter</span>
@@ -349,12 +361,12 @@
             <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">amp</span><span class="p">)</span>
 
             <span class="c1"># inverse fft and normalize</span>
-            <span class="n">altimg</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">amp</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">altimg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ifftobj</span><span class="p">(</span><span class="n">amp</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
             <span class="n">altimg</span> <span class="o">-=</span> <span class="n">altimg</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
             <span class="n">altimg</span> <span class="o">/=</span> <span class="n">altimg</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">==</span> <span class="s1">&#39;bowtie&#39;</span><span class="p">:</span>
-            <span class="n">altimg</span> <span class="o">=</span> <span class="n">ifft2</span><span class="p">(</span><span class="n">dft_frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">altimg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ifftobj</span><span class="p">(</span><span class="n">dft_frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
         <span class="k">return</span> <span class="n">altimg</span></div></div>
 </pre></div>

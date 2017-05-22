@@ -185,7 +185,7 @@ want to apply to data</dd>
 <span id="pipeline-orientation-filter-module"></span><h2>pipeline.orientation_filter module<a class="headerlink" href="#module-pipeline.orientation_filter" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pipeline.orientation_filter.OrientationFilter">
-<em class="property">class </em><code class="descclassname">pipeline.orientation_filter.</code><code class="descname">OrientationFilter</code><span class="sig-paren">(</span><em>mask=’bowtie’</em>, <em>center_orientation=90</em>, <em>orientation_width=20</em>, <em>high_cutoff=None</em>, <em>low_cutoff=0.1</em>, <em>target_size=None</em>, <em>falloff=”</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/orientation_filter.html#OrientationFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.orientation_filter.OrientationFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pipeline.orientation_filter.</code><code class="descname">OrientationFilter</code><span class="sig-paren">(</span><em>mask=’bowtie’</em>, <em>center_orientation=90</em>, <em>orientation_width=20</em>, <em>high_cutoff=None</em>, <em>low_cutoff=0.1</em>, <em>target_size=None</em>, <em>falloff=”</em>, <em>nthreads=1</em>, <em>inputshape=(480</em>, <em>640)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/orientation_filter.html#OrientationFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.orientation_filter.OrientationFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pipeline.feature.Feature" title="pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">pipeline.feature.Feature</span></code></a></p>
 <dl class="docutils">
 <dt>DESCRIPTION:</dt>
@@ -197,20 +197,24 @@ frequencies.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">center_orientation:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">int for the center orientation (0-180)</td>
+<tr class="field-odd field"><th class="field-name">inputshape:</th><td class="field-body">shape of then input for pyfftw builder</td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">orientation_width:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body">int for the orientation width of the filter</td>
+<tr class="field-even field"><th class="field-name" colspan="2">center_orientation:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">int for the center orientation (0-180)</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">high_cutoff:</th><td class="field-body">int high spatial frequency cutoff</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">orientation_width:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">int for the orientation width of the filter</td>
 </tr>
-<tr class="field-even field"><th class="field-name">low_cutoff:</th><td class="field-body">int low spatial frequency cutoff</td>
+<tr class="field-even field"><th class="field-name">high_cutoff:</th><td class="field-body">int high spatial frequency cutoff</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">target_size:</th><td class="field-body">int total size.</td>
+<tr class="field-odd field"><th class="field-name">low_cutoff:</th><td class="field-body">int low spatial frequency cutoff</td>
 </tr>
-<tr class="field-even field"><th class="field-name">falloff:</th><td class="field-body">string ‘triangle’ or ‘rectangle’ shape of the filter
+<tr class="field-even field"><th class="field-name">target_size:</th><td class="field-body">int total size.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">falloff:</th><td class="field-body">string ‘triangle’ or ‘rectangle’ shape of the filter
 falloff from the center.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">nthreads:</th><td class="field-body">number of multithreads</td>
 </tr>
 </tbody>
 </table>

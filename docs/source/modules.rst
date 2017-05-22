@@ -6,6 +6,4 @@ image_analysis
 
    decode
    pipeline
-   setup
-   test
    utils
