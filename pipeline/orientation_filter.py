@@ -1,9 +1,6 @@
 import numpy as np
-import pyfftw
-from pyfftw.interfaces.numpy_fft import fftshift
-from pyfftw.interfaces.numpy_fft import fft2
-from pyfftw.interfaces.numpy_fft import ifft2
 from skimage.color import rgb2gray
+from .fft import FFT
 from .feature import Feature
 
 
@@ -27,25 +24,12 @@ class OrientationFilter(Feature):
     """
 
     def __init__(self, mask='bowtie', center_orientation=90,
-                 orientation_width=20, high_cutoff=None,
-                 low_cutoff=.1, target_size=None, falloff='', nthreads=1, 
-                 inputshape=(480, 640)):
+                 orientation_width=20, high_cutoff=None, low_cutoff=.1,
+                 target_size=None, falloff=''):
 
         Feature.__init__(self, mask + '_filter', frame_op=True,
                          batch_op=False)
 
-        # improve performance of fft by caching pyfftw fft objects
-        # see https://hgomersall.github.io/pyFFTW/sphinx/tutorial.html#caveat
-        pyfftw.interfaces.cache.enable()
-        # fft, ifft builder objects
-        # pyfftw requires the input shape and memory locations of input and
-        # output in advance to make it multithreaded
-        self.inputobj = pyfftw.empty_aligned(inputshape, dtype='complex128')
-        self.outputobj = pyfftw.empty_aligned(inputshape, dtype='float64')
-        self.fftobj = pyfftw.builders.fft2(self.inputobj, threads=nthreads)
-        self.ifftobj = pyfftw.builders.ifft2(self.outputobj, threads=nthreads)
-
-        self.inputshape = inputshape
         self.mask = mask
         available_mask = ['bowtie', 'noise']
         if self.mask not in available_mask:
@@ -56,11 +40,13 @@ class OrientationFilter(Feature):
                              'it will cause a division by zero in triangle ' +
                              'filter code.')
 
+        inputshape = (480, 640)
         self.center_orientation = center_orientation
         self.orientation_width = orientation_width
         self.high_cutoff = high_cutoff
         self.low_cutoff = low_cutoff
         self.target_size = target_size
+        self.fft = FFT(inputshape=inputshape, nthreads=4)
 
         self.falloff = falloff or 'triangle'
         available_falloff = ['rectangle', 'triangle']
@@ -72,7 +58,7 @@ class OrientationFilter(Feature):
                                       high_cutoff, low_cutoff, target_size,
                                       falloff)
             self.filter = 1 - self.filter
-            self.filter = fftshift(self.filter)
+            self.filter = self.fft.fftshift(self.filter)
         elif self.mask == 'noise':
             self.filter = self.noise_amp(target_size)
         else:
@@ -113,7 +99,7 @@ class OrientationFilter(Feature):
         radii = np.concatenate((radii, flipped_radii), axis=1)
         flipped_radii = np.flipud(radii[1:target_size // 2, :])
         radii = np.concatenate((radii, flipped_radii), axis=0)
-        radii = fftshift(radii)
+        radii = self.fft.fftshift(radii)
         # note: the right-most column and bottom-most row were sliced off
 
         # using theta for one quadrant, build the other 3 quadrants
@@ -207,9 +193,9 @@ class OrientationFilter(Feature):
         xgrid = np.subtract(xgrid, size // 2)
         ygrid = np.subtract(ygrid, size // 2)
 
-        amp = fftshift(np.divide(np.sqrt(np.square(xgrid) +
-                                         np.square(ygrid)),
-                                 size * np.sqrt(2)))
+        amp = self.fft.fftshift(np.divide(np.sqrt(np.square(xgrid) +
+                                          np.square(ygrid)),
+                                          size * np.sqrt(2)))
         amp = np.rot90(amp, 2)
         amp[0, 0] = 1
         amp = 1 / amp**slope
@@ -241,7 +227,7 @@ class OrientationFilter(Feature):
         # fft spectrum
         altimg = None
         grayframe = rgb2gray(frame)
-        dft_frame = self.fftobj(grayframe)
+        dft_frame = self.fft.fft2d(grayframe)
         phase = np.arctan2(dft_frame.imag, dft_frame.real)
 
         # create filter
@@ -251,11 +237,11 @@ class OrientationFilter(Feature):
             amp = np.multiply(phase, amp)
 
             # inverse fft and normalize
-            altimg = self.ifftobj(amp).real
+            altimg = self.fft.ifft2d(amp).real
             altimg -= altimg.min()
             altimg /= altimg.max()
 
         elif self.mask == 'bowtie':
-            altimg = self.ifftobj(dft_frame * self.filter).real
+            altimg = self.fft.ifft2d(dft_frame * self.filter).real
 
         return altimg
