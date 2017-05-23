@@ -1,6 +1,6 @@
 import numpy as np
-from .fft import FFT
 from skimage.color import rgb2gray
+from .fft import FFT
 from .feature import Feature
 
 

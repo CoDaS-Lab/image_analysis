@@ -9,6 +9,7 @@ import skimage
 from decode import video_decoder as vd
 from pipeline.orientation_filter import OrientationFilter
 from pipeline.pipeline import Pipeline
+from pipeline.fps import FPS
 
 
 cap = cv2.VideoCapture(0)
@@ -20,7 +21,8 @@ bowtie = OrientationFilter('bowtie', 90, 42, vidwidth // 2, .2,
                            vidwidth, 'triangle')
 pipe = Pipeline(ops=[bowtie], save_all=True)
 
-lasttime = time.time()
+fps = FPS()
+fps.start()
 while True:
         warnings.simplefilter("ignore")
 
@@ -29,13 +31,10 @@ while True:
         pipe.data = [[frame]]
         altframe = pipe.extract()[0]['frame_features']['bowtie_filter']
         cv2.imshow('Real-Time', altframe)
-        # calculate how long we spend
-        elapsed = time.time() - lasttime
-        print('secs/frame: {0}'.format(elapsed))
-        lasttime = time.time()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+        fps.update()
 
 # When everything done, release the capture
 cap.release()
