@@ -6,12 +6,9 @@
 
 ### Python Dependencies
 * numpy >= 1.12.0
-* scipy >= 0.18.1
-* scikit-learn >=0.17
 * sk-video >=1.17
 * scikit-image >=0.12.0
 * python 3.5
-* wget
 * pyfftw
 
 ### External Dependencies
@@ -59,10 +56,7 @@ change directory to directory of test folder:
 ```
 cd /path/to/directory/image-analysis/imageanalysis
 ```
-Download testing file:
-```
-wget -P test/test_data/ https://s3.amazonaws.com/testcodas/test_video.mp4
-wget -P test/test_data/ https://s3.amazonaws.com/testcodas/test_video_data.npy
+
 ```
 Run unittest discover
 ```
