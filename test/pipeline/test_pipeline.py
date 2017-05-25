@@ -1,8 +1,5 @@
 import unittest
-import os
-import wget
 import time
-import sys
 from decode import video_decoder as vd
 from pipeline.pipeline import Pipeline
 from test.pipeline import test_features as features
