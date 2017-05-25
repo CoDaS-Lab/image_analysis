@@ -1,6 +1,4 @@
 import unittest
-import os
-import wget
 import time
 import numpy as np
 import skimage.io
