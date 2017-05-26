@@ -57,7 +57,6 @@ change directory to directory of test folder:
 cd /path/to/directory/image-analysis/imageanalysis
 ```
 
-```
 Run unittest discover
 ```
 python -m unittest discover
