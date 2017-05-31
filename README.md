@@ -31,7 +31,7 @@ sudo apt-get install ffmpeg
 ```
 Installing fftw:
 ``` 
-sudo sudo apt-get install fftw3
+sudo sudo apt-get install fftw3 libfftw3-dev libfftw3-doc
 ```
 
 ### Requirements (Windows)
