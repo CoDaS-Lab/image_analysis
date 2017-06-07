@@ -35,18 +35,19 @@ call(['sphinx-apidoc', '-f', '-o', './docs/source', '.', 'test', 'gen-docs.py',
 # go into docs folder
 os.chdir(os.path.abspath('./docs'))
 # generate doc rst files for new files if any
-# clean
+# clean html
 call(['make', 'clean'])
-
 # rebuild html
 call(['make', 'html'])
 os.chdir(os.path.abspath('../'))
 
-# make all html files in current dir and remove docs
+# put all html files in root dir and remove docs
 delfiles('./*', ignore=('gen-docs.py', 'docs'))
 movefiles('./docs/build/html/**', './')
 shutil.rmtree('./docs')
 
+# add and commit
 call(['git', 'add', '-A'])
 call(['git', 'commit', '-m', 'updated docs'])
+call(['git', 'push', 'origin', 'master'])
 
