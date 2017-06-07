@@ -49,5 +49,4 @@ shutil.rmtree('./docs')
 # add and commit
 call(['git', 'add', '-A'])
 call(['git', 'commit', '-m', 'updated docs'])
-call(['git', 'push', 'origin', 'master'])
 
