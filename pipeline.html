@@ -78,7 +78,6 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pipeline.feature">pipeline.feature module</a></li>
 <li><a class="reference internal" href="#module-pipeline.fft">pipeline.fft module</a></li>
-<li><a class="reference internal" href="#module-pipeline.fps">pipeline.fps module</a></li>
 <li><a class="reference internal" href="#module-pipeline.orientation_filter">pipeline.orientation_filter module</a></li>
 <li><a class="reference internal" href="#module-pipeline.pipeline">pipeline.pipeline module</a></li>
 <li><a class="reference internal" href="#module-pipeline">Module contents</a></li>
@@ -189,49 +188,81 @@ want to apply to data</dd>
 <dt id="pipeline.fft.FFT">
 <em class="property">class </em><code class="descclassname">pipeline.fft.</code><code class="descname">FFT</code><span class="sig-paren">(</span><em>inputshape</em>, <em>usegpu=False</em>, <em>nthreads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fft.html#FFT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fft.FFT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pipeline.feature.Feature" title="pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">pipeline.feature.Feature</span></code></a></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Fast fourier transform feature</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">inputshape:</th><td class="field-body">we need to know in advance the shape of input for
+performance reason</td>
+</tr>
+<tr class="field-even field"><th class="field-name">usegpu:</th><td class="field-body">#TODO use gpu for implementation or not</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">nthreads:</th><td class="field-body">number of threads to run fft in multhreaded mode</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pipeline.fft.FFT.fft2d">
 <code class="descname">fft2d</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fft.html#FFT.fft2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fft.FFT.fft2d" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>2d fast fourier transform</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">input frame to transform</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="pipeline.fft.FFT.fftshift">
 <code class="descname">fftshift</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fft.html#FFT.fftshift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fft.FFT.fftshift" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>2d fast fourier shift</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">input frame to shift</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="pipeline.fft.FFT.ifft2d">
 <code class="descname">ifft2d</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fft.html#FFT.ifft2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fft.FFT.ifft2d" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>2d inverse fast fourier transform</dd>
+<dt>PARAMS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">input frame to transform</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </dd></dl>
-
-</div>
-<div class="section" id="module-pipeline.fps">
-<span id="pipeline-fps-module"></span><h2>pipeline.fps module<a class="headerlink" href="#module-pipeline.fps" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pipeline.fps.FPS">
-<em class="property">class </em><code class="descclassname">pipeline.fps.</code><code class="descname">FPS</code><a class="reference internal" href="_modules/pipeline/fps.html#FPS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fps.FPS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="pipeline.fps.FPS.elapsed">
-<code class="descname">elapsed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fps.html#FPS.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fps.FPS.elapsed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pipeline.fps.FPS.fps">
-<code class="descname">fps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fps.html#FPS.fps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fps.FPS.fps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pipeline.fps.FPS.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fps.html#FPS.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fps.FPS.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pipeline.fps.FPS.update">
-<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pipeline/fps.html#FPS.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pipeline.fps.FPS.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 

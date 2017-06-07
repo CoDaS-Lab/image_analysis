@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pipeline.fps &#8212; image_analysis 1.0 documentation</title>
+    <title>utils.fps &#8212; image_analysis 1.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -107,7 +107,7 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <h1>Source code for pipeline.fps</h1><div class="highlight"><pre>
+  <h1>Source code for utils.fps</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright 2017 Codas Lab</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
@@ -127,17 +127,28 @@
 <span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
 
 
-<div class="viewcode-block" id="FPS"><a class="viewcode-back" href="../../pipeline.html#pipeline.fps.FPS">[docs]</a><span class="k">class</span> <span class="nc">FPS</span><span class="p">:</span>
-
+<div class="viewcode-block" id="FPS"><a class="viewcode-back" href="../../utils.html#utils.fps.FPS">[docs]</a><span class="k">class</span> <span class="nc">FPS</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DESCRIPTION:</span>
+<span class="sd">        calculates frames per seconds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nframes</span> <span class="o">=</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="FPS.start"><a class="viewcode-back" href="../../pipeline.html#pipeline.fps.FPS.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FPS.start"><a class="viewcode-back" href="../../utils.html#utils.fps.FPS.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        DESCRIPTION:</span>
+<span class="sd">            start timer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="FPS.update"><a class="viewcode-back" href="../../pipeline.html#pipeline.fps.FPS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FPS.update"><a class="viewcode-back" href="../../utils.html#utils.fps.FPS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        DESCRIPTION:</span>
+<span class="sd">            update timer and number of frames</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fps </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nframes</span> <span class="o">=</span> <span class="mi">0</span>
@@ -145,11 +156,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nframes</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="FPS.elapsed"><a class="viewcode-back" href="../../pipeline.html#pipeline.fps.FPS.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FPS.elapsed"><a class="viewcode-back" href="../../utils.html#utils.fps.FPS.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        DESCRIPTION:</span>
+<span class="sd">            calculate elapsed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FPS.fps"><a class="viewcode-back" href="../../pipeline.html#pipeline.fps.FPS.fps">[docs]</a>    <span class="k">def</span> <span class="nf">fps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FPS.fps"><a class="viewcode-back" href="../../utils.html#utils.fps.FPS.fps">[docs]</a>    <span class="k">def</span> <span class="nf">fps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        DESCRIPTION:</span>
+<span class="sd">            returns the fps</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nframes</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span><span class="p">()</span></div></div>
 
 

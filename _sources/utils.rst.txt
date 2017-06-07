@@ -4,6 +4,14 @@ utils package
 Submodules
 ----------
 
+utils\.fps module
+-----------------
+
+.. automodule:: utils.fps
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils\.utils module
 -------------------
 

@@ -20,14 +20,6 @@ pipeline\.fft module
     :undoc-members:
     :show-inheritance:
 
-pipeline\.fps module
---------------------
-
-.. automodule:: pipeline.fps
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pipeline\.orientation\_filter module
 ------------------------------------
 
