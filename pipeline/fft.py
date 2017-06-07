@@ -20,7 +20,16 @@ from .feature import Feature
 
 
 class FFT(Feature):
+    """
+    DESCRIPTION:
+        Fast fourier transform feature
 
+    PARAMS:
+        :inputshape: we need to know in advance the shape of input for
+                     performance reason
+        :usegpu: #TODO use gpu for implementation or not
+        :nthreads: number of threads to run fft in multhreaded mode
+    """
     def __init__(self, inputshape, usegpu=False, nthreads=1):
         self.usegpu = usegpu
         self.inputshape = inputshape
@@ -40,16 +49,37 @@ class FFT(Feature):
         pyfftw.interfaces.cache.enable()
 
     def fft2d(self, input):
+        """
+        DESCRIPTION:
+            2d fast fourier transform
+
+        PARAMS:
+            :input: input frame to transform 
+        """
         assert input.shape == self.inputshape
 
         return self.fft2obj(input)
 
     def ifft2d(self, input):
+        """
+        DESCRIPTION:
+            2d inverse fast fourier transform
+
+        PARAMS:
+            :input: input frame to transform
+        """
         assert input.shape == self.inputshape
 
         return self.ifft2obj(input)
 
     def fftshift(self, input):
+        """
+        DESCRIPTION:
+            2d fast fourier shift
+
+        PARAMS:
+            :input: input frame to shift 
+        """
         return fftshift(input)
 
 

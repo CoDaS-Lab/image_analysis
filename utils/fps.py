@@ -18,16 +18,27 @@ from time import time
 
 
 class FPS:
-
+    """
+    DESCRIPTION:
+        calculates frames per seconds
+    """
     def __init__(self):
         self._start = 0
         self._end = 0
         self._nframes = 0
 
     def start(self):
+        """
+        DESCRIPTION:
+            start timer
+        """
         self._start = time()
 
     def update(self):
+        """
+        DESCRIPTION:
+            update timer and number of frames
+        """
         if self.elapsed() >= 1:
             print('fps {}'.format(self.fps()))
             self._nframes = 0
@@ -36,10 +47,18 @@ class FPS:
             self._nframes += 1
 
     def elapsed(self):
+        """
+        DESCRIPTION:
+            calculate elapsed
+        """
         self._end = time()
         return (self._end - self._start)
 
     def fps(self):
+        """
+        DESCRIPTION:
+            returns the fps
+        """
         return self._nframes / self.elapsed()
 
 

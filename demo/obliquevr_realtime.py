@@ -25,7 +25,7 @@ import skimage
 from decode import video_decoder as vd
 from pipeline.orientation_filter import OrientationFilter
 from pipeline.pipeline import Pipeline
-from pipeline.fps import FPS
+from utils.fps import FPS
 
 
 cap = cv2.VideoCapture(0)
