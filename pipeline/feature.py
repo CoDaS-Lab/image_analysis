@@ -18,7 +18,8 @@ class Feature:
     """
     DESCRIPTION:
         Base class for features we want to extract or transformations we
-        want to apply to data
+        want to apply to data. If batch_op and frame_op is left false then it 
+        is a learning model (or anything else you want really)
 
     PARAMS:
         :batch_op: boolean to say the feature runs on batches of frames
