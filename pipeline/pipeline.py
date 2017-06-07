@@ -168,7 +168,7 @@ class Pipeline:
             extract all features
 
         PARAMS:
-            :keep_input_data: boolean check whether we want to keep original 
+            :keep_input_data: boolean check whether we want to keep original
                              data
         """
         if self.batch_ops == self.frame_ops == self.seq_ops == []:
