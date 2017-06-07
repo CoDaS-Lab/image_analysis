@@ -54,7 +54,8 @@ class Pipeline:
 
         PARAMS:
             :ops: features to run on images. These ops don't have dependencies
-            :seq: features to run in sequential way (output is input to another)
+            :seq: features to run in sequential way
+                  (output is input to another)
         """
         batch_ops = []
         frame_ops = []
