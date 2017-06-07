@@ -18,7 +18,7 @@ class Feature:
     """
     DESCRIPTION:
         Base class for features we want to extract or transformations we
-        want to apply to data. If batch_op and frame_op is left false then it 
+        want to apply to data. If batch_op and frame_op is left false then it
         is a learning model (or anything else you want really)
 
     PARAMS:
@@ -40,7 +40,7 @@ class Feature:
         """
         raise NotImplementedError
 
-    def train_model(self, **args):
+    def train(self, **args):
         """
         DESCRIPTION:
             train models on images

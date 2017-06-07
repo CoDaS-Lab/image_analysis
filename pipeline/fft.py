@@ -31,6 +31,7 @@ class FFT(Feature):
         :nthreads: number of threads to run fft in multhreaded mode
     """
     def __init__(self, inputshape, usegpu=False, nthreads=1):
+        Feature.__init__(self, 'FFT', frame_op=True)
         self.usegpu = usegpu
         self.inputshape = inputshape
         self.nthreads = nthreads
@@ -81,3 +82,4 @@ class FFT(Feature):
             :input: input frame to shift
         """
         return fftshift(input)
+
