@@ -54,7 +54,7 @@ class FFT(Feature):
             2d fast fourier transform
 
         PARAMS:
-            :input: input frame to transform 
+            :input: input frame to transform
         """
         assert input.shape == self.inputshape
 
@@ -78,8 +78,6 @@ class FFT(Feature):
             2d fast fourier shift
 
         PARAMS:
-            :input: input frame to shift 
+            :input: input frame to shift
         """
         return fftshift(input)
-
-

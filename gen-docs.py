@@ -14,7 +14,7 @@ def delfiles(regex, ignore=None):
         if not CleanUp.endswith(ignore):
             os.remove(CleanUp)
 
-call(['git', 'checkout', 'gh-pages'])
+# call(['git', 'checkout', 'gh-pages'])
 print('--- BUILD DOCS ---')
 
 # clean old *.rst source files since sphinx doesn't do this automatically
