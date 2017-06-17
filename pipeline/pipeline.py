@@ -31,7 +31,7 @@ class Pipeline:
         :ops: features to run on images. These ops don't have dependencies
         :seq: features to run in sequential way (output is input to another)
         :save_all: boolean check to save all features ran
-        :models: statistical models to run on the data
+        :models: dictionary of statistical models to run on the data
     """
     def __init__(self, data=None, ops=None, seq=None, save_all=None,
                  models=None):
@@ -247,11 +247,43 @@ class Pipeline:
 
         return np.array(data)
 
-    def predict(self, model=''):
-        pass
+    # TODO: add docstrings for predict and train
+    def predict(self, X, model=''):
+        assert len(self.models) > 0
 
-    def train(self, model=''):
-        pass
+        # we use dictionaries to return the predicted values with the
+        # name of model that predicted it
+        models_to_predict = {}
+        predicted_values = {}
+
+        if model == '':
+            # if no model is specified just predict for all
+            models_to_predict = self.models
+        else:
+            assert model in self.models
+            # get specified model by getting it from the models dict
+            models_to_predict.update({model: self.models[model]})
+
+        for key, mod in models_to_predict:
+            predicted_values.update({key: mod.predict(X)})
+
+        return predicted_values
+
+    def train(self, X, y, model=''):
+        assert len(self.models) > 0
+
+        models_to_train = []
+
+        if model == '':
+            # if no model is specified just train all
+            models_to_train = list(self.models.values())
+        else:
+            assert model in self.models
+            # train specified model by getting it from the models dict
+            models_to_train.append(self.models[model])
+
+        for m in models_to_train:
+            m.train(X, y)
 
     def display(self):
         """
