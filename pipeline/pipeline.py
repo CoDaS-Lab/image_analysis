@@ -264,7 +264,7 @@ class Pipeline:
             # get specified model by getting it from the models dict
             models_to_predict.update({model: self.models[model]})
 
-        for key, mod in models_to_predict:
+        for key, mod in models_to_predict.items():
             predicted_values.update({key: mod.predict(X)})
 
         return predicted_values

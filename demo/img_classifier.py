@@ -16,4 +16,4 @@ pipe.train(data[:n_samples // 2], digits.target[:n_samples // 2])
 
 expected = digits.target[n_samples // 2:]
 predicted = pipe.predict(data[n_samples // 2:])
-print(metrics.classification_report(expected, predicted))
+print(metrics.classification_report(expected, predicted['SVM']))
