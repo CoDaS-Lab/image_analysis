@@ -246,7 +246,7 @@ class Pipeline:
             raise ValueError('Someone broke the as_ndarray method!')
 
         return np.array(data)
-    
+
     # TODO: add docstrings for predict and train
     def predict(self, X, model=''):
         assert len(self.models) > 0
