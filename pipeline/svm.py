@@ -2,7 +2,6 @@ from sklearn import svm
 from .feature import Feature
 
 
-# TODO add docstrings
 class SVM(Feature):
 
     def __init__(self, gamma=.001):

@@ -109,7 +109,6 @@ class TestPipeline(unittest.TestCase):
             self.assertIsNotNone(frame['meta_data']['batch_number'])
 
     def test_as_ndarray(self):
-        # TODO implement this function
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 

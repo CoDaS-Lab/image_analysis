@@ -247,8 +247,19 @@ class Pipeline:
 
         return np.array(data)
 
-    # TODO: add docstrings for predict and train
     def predict(self, X, model=''):
+        """
+        DESCRIPTION:
+            predicts value for data X according to model. It returns a
+            dictionary with the model name and predicted values as key and
+            value
+
+        PARAMS:
+            :X: the data X to predict labels for
+            :model: optional parameter to predict using a specific model only
+                    or all if none is specified
+
+        """
         assert len(self.models) > 0
 
         # we use dictionaries to return the predicted values with the
@@ -270,6 +281,16 @@ class Pipeline:
         return predicted_values
 
     def train(self, X, y, model=''):
+        """
+        DESCRIPTION:
+            train the models using X as train data and y as labels for X
+
+        PARAMS:
+            :X: data to train on
+            :y: labels for X
+            :model: optional parameter to predict using a specific model only
+                    or all if none is specified
+        """
         assert len(self.models) > 0
 
         models_to_train = []
