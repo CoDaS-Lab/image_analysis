@@ -19,6 +19,8 @@ import time
 from decode import video_decoder as vd
 from pipeline.pipeline import Pipeline
 from test.pipeline import test_features as features
+from pipeline.svm import SVM
+from sklearn import datasets
 
 
 class TestPipeline(unittest.TestCase):
@@ -127,6 +129,23 @@ class TestPipeline(unittest.TestCase):
         gray_frames = testpipe.as_ndarray(frame_key=rgb2gray.key_name)
         self.assertTupleEqual(gray_frames.shape, (n, frame_width,
                                                   frame_height))
+
+    def test_model_tranining(self):
+        # test by running svm on digits
+        digits = datasets.load_digits()
+        images_and_labels = list(zip(digits.images, digits.target))
+        n_samples = len(digits.images)
+        data = digits.images.reshape((n_samples, -1))
+
+        svm = SVM()
+        pipe = Pipeline(models={'SVM': svm})
+        pipe.train(data[:n_samples // 2], digits.target[:n_samples // 2])
+
+        assert svm.classifier is not None
+
+        expected = digits.target[n_samples // 2:]
+        predicted = pipe.predict(data[n_samples // 2:])
+        assert predicted['SVM'] is not None
 
 if __name__ == '__main__':
     unittest.main()
