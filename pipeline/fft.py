@@ -82,4 +82,3 @@ class FFT(Feature):
             :input: input frame to shift
         """
         return fftshift(input)
-
