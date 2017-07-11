@@ -73,4 +73,4 @@ python -m unittest test.module_name.test_file_name.test_class_name.test_function
 ```
 
 ## Overview and Tutorial
-[overview](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/tutorial.md)
+[overview](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/overview.md)
