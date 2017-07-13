@@ -19,6 +19,23 @@ def get_mpeg_dims(vid_fname):
 
     return (int(height), int(width), int(n_frames))
 
+'''
+def checking_loop(checking, patch_num, idxs, frame_num, incomplete_patch_idxs,
+                   incomplete_patches, frame, patch_dims):
+        if patch_num >= idxs.shape[1]:
+            checking = False
+        elif frame_num != idxs[:, patch_num][2]:
+            checking = False
+        elif frame_num == idxs[:, patch_num][2]:
+            row = idxs[:, patch_num][0]
+            col = idxs[:, patch_num][1]
+            incomplete_patch_idxs.append([row, col])
+            incomplete_patches.append([frame[row: row + patch_dims[0],
+                                                col: col + patch_dims[1]]])
+            patch_num += 1
+        else:
+            raise ValueError('Checking loop is broken.')
+'''
 
 def gen_patch_idxs(vid_dims, patch_dims, n_patches, 
                    n_frames=None, save_dir=None):
@@ -103,18 +120,30 @@ def update_patches(incomplete_patches=[], new_frame=None,
 def patch_list_to_ndarray(patch_list):
     patches = np.array(patch_list)
     n_patches = patches.shape[0]
-    flat_patch_length = patch_list[0].flatten().shape
-    patches = patches.reshape(n_patches, flat_patch_length[0])
-    patches += np.random.uniform(size=patches.shape)
-
+    patches = patches.reshape(n_patches, 18)
+    #patches += np.random.uniform(size=patches.shape)
     return patches
+
+def grey_patch_list_to_ndarray(patch_list):
+    print(len(patch_list), patch_list[0].shape)
+    for x in range(len(patch_list)):
+        patch_list[x] = rgb2gray(patch_list[x])
+    print(len(patch_list), patch_list[0].shape)
+    patches = np.array(patch_list)
+    print(patches.shape)
+    n_patches = patches.shape[0]
+    patches = patches.reshape(n_patches, 18)
+    #patches += np.random.uniform(size=patches.shape)
+    patches = np.squeeze(patches)
+    return patches
+    
 
 def no_transform(patch_list):
     return patch_list
 
 # extract_patches needs to be broken up into about 4-5 functions. I will refactor later, but this will do for now since we are on a deadline. Tests are passing.
 def extract_patches(mpeg_path, patch_dims, n_patches, *, n_frames=None, 
-                    idxs=None, gray_scale=True, vid_dims=None,
+                    idxs=None, vid_dims=None,
                     batch_size=250000, patch_transform=no_transform, save_dir=None,
                     return_idxs=False):
     """ Extracts patches from an mpeg video.
@@ -144,8 +173,8 @@ def extract_patches(mpeg_path, patch_dims, n_patches, *, n_frames=None,
 
     batch_num = 1
     for frame in vid_gen:
-        if gray_scale is True:
-            frame = np.squeeze(rgb2gray(frame))
+        #if gray_scale is True:
+           # frame = np.squeeze(rgb2gray(frame))
 
         # Get updated patch data.
         complete, \
@@ -173,17 +202,18 @@ def extract_patches(mpeg_path, patch_dims, n_patches, *, n_frames=None,
                 patch_num += 1
             else:
                 raise ValueError('Checking loop is broken.')
+             
         frame_num += 1
-        #if frame_num % 100 == 0:
-        #    print('Frame {}'.format(frame_num))
+        if frame_num % 100 == 0:
+            print('Frame {}'.format(frame_num))
         if patch_transform is not None and save_dir is not None and complete_patches != []:
-            complete_patches = patch_transform(complete_patches)
-            np.save(save_dir + 'raw_patches_batch_{}'.format(frame_num - 1),
-                complete_patches)
-            np.save(save_dir + 'raw_patch_vid_idxs_batch_' + 
-                                str(frame_num - patch_dims[2] + 1), 
-                    np.array(complete_idxs).T)
-            complete_patches = []
+                complete_patches = patch_transform(complete_patches)
+                np.save(save_dir + 'motion_patches_batch_{}'.format(frame_num - 1),
+                    complete_patches)
+                np.save(save_dir + 'motion_patch_vid_idxs_batch_' + 
+                                    str(frame_num - patch_dims[2] + 1), 
+                        np.array(complete_idxs).T)
+                complete_patches = []
 
 #        if len(complete_patches) >= batch_size:
 #            print(len(complete_patches))
@@ -200,8 +230,8 @@ def extract_patches(mpeg_path, patch_dims, n_patches, *, n_frames=None,
 #        if save_dir is not None:
 #            np.save(save_dir + 'motion_patches_batch_{}'.format(batch_num),
 #                    complete_patches)
-    if complete_patches != []:
-        complete_patches = patch_transform(complete_patches)
+
+    complete_patches = patch_transform(complete_patches)
 
     if return_idxs is True:
         return complete_patches, idxs
