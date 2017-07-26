@@ -55,7 +55,7 @@ class OrientationFilter(Feature):
             raise ValueError('Can\'t set orientation_width to 0 because ' +
                              'it will cause a division by zero in triangle ' +
                              'filter code.')
-
+        # TODO: make this a parameter
         inputshape = (480, 640)
         self.center_orientation = center_orientation
         self.orientation_width = orientation_width

@@ -16,19 +16,19 @@
 
 import os
 import sys
-sys.path.append(os.getcwd() + "/../")
 import skimage.io
 import wget
 from matplotlib import pyplot as plt
-from image_analysis.decode import video_decoder as vd
+from image_analysis.decode import decode_mpeg
+from image_analysis.pipeline import Feature
+from image_analysis.pipeline import Pipeline
 from demo_features import RGBToGray
 from demo_features import BatchOP
-from pipeline.pipeline import Pipeline
 
-vid_path = os.getcwd() + '/../../test/test_data/'  # Path to test video.
+vid_path = os.getcwd() + '/../test/test_data/'  # Path to test video.
 
 # Decode video to build dataset (list of nd arrays)
-batch_list = vd.decode_mpeg(vid_path + 'test_video.mp4',
+batch_list = decode_mpeg(vid_path + 'test_video.mp4',
                             batch_size=2, end_idx=10)
 
 motion_analysis = Pipeline(data=batch_list,

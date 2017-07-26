@@ -16,7 +16,7 @@
 
 import pyfftw
 from pyfftw.interfaces.numpy_fft import fftshift
-from image_analysis.pipeline.feature import Feature
+from .feature import Feature
 
 
 class FFT(Feature):
