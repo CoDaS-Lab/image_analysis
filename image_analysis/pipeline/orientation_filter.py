@@ -16,8 +16,8 @@
 
 import numpy as np
 from skimage.color import rgb2gray
-from .fft import FFT
-from .feature import Feature
+from image_analysis.pipeline.fft import FFT
+from image_analysis.pipeline.feature import Feature
 
 
 class OrientationFilter(Feature):

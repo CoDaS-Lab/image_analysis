@@ -14,7 +14,7 @@
 # ==============================================================================
 
 from sklearn import svm
-from .feature import Feature
+from image_analysis.pipeline.feature import Feature
 
 
 class SVM(Feature):

@@ -20,17 +20,12 @@ sys.path.append(os.getcwd() + "/../")
 import skimage.io
 import wget
 from matplotlib import pyplot as plt
-from decode import video_decoder as vd
+from image_analysis.decode import video_decoder as vd
 from demo_features import RGBToGray
 from demo_features import BatchOP
 from pipeline.pipeline import Pipeline
 
-vid_path = os.getcwd() + '/../test/test_data/'  # Path to test video.
-
-# Download test_video.mp4 into directory if it doesn't already exist
-if not os.path.exists(vid_path + 'test_video.mp4'):
-    wget.download('https://s3.amazonaws.com/codasimageanalysis/test_video.mp4',
-                  vid_path)
+vid_path = os.getcwd() + '/../../test/test_data/'  # Path to test video.
 
 # Decode video to build dataset (list of nd arrays)
 batch_list = vd.decode_mpeg(vid_path + 'test_video.mp4',
