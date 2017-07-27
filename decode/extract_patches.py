@@ -21,6 +21,18 @@ def get_mpeg_dims(vid_fname):
 
 def extract_patches(mpeg_path, patch_dims, save_dir, *, n_frames=None,
                     batch_size=250000):
+    """
+    DESCRIPTION:
+        extract patches (neighborhoods) of pixels from videos in batches and
+        save them to disk
+
+    ARGS:
+        :save_dir: directory to save extracted patches
+        :mpeg_path: file name for an mpeg video with one color channel
+        :patch_dims: size of patches to extract
+        :n_frames: number of frames to extract
+        :batch_size: size limit for each batch
+    """
     N, M, O = get_mpeg_dims(mpeg_path)
     n, m, o = patch_dims
     ppr = (M - m + 1)
@@ -56,16 +68,15 @@ def extract_patches(mpeg_path, patch_dims, save_dir, *, n_frames=None,
             break
         count += 1
 
+# def main():
+#     vid_path = os.getcwd() + '/../data/input/test_video.mp4'
+#     # '/../data/input/subj5-4hr.avi'
+#     patch_dims = (3, 3, 2)
+#     n_frames = 100    # 104322
+#     save_dir = os.getcwd() + '/../data/working/motion_patches/'
+#     patches = extract_patches(vid_path, patch_dims,
+#                               save_dir, n_frames=n_frames)
 
-def main():
-    vid_path = os.getcwd() + '/../data/input/test_video.mp4'
-    # '/../data/input/subj5-4hr.avi'
-    patch_dims = (3, 3, 2)
-    n_frames = 100    # 104322
-    save_dir = os.getcwd() + '/../data/working/motion_patches/'
-    patches = extract_patches(vid_path, patch_dims,
-                              save_dir, n_frames=n_frames)
 
-
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
