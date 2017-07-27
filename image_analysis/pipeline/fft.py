@@ -24,7 +24,7 @@ class FFT(Feature):
     DESCRIPTION:
         Fast fourier transform feature
 
-    PARAMS:
+    ARGS:
         :inputshape: we need to know in advance the shape of input for
                      performance reason
         :usegpu: #TODO use gpu for implementation or not
@@ -54,7 +54,7 @@ class FFT(Feature):
         DESCRIPTION:
             2d fast fourier transform
 
-        PARAMS:
+        ARGS:
             :input: input frame to transform
         """
         assert input.shape == self.inputshape
@@ -66,7 +66,7 @@ class FFT(Feature):
         DESCRIPTION:
             2d inverse fast fourier transform
 
-        PARAMS:
+        ARGS:
             :input: input frame to transform
         """
         assert input.shape == self.inputshape
@@ -78,7 +78,7 @@ class FFT(Feature):
         DESCRIPTION:
             2d fast fourier shift
 
-        PARAMS:
+        ARGS:
             :input: input frame to shift
         """
         return fftshift(input)

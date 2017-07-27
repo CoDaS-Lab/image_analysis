@@ -22,7 +22,7 @@ class SVM(Feature):
     DESCRIPTITON:
         scikit-learn Support vector machine wrapper
 
-    PARAMS:
+    ARGS:
         :gamma: kernel coefficient
     """
 
@@ -35,7 +35,7 @@ class SVM(Feature):
         DESCRIPTION:
             train the svm
 
-        PARAMS:
+        ARGS:
             :X: the data
             :y: the labels for the data
         """
@@ -46,7 +46,7 @@ class SVM(Feature):
         DESCRIPTION:
             predrict values for new data
 
-        PARAMS:
+        ARGS:
             :X: data to predict labels for
         """
         return self.classifier.predict(X)

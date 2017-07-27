@@ -21,7 +21,7 @@ class Feature:
         want to apply to data. If batch_op and frame_op is left false then it
         is a learning model (or anything else you want really)
 
-    PARAMS:
+    ARGS:
         :batch_op: boolean to say the feature runs on batches of frames
         :frame_op: boolean to say the feature runs on each frame
         :save: boolean check to save feature in output dict

@@ -26,7 +26,7 @@ class Pipeline:
         Automates the process of extracting each feature, saving it,
         outputing it and putting it in dictionary form
 
-    PARAMS:
+    ARGS:
         :data: image data
         :ops: features to run on images. These ops don't have dependencies
         :seq: features to run in sequential way (output is input to another)
@@ -52,7 +52,7 @@ class Pipeline:
         DESCRIPTION:
             puts ops and seq into separate list for better managing
 
-        PARAMS:
+        ARGS:
             :ops: features to run on images. These ops don't have dependencies
             :seq: features to run in sequential way
                   (output is input to another)
@@ -88,7 +88,7 @@ class Pipeline:
         DESCRIPTION:
             update batch operations list
 
-        PARAMS:
+        ARGS:
             :batch_ops: features to put in batch_ops
         """
         if batch_ops is None:
@@ -105,7 +105,7 @@ class Pipeline:
         DESCRIPTION:
             update frame operations list
 
-        PARAMS:
+        ARGS:
             :frame_ops: features to put in frame_ops
         """
         if frame_ops is None:
@@ -122,7 +122,7 @@ class Pipeline:
         DESCRIPTION:
             update sequential operations list
 
-        PARAMS:
+        ARGS:
             :seq: features to put in seq_ops
         """
         for op in seq_ops:
@@ -136,7 +136,7 @@ class Pipeline:
         DESCRIPTION:
             creates an empty frame with the operation keys only
 
-        PARAMS:
+        ARGS:
             :batch_ops: features to extract from batches
             :frame_ops: features to extract from frames
             :seq_ops: features to extract sequentially
@@ -168,7 +168,7 @@ class Pipeline:
         DESCRIPTION:
             extract all features
 
-        PARAMS:
+        ARGS:
             :keep_input_data: boolean check whether we want to keep original
                              data
         """
@@ -218,7 +218,7 @@ class Pipeline:
         DESCRIPTION:
             get a feature as a numpy array
 
-        PARAMS:
+        ARGS:
             :frame_key: key of frame feature to get
             :batch_key: key of batch feature to get
             :seq_key: key of seq operations to get
@@ -254,7 +254,7 @@ class Pipeline:
             dictionary with the model name and predicted values as key and
             value
 
-        PARAMS:
+        ARGS:
             :X: the data X to predict labels for
             :model: optional parameter to predict using a specific model only
                     or all if none is specified
@@ -285,7 +285,7 @@ class Pipeline:
         DESCRIPTION:
             train the models using X as train data and y as labels for X
 
-        PARAMS:
+        ARGS:
             :X: data to train on
             :y: labels for X
             :model: optional parameter to predict using a specific model only

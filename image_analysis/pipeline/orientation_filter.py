@@ -27,7 +27,7 @@ class OrientationFilter(Feature):
             of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-    PARAMS:
+    ARGS:
         :inputshape: shape of then input for pyfftw builder
         :center_orientation: int for the center orientation (0-180)
         :orientation_width: int for the orientation width of the filter
@@ -90,7 +90,7 @@ class OrientationFilter(Feature):
             of an image to increase/decrease specific orientations/spatial
             frequencies.
 
-        PARAMS:
+        ARGS:
             :center_orientation: int for the center orientation (0-180).
             :orientation_width: int for the orientation width of the filter.
             :high_cutoff: int high spatial frequency cutoff.
@@ -99,7 +99,7 @@ class OrientationFilter(Feature):
             :falloff: string 'triangle' or 'rectangle' shape of the filter
                     falloff from the center.
 
-        RETURN:\n
+        RETURNS:\n
             the bowtie shaped filter.
         """
 
@@ -196,10 +196,10 @@ class OrientationFilter(Feature):
             Creates a size x size matrix of randomly generated noise with
             amplitude values with 1/f slope
 
-        PARAMS:
+        ARGS:
             :size: size of matrix
 
-        RETURN:
+        RETURNS:
             :returns the amplitudes with noise added
         """
 
@@ -224,13 +224,13 @@ class OrientationFilter(Feature):
             Transforms a matrix using FFT, multiplies the result by a mask, and
             then transforms the matrix back using Inverse FFT.\n
 
-        PARAMS:
+        ARGS:
             :input_frame: (m x n) numpy array
             :mask: int determining the type of filter to implement, where
                   1 = iso (noize amp) and 2 = horizontal decrement
                   (bowtie)
 
-        RETURN:
+        RETURNS:
             return the transformed and processed frame
         """
         if frame is None:
