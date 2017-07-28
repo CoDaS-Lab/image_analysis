@@ -73,7 +73,7 @@ python -m unittest test.module_name.test_file_name.test_class_name.test_function
 ```
 
 ## More
-[Overview](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/Overview.md)
+[Overview](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/overview.md)
 
 [Contributing](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/Contributing.md)
 
