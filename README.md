@@ -51,29 +51,10 @@ https://github.com/scikit-video/scikit-video
 ```
 and follow the dependecies and installation instructions (github installation)
 
-## Testing
-change directory to directory of test folder:
-```
-cd /path/to/repo/image_analysis
-```
 
-Run unittest discover
-```
-python -m unittest discover
-```
-
-Run a single test case
-```
-python -m unittest test.module_name.test_file_name
-```
-
-Or for a specific function
-```
-python -m unittest test.module_name.test_file_name.test_class_name.test_function
-```
-
-## More
+## Tutorial
 [Overview](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/overview.md)
 
+## Contributing
 [Contributing](https://github.com/CoDaS-Lab/image_analysis/blob/anderson/Contributing.md)
 

@@ -1,5 +1,9 @@
 # *This file is still work in progress!*
 
+## Development Requirements
+* gitpython 
+* unittest (built-in)
+
 ## Coding formatting
 * Follow the [pep8](https://www.python.org/dev/peps/pep-0008/) guidelines and always format before submitting pull request    
 
@@ -75,6 +79,34 @@ class TestName(unittest.TestCase):
 
     def test_function_name(self):
         ...
+```
+
+## Running Testing
+change directory to directory of test folder:
+```
+cd /path/to/repo/image_analysis/image_analysis
+```
+
+Run unittest discover
+```
+python -m unittest discover
+```
+
+Run a single test case
+```
+python -m unittest test.module_name.test_file_name
+```
+
+Or for a specific function
+```
+python -m unittest test.module_name.test_file_name.test_class_name.test_function
+```
+
+## Building docs
+Switch to ```gh-pages``` branch and run gen-docs.py
+```
+git checkout gh-pages
+python gen-docs.py
 ```
 
 ## Submitting Code
