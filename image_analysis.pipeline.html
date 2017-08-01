@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>image_analysis.pipeline package &#8212; image_analysis 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          image_analysis</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">image_analysis.pipeline package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-image_analysis.pipeline.feature">image_analysis.pipeline.feature module</a></li>
+<li><a class="reference internal" href="#module-image_analysis.pipeline.fft">image_analysis.pipeline.fft module</a></li>
+<li><a class="reference internal" href="#module-image_analysis.pipeline.orientation_filter">image_analysis.pipeline.orientation_filter module</a></li>
+<li><a class="reference internal" href="#module-image_analysis.pipeline.pipeline">image_analysis.pipeline.pipeline module</a></li>
+<li><a class="reference internal" href="#module-image_analysis.pipeline.svm">image_analysis.pipeline.svm module</a></li>
+<li><a class="reference internal" href="#module-image_analysis.pipeline">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/image_analysis.pipeline.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="image-analysis-pipeline-package">
+<h1>image_analysis.pipeline package<a class="headerlink" href="#image-analysis-pipeline-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-image_analysis.pipeline.feature">
+<span id="image-analysis-pipeline-feature-module"></span><h2>image_analysis.pipeline.feature module<a class="headerlink" href="#module-image_analysis.pipeline.feature" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image_analysis.pipeline.feature.Feature">
+<em class="property">class </em><code class="descclassname">image_analysis.pipeline.feature.</code><code class="descname">Feature</code><span class="sig-paren">(</span><em>key_name</em>, <em>batch_op=False</em>, <em>frame_op=False</em>, <em>save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.feature.Feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Base class for features we want to extract or transformations we
+want to apply to data. If batch_op and frame_op is left false then it
+is a learning model (or anything else you want really)</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">batch_op:</th><td class="field-body">boolean to say the feature runs on batches of frames</td>
+</tr>
+<tr class="field-even field"><th class="field-name">frame_op:</th><td class="field-body">boolean to say the feature runs on each frame</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">save:</th><td class="field-body">boolean check to save feature in output dict</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="image_analysis.pipeline.feature.Feature.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>**args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/feature.html#Feature.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.feature.Feature.extract" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>extract features from the data</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.feature.Feature.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/feature.html#Feature.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.feature.Feature.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>predict new points</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.feature.Feature.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>**args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/feature.html#Feature.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.feature.Feature.train" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>train models on images</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-image_analysis.pipeline.fft">
+<span id="image-analysis-pipeline-fft-module"></span><h2>image_analysis.pipeline.fft module<a class="headerlink" href="#module-image_analysis.pipeline.fft" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image_analysis.pipeline.fft.FFT">
+<em class="property">class </em><code class="descclassname">image_analysis.pipeline.fft.</code><code class="descname">FFT</code><span class="sig-paren">(</span><em>inputshape</em>, <em>usegpu=False</em>, <em>nthreads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/fft.html#FFT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.fft.FFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#image_analysis.pipeline.feature.Feature" title="image_analysis.pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">image_analysis.pipeline.feature.Feature</span></code></a></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Fast fourier transform feature</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">inputshape:</th><td class="field-body">we need to know in advance the shape of input for
+performance reason</td>
+</tr>
+<tr class="field-even field"><th class="field-name">usegpu:</th><td class="field-body">#TODO use gpu for implementation or not</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">nthreads:</th><td class="field-body">number of threads to run fft in multhreaded mode</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="image_analysis.pipeline.fft.FFT.fft2d">
+<code class="descname">fft2d</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/fft.html#FFT.fft2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.fft.FFT.fft2d" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>2d fast fourier transform</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">input frame to transform</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.fft.FFT.fftshift">
+<code class="descname">fftshift</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/fft.html#FFT.fftshift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.fft.FFT.fftshift" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>2d fast fourier shift</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">input frame to shift</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.fft.FFT.ifft2d">
+<code class="descname">ifft2d</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/fft.html#FFT.ifft2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.fft.FFT.ifft2d" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>2d inverse fast fourier transform</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input:</th><td class="field-body">input frame to transform</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-image_analysis.pipeline.orientation_filter">
+<span id="image-analysis-pipeline-orientation-filter-module"></span><h2>image_analysis.pipeline.orientation_filter module<a class="headerlink" href="#module-image_analysis.pipeline.orientation_filter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image_analysis.pipeline.orientation_filter.OrientationFilter">
+<em class="property">class </em><code class="descclassname">image_analysis.pipeline.orientation_filter.</code><code class="descname">OrientationFilter</code><span class="sig-paren">(</span><em>mask='bowtie'</em>, <em>center_orientation=90</em>, <em>orientation_width=20</em>, <em>high_cutoff=None</em>, <em>low_cutoff=0.1</em>, <em>target_size=None</em>, <em>falloff=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/orientation_filter.html#OrientationFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.orientation_filter.OrientationFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#image_analysis.pipeline.feature.Feature" title="image_analysis.pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">image_analysis.pipeline.feature.Feature</span></code></a></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Creates a filter that can be multiplied by the amplitude spectrum
+of an image to increase/decrease specific orientations/spatial
+frequencies.</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">inputshape:</th><td class="field-body">shape of then input for pyfftw builder</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">center_orientation:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">int for the center orientation (0-180)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">orientation_width:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">int for the orientation width of the filter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">high_cutoff:</th><td class="field-body">int high spatial frequency cutoff</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">low_cutoff:</th><td class="field-body">int low spatial frequency cutoff</td>
+</tr>
+<tr class="field-even field"><th class="field-name">target_size:</th><td class="field-body">int total size.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">falloff:</th><td class="field-body">string ‘triangle’ or ‘rectangle’ shape of the filter
+falloff from the center.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">nthreads:</th><td class="field-body">number of multithreads</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="image_analysis.pipeline.orientation_filter.OrientationFilter.bowtie">
+<code class="descname">bowtie</code><span class="sig-paren">(</span><em>center_orientation</em>, <em>orientation_width</em>, <em>high_cutoff</em>, <em>low_cutoff</em>, <em>target_size</em>, <em>falloff=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/orientation_filter.html#OrientationFilter.bowtie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.orientation_filter.OrientationFilter.bowtie" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Creates a filter that can be multiplied by the amplitude spectrum
+of an image to increase/decrease specific orientations/spatial
+frequencies.</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">center_orientation:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">int for the center orientation (0-180).</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">orientation_width:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">int for the orientation width of the filter.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">high_cutoff:</th><td class="field-body">int high spatial frequency cutoff.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">low_cutoff:</th><td class="field-body">int low spatial frequency cutoff.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">target_size:</th><td class="field-body">int total size.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">falloff:</th><td class="field-body">string ‘triangle’ or ‘rectangle’ shape of the filter
+falloff from the center.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>RETURNS:</p>
+<blockquote>
+<div>the bowtie shaped filter.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.orientation_filter.OrientationFilter.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/orientation_filter.html#OrientationFilter.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.orientation_filter.OrientationFilter.extract" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Transforms a matrix using FFT, multiplies the result by a mask, and
+then transforms the matrix back using Inverse FFT.</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">input_frame:</th><td class="field-body">(m x n) numpy array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">mask:</th><td class="field-body">int determining the type of filter to implement, where
+1 = iso (noize amp) and 2 = horizontal decrement
+(bowtie)</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>RETURNS:</dt>
+<dd>return the transformed and processed frame</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.orientation_filter.OrientationFilter.noise_amp">
+<code class="descname">noise_amp</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/orientation_filter.html#OrientationFilter.noise_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.orientation_filter.OrientationFilter.noise_amp" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>Creates a size x size matrix of randomly generated noise with
+amplitude values with 1/f slope</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">size:</th><td class="field-body">size of matrix</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>RETURNS:</dt>
+<dd>:returns the amplitudes with noise added</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-image_analysis.pipeline.pipeline">
+<span id="image-analysis-pipeline-pipeline-module"></span><h2>image_analysis.pipeline.pipeline module<a class="headerlink" href="#module-image_analysis.pipeline.pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image_analysis.pipeline.pipeline.Pipeline">
+<em class="property">class </em><code class="descclassname">image_analysis.pipeline.pipeline.</code><code class="descname">Pipeline</code><span class="sig-paren">(</span><em>data=None</em>, <em>ops=None</em>, <em>seq=None</em>, <em>save_all=None</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>This class is the bridge between running features on images.
+Automates the process of extracting each feature, saving it,
+outputing it and putting it in dictionary form</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">data:</th><td class="field-body">image data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ops:</th><td class="field-body">features to run on images. These ops don’t have dependencies</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">seq:</th><td class="field-body">features to run in sequential way (output is input to another)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">save_all:</th><td class="field-body">boolean check to save all features ran</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">models:</th><td class="field-body">dictionary of statistical models to run on the data</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.as_ndarray">
+<code class="descname">as_ndarray</code><span class="sig-paren">(</span><em>frame_key=None</em>, <em>batch_key=None</em>, <em>seq_key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.as_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.as_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>get a feature as a numpy array</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">frame_key:</th><td class="field-body">key of frame feature to get</td>
+</tr>
+<tr class="field-even field"><th class="field-name">batch_key:</th><td class="field-body">key of batch feature to get</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">seq_key:</th><td class="field-body">key of seq operations to get</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.display" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>print pipeline stuff like models we have and operations</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>keep_input_data=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.extract" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>extract all features</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">keep_input_data:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">boolean check whether we want to keep original
+data</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em>, <em>model=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>predicts value for data X according to model. It returns a
+dictionary with the model name and predicted values as key and
+value</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">X:</th><td class="field-body">the data X to predict labels for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">model:</th><td class="field-body">optional parameter to predict using a specific model only
+or all if none is specified</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.set_batch_ops">
+<code class="descname">set_batch_ops</code><span class="sig-paren">(</span><em>batch_ops=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.set_batch_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.set_batch_ops" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>update batch operations list</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">batch_ops:</th><td class="field-body">features to put in batch_ops</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.set_empty_frame">
+<code class="descname">set_empty_frame</code><span class="sig-paren">(</span><em>batch_ops</em>, <em>frame_ops</em>, <em>seq_ops</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.set_empty_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.set_empty_frame" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>creates an empty frame with the operation keys only</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">batch_ops:</th><td class="field-body">features to extract from batches</td>
+</tr>
+<tr class="field-even field"><th class="field-name">frame_ops:</th><td class="field-body">features to extract from frames</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">seq_ops:</th><td class="field-body">features to extract sequentially</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.set_frame_ops">
+<code class="descname">set_frame_ops</code><span class="sig-paren">(</span><em>frame_ops=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.set_frame_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.set_frame_ops" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>update frame operations list</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">frame_ops:</th><td class="field-body">features to put in frame_ops</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.set_ops">
+<code class="descname">set_ops</code><span class="sig-paren">(</span><em>ops=None</em>, <em>seq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.set_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.set_ops" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>puts ops and seq into separate list for better managing</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ops:</th><td class="field-body">features to run on images. These ops don’t have dependencies</td>
+</tr>
+<tr class="field-even field"><th class="field-name">seq:</th><td class="field-body">features to run in sequential way
+(output is input to another)</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.set_seq">
+<code class="descname">set_seq</code><span class="sig-paren">(</span><em>seq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.set_seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.set_seq" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>update sequential operations list</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">seq:</th><td class="field-body">features to put in seq_ops</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.pipeline.Pipeline.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>model=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/pipeline.html#Pipeline.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.pipeline.Pipeline.train" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>train the models using X as train data and y as labels for X</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">X:</th><td class="field-body">data to train on</td>
+</tr>
+<tr class="field-even field"><th class="field-name">y:</th><td class="field-body">labels for X</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">model:</th><td class="field-body">optional parameter to predict using a specific model only
+or all if none is specified</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-image_analysis.pipeline.svm">
+<span id="image-analysis-pipeline-svm-module"></span><h2>image_analysis.pipeline.svm module<a class="headerlink" href="#module-image_analysis.pipeline.svm" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image_analysis.pipeline.svm.SVM">
+<em class="property">class </em><code class="descclassname">image_analysis.pipeline.svm.</code><code class="descname">SVM</code><span class="sig-paren">(</span><em>gamma=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/svm.html#SVM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.svm.SVM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#image_analysis.pipeline.feature.Feature" title="image_analysis.pipeline.feature.Feature"><code class="xref py py-class docutils literal"><span class="pre">image_analysis.pipeline.feature.Feature</span></code></a></p>
+<dl class="docutils">
+<dt>DESCRIPTITON:</dt>
+<dd>scikit-learn Support vector machine wrapper</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">gamma:</th><td class="field-body">kernel coefficient</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="method">
+<dt id="image_analysis.pipeline.svm.SVM.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/svm.html#SVM.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.svm.SVM.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>predrict values for new data</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">X:</th><td class="field-body">data to predict labels for</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="image_analysis.pipeline.svm.SVM.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_analysis/pipeline/svm.html#SVM.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_analysis.pipeline.svm.SVM.train" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>DESCRIPTION:</dt>
+<dd>train the svm</dd>
+<dt>ARGS:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">X:</th><td class="field-body">the data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">y:</th><td class="field-body">the labels for the data</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-image_analysis.pipeline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-image_analysis.pipeline" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2017, Codas Lab.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

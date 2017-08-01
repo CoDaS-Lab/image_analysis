@@ -1,0 +1,19 @@
+image\_analysis package
+=======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    image_analysis.decode
+    image_analysis.pipeline
+    image_analysis.utils
+
+Module contents
+---------------
+
+.. automodule:: image_analysis
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,30 @@
+image\_analysis\.decode package
+===============================
+
+Submodules
+----------
+
+image\_analysis\.decode\.extract\_patches module
+------------------------------------------------
+
+.. automodule:: image_analysis.decode.extract_patches
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+image\_analysis\.decode\.video\_decoder module
+----------------------------------------------
+
+.. automodule:: image_analysis.decode.video_decoder
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: image_analysis.decode
+    :members:
+    :undoc-members:
+    :show-inheritance:

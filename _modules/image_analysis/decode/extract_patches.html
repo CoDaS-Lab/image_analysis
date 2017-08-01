@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>image_analysis.decode.extract_patches &#8212; image_analysis 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          image_analysis</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <h1>Source code for image_analysis.decode.extract_patches</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">skvideo.io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="get_mpeg_dims"><a class="viewcode-back" href="../../../image_analysis.decode.html#image_analysis.decode.extract_patches.get_mpeg_dims">[docs]</a><span class="k">def</span> <span class="nf">get_mpeg_dims</span><span class="p">(</span><span class="n">vid_fname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ARGS:</span>
+<span class="sd">        :vid_fname: file name for an mpeg video with one color channel</span>
+
+<span class="sd">    RETURNS:</span>
+<span class="sd">        :(tuple): containing number of rows, columns, and frames of data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meta_data</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">ffprobe</span><span class="p">(</span><span class="n">vid_fname</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@height&#39;</span><span class="p">]</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@width&#39;</span><span class="p">]</span>
+    <span class="n">n_frames</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">][</span><span class="s1">&#39;@nb_frames&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_frames</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="extract_patches"><a class="viewcode-back" href="../../../image_analysis.decode.html#image_analysis.decode.extract_patches.extract_patches">[docs]</a><span class="k">def</span> <span class="nf">extract_patches</span><span class="p">(</span><span class="n">mpeg_path</span><span class="p">,</span> <span class="n">patch_dims</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">batch_size</span><span class="o">=</span><span class="mi">250000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DESCRIPTION:</span>
+<span class="sd">        extract patches (neighborhoods) of pixels from videos in batches and</span>
+<span class="sd">        save them to disk</span>
+
+<span class="sd">    ARGS:</span>
+<span class="sd">        :save_dir: directory to save extracted patches</span>
+<span class="sd">        :mpeg_path: file name for an mpeg video with one color channel</span>
+<span class="sd">        :patch_dims: size of patches to extract</span>
+<span class="sd">        :n_frames: number of frames to extract</span>
+<span class="sd">        :batch_size: size limit for each batch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">O</span> <span class="o">=</span> <span class="n">get_mpeg_dims</span><span class="p">(</span><span class="n">mpeg_path</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">patch_dims</span>
+    <span class="n">ppr</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ppc</span> <span class="o">=</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ppf</span> <span class="o">=</span> <span class="p">(</span><span class="n">ppr</span><span class="p">)(</span><span class="n">N</span> <span class="o">-</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vid_gen</span> <span class="o">=</span> <span class="n">skvideo</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">vreader</span><span class="p">(</span><span class="n">mpeg_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">O</span> <span class="o">-</span> <span class="n">o</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">n_frames</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">O</span> <span class="o">-</span> <span class="n">o</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">n_frames</span> <span class="o">&lt;</span> <span class="n">o</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;End frame index is out of range.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">n_frames</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">batches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">vid_gen</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">o</span><span class="p">:</span>
+            <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ppr</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ppc</span><span class="p">):</span>
+                    <span class="n">batches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+            <span class="k">del</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">batches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">batches</span><span class="p">,</span> <span class="n">save_dir</span> <span class="o">+</span> <span class="s1">&#39;batch_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+            <span class="n">batches</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<span class="c1"># def main():</span>
+<span class="c1">#     vid_path = os.getcwd() + &#39;/../data/input/test_video.mp4&#39;</span>
+<span class="c1">#     # &#39;/../data/input/subj5-4hr.avi&#39;</span>
+<span class="c1">#     patch_dims = (3, 3, 2)</span>
+<span class="c1">#     n_frames = 100    # 104322</span>
+<span class="c1">#     save_dir = os.getcwd() + &#39;/../data/working/motion_patches/&#39;</span>
+<span class="c1">#     patches = extract_patches(vid_path, patch_dims,</span>
+<span class="c1">#                               save_dir, n_frames=n_frames)</span>
+
+
+<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
+<span class="c1">#     main()</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2017, Codas Lab.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

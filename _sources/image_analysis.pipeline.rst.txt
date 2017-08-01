@@ -1,0 +1,54 @@
+image\_analysis\.pipeline package
+=================================
+
+Submodules
+----------
+
+image\_analysis\.pipeline\.feature module
+-----------------------------------------
+
+.. automodule:: image_analysis.pipeline.feature
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+image\_analysis\.pipeline\.fft module
+-------------------------------------
+
+.. automodule:: image_analysis.pipeline.fft
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+image\_analysis\.pipeline\.orientation\_filter module
+-----------------------------------------------------
+
+.. automodule:: image_analysis.pipeline.orientation_filter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+image\_analysis\.pipeline\.pipeline module
+------------------------------------------
+
+.. automodule:: image_analysis.pipeline.pipeline
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+image\_analysis\.pipeline\.svm module
+-------------------------------------
+
+.. automodule:: image_analysis.pipeline.svm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: image_analysis.pipeline
+    :members:
+    :undoc-members:
+    :show-inheritance:
