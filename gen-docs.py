@@ -67,8 +67,10 @@ commit_msg += '\n'
 commit_msg += 'Commit message: ' + latest.message
 commit_msg += '\n'
 
-print(commit_msg)
+print('Commit and push')
 # add and commit
 call(['git', 'add', '-A'])
 call(['git', 'commit', '-m', commit_msg])
-# call(['git', 'push', 'origin', 'gh-pages'])
+call(['git', 'push', 'origin', 'gh-pages'])
+
+print('\nFinished building\n\n')
