@@ -27,7 +27,7 @@ def delfiles(regex, ignore=None):
 
 src = 'image_analysis'
 del_ignores = ('gen-docs.py', 'docs', src)
-branch = 'origin/anderson'
+branch = 'origin/master'
 
 
 delfiles('./**', ignore=('gen-docs.py'))
