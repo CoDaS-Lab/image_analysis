@@ -16,9 +16,10 @@
 
 import unittest
 import time
+from .test_features import RGBToGray
+from .test_features import ArgMaxPixel
 from decode import video_decoder as vd
 from pipeline.pipeline import Pipeline
-from test.pipeline import test_features as features
 from pipeline.svm import SVM
 from sklearn import datasets
 
@@ -38,8 +39,8 @@ class TestPipeline(unittest.TestCase):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
-        rgb2gray = features.RGBToGray()
-        maxPixel = features.ArgMaxPixel()
+        rgb2gray = RGBToGray()
+        maxPixel = ArgMaxPixel()
 
         testpipe = Pipeline(data=data,
                             ops=[rgb2gray, maxPixel],
@@ -63,8 +64,8 @@ class TestPipeline(unittest.TestCase):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
-        rgb2gray = features.RGBToGray()
-        maxPixel = features.ArgMaxPixel()
+        rgb2gray = RGBToGray()
+        maxPixel = ArgMaxPixel()
 
         testpipe = Pipeline(data=data,
                             seq=[rgb2gray, maxPixel],
@@ -89,8 +90,8 @@ class TestPipeline(unittest.TestCase):
         data = vd.decode_mpeg(self.vid_path, batch_size=2, end_idx=9,
                               stride=2)
 
-        rgb2gray = features.RGBToGray()
-        maxPixel = features.ArgMaxPixel()
+        rgb2gray = RGBToGray()
+        maxPixel = ArgMaxPixel()
         maxPixel.save = True
 
         testpipe = Pipeline(data=data,
@@ -118,8 +119,8 @@ class TestPipeline(unittest.TestCase):
         frame_height = data[0][0].shape[1]
         n = len(data) * len(data[0])  # n = numbatches * framesperbatch
 
-        rgb2gray = features.RGBToGray()
-        maxPixel = features.ArgMaxPixel()
+        rgb2gray = RGBToGray()
+        maxPixel = ArgMaxPixel()
 
         testpipe = Pipeline(data=data,
                             ops=[rgb2gray, maxPixel],

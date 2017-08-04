@@ -21,10 +21,10 @@ import matplotlib.pyplot as plt
 import skimage.io
 import skimage.color
 from decode import video_decoder as vd
+from pipeline.orientation_filter import OrientationFilter
 from pyfftw.interfaces.numpy_fft import fftshift
 from pyfftw.interfaces.numpy_fft import fft2
 from pyfftw.interfaces.numpy_fft import ifft2
-from pipeline.orientation_filter import OrientationFilter
 
 
 class TestFeatureExtractor(unittest.TestCase):
@@ -60,7 +60,7 @@ class TestFeatureExtractor(unittest.TestCase):
             filt = fftshift(filt)
             out = ifft2(fimg * filt).real.astype(int)
 
-            self.assertEquals(np.sum(out), 0)
+            self.assertEqual(np.sum(out), 0)
 
 if __name__ == '__main__':
     unittest.main()
